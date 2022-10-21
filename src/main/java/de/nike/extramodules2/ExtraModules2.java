@@ -25,33 +25,23 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.stream.Collectors;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod("extramodules2")
 public class ExtraModules2
 {
-    // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "extramodules2";
 
     public ExtraModules2() {
-        // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        // Register the enqueueIMC method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
-        // Register the processIMC method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
-        // Register the doClientStuff method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-
-        // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     private void setup(final FMLCommonSetupEvent event)
     {
-        // some preinit code
-        LOGGER.info("HELLO FROM PREINIT");
-        LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+        LOGGER.info("Loading ExtraModules2!");
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -60,34 +50,26 @@ public class ExtraModules2
 
     private void enqueueIMC(final InterModEnqueueEvent event)
     {
-        // some example code to dispatch IMC to another mod
-        InterModComms.sendTo("examplemod", "helloworld", () -> { LOGGER.info("Hello world from the MDK"); return "Hello world";});
+
     }
 
     private void processIMC(final InterModProcessEvent event)
     {
-        // some example code to receive and process InterModComms from other mods
-        LOGGER.info("Got IMC {}", event.getIMCStream().
-                map(m->m.getMessageSupplier().get()).
-                collect(Collectors.toList()));
+
     }
+
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
 
     }
 
-    @OnlyIn(Dist.CLIENT)
+
+    /*/@OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onTextureStiching(final TextureStitchEvent event) {
-        Sprites.GURADIAN_EYE = event.getMap().getSprite(Sprites.guradianEyeSprite);
+     //   Sprites.GURADIAN_EYE = event.getMap().getSprite(Sprites.guradianEyeSprite);
     }
-
-    // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
-    // Event bus for receiving Registry Events)
-    @OnlyIn(Dist.CLIENT)
-    @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
-
-    }
+    Note: Did not work I have no clue how to load a custom Texture as TextureAtlasSprite.
+    /*/
 
 }

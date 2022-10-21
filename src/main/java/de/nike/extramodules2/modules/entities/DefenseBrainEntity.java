@@ -3,23 +3,17 @@ package de.nike.extramodules2.modules.entities;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.BCSprites;
-import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
-import com.brandon3055.draconicevolution.api.modules.data.AutoFeedData;
-import com.brandon3055.draconicevolution.api.modules.data.UndyingData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
-import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import de.nike.extramodules2.ExtraModules2;
 import de.nike.extramodules2.modules.ModuleTypes;
 import de.nike.extramodules2.modules.data.DefenseBrainData;
 import de.nike.extramodules2.modules.data.DefenseSystemData;
-import de.nike.extramodules2.modules.sprites.Sprites;
 import de.nike.extramodules2.utils.vectors.Vector2Float;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -30,15 +24,9 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -111,7 +99,7 @@ public class DefenseBrainEntity extends ModuleEntity {
             currentPosition = new Vector2Float(targetX, targetY);
         }
 
-        Vector2Float next = Vector2Float.Lerp(currentPosition, new Vector2Float(targetX, targetY), 0.05f);
+        Vector2Float next = Vector2Float.lerp(currentPosition, new Vector2Float(targetX, targetY), 0.05f);
         currentPosition = next;
 
         GuiHelper.drawRect(getter, new MatrixStack(), currentPosition.x , currentPosition.y, eyeWidth, eyeHeight, EYE_COLOR);
