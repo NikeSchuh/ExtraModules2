@@ -1,0 +1,21 @@
+{
+  "itemGroup.extramodules.modules": "Extra Modules",
+  "item.extramodules2.draconic_oxygen_storage_module": "Draconic Oxygen Storage Module",
+  "item.extramodules2.draconic_defense_brain_module": "Draconic Defense Brain Module",
+  "item.extramodules2.wyvern_defense_reflection_module": "Wyvern Defense Reflection Module",
+  "item.extramodules2.draconic_defense_reflection_module": "Draconic Defense Reflection Module",
+  "item.extramodules2.chaotic_defense_reflection_module": "Chaotic Defense Reflection Module",
+  "item.extramodules2.draconic_potion_curer_module": "Draconic Potion Curer Module",
+  "module_type.draconicevolution.oxygen_storage.name": "Oxygen Storage",
+  "module_type.draconicevolution.defense_system.name": "Defense System",
+  "module_type.draconicevolution.defense_brain.name": "Defense Brain",
+  "module_type.draconicevolution.potion_curer.name": "Potion Curer",
+  "module.extramodules2.defense_brain.bootup": "§2Defense System boot completed.",
+  "module.extramodules2.defense_brain.shutdown": "§cDefense System shut down.",
+  "module.extramodules2.defense_brain.reflected_damage": "Reflected Damage",
+  "module.extramodules2.defense_brain.defense_op_cost": "Defense Cost",
+  "module.extramodules2.oxygen_storage.oxygen_storage": "Oxygen Storage",
+  "item_prop.draconicevolution.defense_brain_module.activated": "Defense System Toggle",
+  "item_prop.draconicevolution.oxygen_mod.consume_oxygen": "Use Oxygen",
+  "item_prop.draconicevolution.potion_mod.remove_potions": "Remove Bad Effects"
+}

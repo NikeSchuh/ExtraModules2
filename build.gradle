@@ -1,0 +1,146 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url = "https://maven.minecraftforge.net/" }
+        maven { url = "https://repo.spongepowered.org/maven" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:5.1.+'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'eclipse'
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+//Add generated resources to main resources.
+sourceSets.main.resources.srcDirs += "src/generated/resources"
+
+file('build.properties').withReader {
+    def prop = new Properties()
+    prop.load(it)
+    project.ext.config = new ConfigSlurper().parse prop
+}
+
+def signProps = [:]
+
+config.mod_version = "${config.mod_version}.${config.buildNo}"
+version = "${config.mc_version}-${config.mod_version}"
+println "Starting build of ${archivesBaseName}, Version: ${config.mod_version}"
+println "Using Forge: ${config.forge_version}, for Minecraft: ${config.mc_version}, with official mappings"
+
+minecraft {
+    mappings channel: 'official', version: config.mc_version
+    accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
+    runs {
+        client {
+            workingDirectory file('run')
+            mods { extramodules2 { source sourceSets.main } }
+        }
+        server {
+            workingDirectory file('run')
+            mods { extramodules2 { source sourceSets.main } }
+        }
+        data {
+            workingDirectory file('run')
+            args '--mod', 'extramodules', '--all', '--output', file("src/generated/resources"), '--existing', file("src/main/resources"), '--existing', file("../Draconic-Evolution/src/main/resources")
+            mods { extramodules2 { source sourceSets.main } }
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    maven { url = "https://maven.covers1624.net/" }
+    maven { url = "https://dvs1.progwml6.com/files/maven" }
+    maven { url = "https://maven.cil.li/" }
+    maven { url = "https://maven.theillusivec4.top/" }
+    maven { url = "https://squiddev.cc/maven/" }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${config.mc_version}-${config.forge_version}"
+    implementation fg.deobf("com.brandon3055.brandonscore:BrandonsCore:${config.mc_version}-${config.bcore_version}:universal")
+    implementation fg.deobf("codechicken:CodeChickenLib:${config.mc_version}-${config.ccl_version}:universal")
+    implementation fg.deobf("mezz.jei:jei-${config.mc_version}:${config.jei_version}")
+    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${config.mc_version}-${config.curios_version}")
+    implementation fg.deobf("com.brandon3055.draconicevolution:Draconic-Evolution:${config.mc_version}-${config.de_version}:universal")
+}
+
+processResources {
+    inputs.property 'mc_version', config.mc_version
+    inputs.property 'mod_version', config.mod_version
+    inputs.property 'bcore_version', config.bcore_version
+    inputs.property 'de_version', config.de_version
+
+    filesMatching('META-INF/mods.toml') {
+        expand 'file': ['jarVersion': config.mod_version],
+                'mc_version': config.mc_version,
+                'forge_version': config.forge_version,
+                'lang_version': config.forge_version.split('\\.')[0],
+                'ccl_version': "[${config.ccl_version.replace('.+', '')},${config.ccl_version_max})",
+                'bcore_version': config.bcore_version,
+                'cct_version': config.cct_version,
+                'curios_version': config.mc_version + "-" + config.curios_version,
+                'de_version': config.de_version
+    }
+}
+
+jar {
+    finalizedBy 'reobfJar'
+    classifier = 'universal'
+    from file("LICENSE")
+    manifest {
+        attributes 'Specification-Title': archivesBaseName
+        attributes 'Specification-Vendor': 'Nike_Schuh'
+        attributes 'Specification-Version': "1"
+        attributes 'Implementation-Title': archivesBaseName
+        attributes 'Implementation-Vendor': 'Nike_Schuh'
+        attributes 'Implementation-Version': version
+        attributes 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    }
+}
+
+task srcJar(type: Jar) {
+    build.dependsOn it
+    from sourceSets.main.allSource
+    classifier = 'sources'
+    from file("LICENSE")
+}
+
+/**
+ * Polls the 'compile' configuration for a dependency with the given module name
+ * and resolves, and returns its version. E.g: '1.2.+' will resolve to '1.2.3.4'
+ *
+ * @param module The module to search for.
+ * @param chop If the string should be chopped on the last '-' in its string.
+ * @param configuration The name of the configuration to search.
+ * @param errorMissing If an error should be thrown if it can't be found.
+ * @return The version string, '0' if 'errorMissing' is false and nothing was found.
+ */
+def resolve(module, chop = true, configuration = 'compile', errorMissing = true) {
+    //Copy and lenient resolve the configuration, Forge cant be resolved at this time so lenient is required.
+    def filtered = configurations.getByName(configuration).copy().incoming.artifactView({ it.lenient = true }).artifacts
+            .findAll { it.id.componentIdentifier.module == module }
+            .collect { it.id.componentIdentifier.version }
+    if (filtered.size() > 1) {
+        println "WARNING: Found ${filtered.size()} Dependencies with ModuleName '${module}' in configuration '${configuration.name}'"
+    }
+    if (errorMissing && filtered.isEmpty()) {
+        throw new RuntimeException("Failed resolve dependency version for '${module}'")
+    }
+    if (filtered.isEmpty()) return "0"
+    def version = filtered.first() as String
+    if (chop) {
+        def idx = version.lastIndexOf('-')
+        return version.substring(idx + 1)
+    }
+    return version
+}
