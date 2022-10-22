@@ -1,6 +1,7 @@
 package de.nike.extramodules2;
 
 import com.sun.prism.TextureMap;
+import de.nike.extramodules2.items.EMItems;
 import de.nike.extramodules2.modules.sprites.Sprites;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -12,6 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -33,6 +35,10 @@ public class ExtraModules2
     public static final String MODID = "extramodules2";
 
     public ExtraModules2() {
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        EMItems.register(eventBus);
+
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);

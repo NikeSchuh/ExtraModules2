@@ -14,6 +14,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DETags;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import de.nike.extramodules2.items.EMItems;
 import de.nike.extramodules2.modules.data.GeneratorData;
 import de.nike.extramodules2.modules.data.OxygenStorageData;
 import net.minecraft.client.Minecraft;
@@ -75,9 +76,9 @@ public class GeneratorEntity extends ModuleEntity {
                                         stack.shrink(1);
                                         burnTime = 100000;
                                         maxBurnTime = burnTime;
+                                        playerEntity.sendMessage(new TranslationTextComponent("messages.extramodules2.generator.consumed"), ChatType.GAME_INFO, null);
                                         if(generatorSounds.getValue()) {
                                             playerEntity.level.playSound(null, playerEntity.blockPosition(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 1.2f);
-                                            playerEntity.sendMessage(new TranslationTextComponent("messages.extramodules2.generator.consumed"), ChatType.GAME_INFO, null);
                                         }
                                         break;
                                     } else if(stack.getItem() == Items.COAL) {
@@ -86,8 +87,24 @@ public class GeneratorEntity extends ModuleEntity {
                                         maxBurnTime = burnTime;
                                         if(generatorSounds.getValue()) {
                                             playerEntity.level.playSound(null, playerEntity.blockPosition(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 1.2f);
-                                            playerEntity.sendMessage(new TranslationTextComponent("messages.extramodules2.generator.consumed2"), ChatType.GAME_INFO, null);
                                         }
+                                        break;
+                                    } else if(stack.getItem() == Items.COAL_BLOCK) {
+                                        stack.shrink(1);
+                                        burnTime = 100 * 9;
+                                        maxBurnTime = burnTime;
+                                        if(generatorSounds.getValue()) {
+                                            playerEntity.level.playSound(null, playerEntity.blockPosition(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 1.2f);
+                                        }
+                                        break;
+                                    } else if(stack.getItem() == EMItems.GENERATOR_FUEL.get()) {
+                                        stack.shrink(1);
+                                        burnTime = 100 * 9 * 8 * 4;
+                                        maxBurnTime = burnTime;
+                                        if(generatorSounds.getValue()) {
+                                            playerEntity.level.playSound(null, playerEntity.blockPosition(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 1.2f);
+                                        }
+                                        break;
                                     }
                                 }
                             }
@@ -95,6 +112,11 @@ public class GeneratorEntity extends ModuleEntity {
                             if(energyStorage.getEnergyStored() + generatorData.getOpGeneration() <= energyStorage.getMaxEnergyStored()) {
                                 energyStorage.modifyEnergyStored(generatorData.getOpGeneration());
                                 burnTime--;
+                                if(generatorSounds.getValue()) {
+                                if(Math.random() < 0.01) {
+                                    playerEntity.level.playSound(null, playerEntity.blockPosition(), SoundEvents.BLASTFURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 1f, 1.8f);
+                                }
+                                }
                             }
                         }
                     }

@@ -40,18 +40,24 @@ public class PotionCureEntity extends ModuleEntity {
             LivingEntity entity = moduleContext.getEntity();
             if (entity instanceof ServerPlayerEntity && entity.tickCount % 10 == 0 && ((StackModuleContext) context).isEquipped()) {
                 ServerPlayerEntity playerEntity = (ServerPlayerEntity) entity;
+                int opSpend = 0;
+                int effectsRemoved = 0;
                 for(EffectInstance instance : playerEntity.getActiveEffects().toArray(new EffectInstance[playerEntity.getActiveEffects().size()])) {
                     Effect effect = instance.getEffect();
                     if(!effect.isBeneficial()) {
                         int level = instance.getAmplifier() + 1;
                         int ticks = instance.getDuration();
-                        int opCost = level * ticks;
+                        int opCost = (int) Math.pow(level, 3) * ticks;
                         if(energyStorage.getEnergyStored() >= opCost) {
                             playerEntity.removeEffect(effect);
                             energyStorage.modifyEnergyStored(-opCost);
-                            playerEntity.sendMessage(new StringTextComponent("Removed bad effect for " + opCost), ChatType.GAME_INFO, null);
+                            effectsRemoved++;
+                            opSpend+=opCost;
                         }
                     }
+                }
+                if(effectsRemoved > 0) {
+                    playerEntity.sendMessage(new StringTextComponent("Removed " + effectsRemoved + " bad effect(s) for " + opSpend), ChatType.GAME_INFO, null);
                 }
             }
         }

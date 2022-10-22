@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#P#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    },
+    "A": {
+      "item": "draconicevolution:wyvern_core"
+    },
+    "P": {
+      "type": "forge:nbt",
+      "item": "minecraft:potion",
+      "count": 1,
+      "nbt": "{Potion:\"minecraft:water_breathing\"}"
+    }
+  },
+  "result": {
+    "item": "extramodules2:draconic_oxygen_storage_module"
+  }
+}

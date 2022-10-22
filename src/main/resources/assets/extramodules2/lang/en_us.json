@@ -1,5 +1,6 @@
 {
   "itemGroup.extramodules.modules": "Extra Modules",
+  "item.extramodules2.generator_fuel": "Ultimate Generator Fuel",
   "item.extramodules2.draconic_oxygen_storage_module": "Draconic Oxygen Storage Module",
   "item.extramodules2.draconic_defense_brain_module": "Draconic Defense Brain Module",
   "item.extramodules2.wyvern_defense_reflection_module": "Wyvern Defense Reflection Module",
@@ -23,6 +24,5 @@
   "item_prop.draconicevolution.potion_mod.remove_potions": "Remove Bad Effects",
   "item_prop.draconicevolution.generator.active": "Generator",
   "item_prop.draconicevolution.generator.sounds": "Generator Sounds",
-  "messages.extramodules2.generator.consumed": "§aChaotic Generator consumed Large Chaos Fragment",
-  "messages.extramodules2.generator.consumed2": "§aChaotic Generator consumed Coal"
+  "messages.extramodules2.generator.consumed": "§7Generator: §cLarge Chaos Fragment §7for §c~1.260G OP"
 }
