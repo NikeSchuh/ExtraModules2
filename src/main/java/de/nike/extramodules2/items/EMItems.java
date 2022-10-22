@@ -29,8 +29,8 @@ public class EMItems {
             ITEMS.register("advanced_module_core", () ->new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)));
     public static final RegistryObject<Item> SUPERIOR_MODULE_CORE =
             ITEMS.register("superior_module_core", () ->new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)));
-    public static final RegistryObject<Item> ADVANCED_MODULE_CONTROLLER =
-            ITEMS.register("superior_module_core", () ->new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)));
+    public static final RegistryObject<Item> MODULE_CONTROLLER =
+            ITEMS.register("module_controller", () ->new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

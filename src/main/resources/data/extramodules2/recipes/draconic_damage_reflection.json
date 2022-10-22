@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#P#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    "B": {
+      "item": "extramodules2:advanced_module_core"
+    },
+    "A": {
+      "item": "extramodules2:wyvern_defense_reflection_module"
+    },
+    "P": {
+      "item": "draconicevolution:awakened_core"
+    }
+  },
+  "result": {
+    "item": "extramodules2:draconic_defense_reflection_module"
+  }
+}

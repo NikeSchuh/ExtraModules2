@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#P#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    },
+    "A": {
+      "item": "minecraft:cactus"
+    },
+    "P": {
+      "item": "draconicevolution:wyvern_core"
+    }
+  },
+  "result": {
+    "item": "extramodules2:wyvern_defense_reflection_module"
+  }
+}

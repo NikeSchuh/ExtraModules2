@@ -13,20 +13,25 @@ public class DefenseSystemData implements ModuleData<DefenseSystemData> {
 
     private final int reflectedDamage;
     private final int opCost;
+    private final boolean odinsRage;
 
-    public DefenseSystemData(int reflectedDamage, int opCost) {
+    public DefenseSystemData(int reflectedDamage, int opCost, boolean odinsRage) {
         this.reflectedDamage = reflectedDamage;
         this.opCost = opCost;
+        this.odinsRage = odinsRage;
     }
 
     @Override
     public DefenseSystemData combine(DefenseSystemData other) {
-        return new DefenseSystemData(reflectedDamage + other.reflectedDamage, opCost + other.opCost);
+        return new DefenseSystemData(reflectedDamage + other.reflectedDamage, opCost + other.opCost, Boolean.logicalOr(odinsRage, other.odinsRage));
     }
+
 
     @Override
     public void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack) {
-        map.put(new TranslationTextComponent("module.extramodules2.defense_brain.reflected_damage"), new StringTextComponent("+" + reflectedDamage));
+        if (reflectedDamage > 0) {
+            map.put(new TranslationTextComponent("module.extramodules2.defense_brain.reflected_damage"), new StringTextComponent("+" + reflectedDamage));
+        }
         map.put(new TranslationTextComponent("module.extramodules2.defense_brain.defense_op_cost"), new StringTextComponent(opCost + " OP"));
     }
 
@@ -36,5 +41,9 @@ public class DefenseSystemData implements ModuleData<DefenseSystemData> {
 
     public int getOpCost() {
         return opCost;
+    }
+
+    public boolean isOdinsRage() {
+        return odinsRage;
     }
 }

@@ -58,11 +58,18 @@ public class EMModules {
         };
     }
 
-    private static Function<Module<DefenseSystemData>, DefenseSystemData> defenseSystemData(int damage, int opCost) {
+    private static Function<Module<DefenseSystemData>, DefenseSystemData> defenseSystemData(int damage, int opCost, boolean odinsRage) {
         return e -> {
-            return new DefenseSystemData(damage, opCost);
+            return new DefenseSystemData(damage, opCost, odinsRage);
         };
     }
+
+    private static Function<Module<DefenseSystemData>, DefenseSystemData> defenseSystemData(int damage, int opCost) {
+        return e -> {
+            return new DefenseSystemData(damage, opCost, false);
+        };
+    }
+
 
     private static Function<Module<DefenseBrainData>, DefenseBrainData> defenseBrain() {
         return e -> {
@@ -85,11 +92,14 @@ public class EMModules {
     public static void registerModules() {
         register(new ModuleImpl<>(ModuleTypes.OXYGEN_STORAGE, TechLevel.DRACONIC, oxygenStorageData(2000)), "draconic_oxygen_storage");
         register(new ModuleImpl<>(ModuleTypes.DEFENSE_BRAIN, TechLevel.DRACONIC, defenseBrain()), "draconic_defense_brain");
-        register(new ModuleImpl<>(ModuleTypes.DEFENSE_SYSTEM, TechLevel.WYVERN, defenseSystemData(4, 16000)), "wyvern_defense_reflection");
-        register(new ModuleImpl<>(ModuleTypes.DEFENSE_SYSTEM, TechLevel.DRACONIC, defenseSystemData(8, 32000)), "draconic_defense_reflection");
-        register(new ModuleImpl<>(ModuleTypes.DEFENSE_SYSTEM, TechLevel.CHAOTIC, defenseSystemData(16, 64000)), "chaotic_defense_reflection");
+        register(new ModuleImpl<>(ModuleTypes.DEFENSE_SYSTEM, TechLevel.WYVERN, defenseSystemData(2, 64000)), "wyvern_defense_reflection");
+        register(new ModuleImpl<>(ModuleTypes.DEFENSE_SYSTEM, TechLevel.DRACONIC, defenseSystemData(4, 128000)), "draconic_defense_reflection");
+        register(new ModuleImpl<>(ModuleTypes.DEFENSE_SYSTEM, TechLevel.CHAOTIC, defenseSystemData(10, 256000)), "chaotic_defense_reflection");
+        register(new ModuleImpl<>(ModuleTypes.DEFENSE_SYSTEM, TechLevel.DRACONIC, defenseSystemData(0, 10000000, true)), "draconic_odins_rage");
         register(new ModuleImpl<>(ModuleTypes.POTION_CURER, TechLevel.DRACONIC, potionCurer()), "draconic_potion_curer");
         register(new ModuleImpl<>(ModuleTypes.GENERATOR, TechLevel.CHAOTIC, generatorData(12600)), "chaotic_generator");
+        register(new ModuleImpl<>(ModuleTypes.GENERATOR, TechLevel.DRACONIC, generatorData(2000)), "draconic_generator");
+
     }
 
     private static void register(ModuleImpl<?> module, String name) {

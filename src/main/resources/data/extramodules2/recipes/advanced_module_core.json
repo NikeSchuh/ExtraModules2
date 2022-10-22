@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#R#",
+    "DKD",
+    "#R#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:redstone_block"
+    },
+    "K": {
+      "item": "draconicevolution:wyvern_core"
+    },
+    "R": {
+      "item": "minecraft:repeater"
+    },
+    "D": {
+      "item": "draconicevolution:module_core"
+    }
+  },
+  "result": {
+    "item": "extramodules2:advanced_module_core",
+    "count": 1
+  }
+}

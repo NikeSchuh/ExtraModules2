@@ -18,30 +18,28 @@ import de.nike.extramodules2.utils.vectors.Vector2Float;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityPredicate;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.awt.*;
-import java.util.function.Predicate;
 
 public class DefenseBrainEntity extends ModuleEntity {
 
@@ -123,22 +121,49 @@ public class DefenseBrainEntity extends ModuleEntity {
                 DefenseSystemData defenseSystemData = getDefenseSystemData();
                 LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
 
-                Vector3d vector3f = attacker.position().subtract(player.position()).normalize().multiply(4, 4, 4);
+                if(!player.canAttackType(attacker.getType())) return;
+                if(!player.canAttack(attacker)) return;
 
-                attacker.moveTo(attacker.position().add(vector3f));
-                attacker.hurt(DamageSource.GENERIC, defenseSystemData.getReflectedDamage());
+                double mul = Math.max(defenseSystemData.getReflectedDamage() / 100, 0.85d);
+
+                float damage = defenseSystemData.getReflectedDamage();
+                if(defenseSystemData.isOdinsRage()) damage *= 1.25;
+
+                Vector3d vector3f = attacker.position().subtract(player.position()).normalize().multiply(mul, mul, mul);
+                attacker.setDeltaMovement(vector3f);
+                attacker.hurt(DamageSource.indirectMagic(player, attacker), damage);
                 player.level.playSound(null, attacker.blockPosition(), SoundEvents.ELDER_GUARDIAN_HURT, SoundCategory.HOSTILE, 0.7F, 0.8F);
+                if(getDefenseSystemData().isOdinsRage()) {
+                    EntityType.LIGHTNING_BOLT.spawn((ServerWorld) player.level, null, null, attacker.blockPosition(), SpawnReason.TRIGGERED, false, false);
+                }
                 charged = false;
             }
         }
     }
 
-    public DefenseSystemData getDefenseSystemData() {
-        return host.getModuleData(ModuleTypes.DEFENSE_SYSTEM, new DefenseSystemData(0, 0));
+    public void creeperExplode(CreeperEntity creeper, ServerPlayerEntity player, ExplosionEvent.Start event) {
+        if(!charged) return;
+        event.setCanceled(true);
+        DefenseSystemData defenseSystemData = getDefenseSystemData();
+        double mul = Math.max(defenseSystemData.getReflectedDamage() / 100, 0.85d);
+        float damage = defenseSystemData.getReflectedDamage();
+        if(defenseSystemData.isOdinsRage()) damage *= 1.25;
+        creeper.hurt(DamageSource.indirectMagic(player, creeper), damage);
+        player.level.playSound(null, creeper.blockPosition(), SoundEvents.ELDER_GUARDIAN_HURT, SoundCategory.HOSTILE, 0.7F, 0.8F);
+        if(getDefenseSystemData().isOdinsRage()) {
+            EntityType.LIGHTNING_BOLT.spawn((ServerWorld) player.level, null, null, creeper.blockPosition(), SpawnReason.TRIGGERED, false, false);
+        }
+        charged = false;
     }
 
     public void damaged(LivingDamageEvent event) {
         return;
+    }
+
+
+
+    public DefenseSystemData getDefenseSystemData() {
+        return host.getModuleData(ModuleTypes.DEFENSE_SYSTEM, new DefenseSystemData(0, 0, false));
     }
 
     @OnlyIn(Dist.CLIENT)
