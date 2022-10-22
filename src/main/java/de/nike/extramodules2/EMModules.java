@@ -9,10 +9,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleImpl;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 import de.nike.extramodules2.modules.ModuleTypes;
-import de.nike.extramodules2.modules.data.DefenseBrainData;
-import de.nike.extramodules2.modules.data.DefenseSystemData;
-import de.nike.extramodules2.modules.data.OxygenStorageData;
-import de.nike.extramodules2.modules.data.PotionCureData;
+import de.nike.extramodules2.modules.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -46,7 +43,8 @@ public class EMModules {
     public static Module<DefenseSystemData> chaoticDefenseReflection;
     @ObjectHolder("draconic_potion_curer")
     public static Module<PotionCureData> draconicPotionCurer;
-
+    @ObjectHolder("chaotic_generator")
+    public static Module<GeneratorData> chaoticGenerator;
 
     private static Function<Module<OxygenStorageData>, OxygenStorageData> oxygenStorageData(int oxygenStorage) {
         return  e -> {
@@ -78,6 +76,11 @@ public class EMModules {
         };
     }
 
+    private static Function<Module<GeneratorData>, GeneratorData> generatorData(int opGeneration) {
+        return  e -> {
+            return new GeneratorData(opGeneration);
+        };
+    }
 
     public static void registerModules() {
         register(new ModuleImpl<>(ModuleTypes.OXYGEN_STORAGE, TechLevel.DRACONIC, oxygenStorageData(2000)), "draconic_oxygen_storage");
@@ -86,6 +89,7 @@ public class EMModules {
         register(new ModuleImpl<>(ModuleTypes.DEFENSE_SYSTEM, TechLevel.DRACONIC, defenseSystemData(8, 32000)), "draconic_defense_reflection");
         register(new ModuleImpl<>(ModuleTypes.DEFENSE_SYSTEM, TechLevel.CHAOTIC, defenseSystemData(16, 64000)), "chaotic_defense_reflection");
         register(new ModuleImpl<>(ModuleTypes.POTION_CURER, TechLevel.DRACONIC, potionCurer()), "draconic_potion_curer");
+        register(new ModuleImpl<>(ModuleTypes.GENERATOR, TechLevel.CHAOTIC, generatorData(12600)), "chaotic_generator");
     }
 
     private static void register(ModuleImpl<?> module, String name) {

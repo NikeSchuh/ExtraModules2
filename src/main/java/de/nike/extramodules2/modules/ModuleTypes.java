@@ -3,11 +3,9 @@ package de.nike.extramodules2.modules;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.types.ModuleTypeImpl;
-import de.nike.extramodules2.modules.data.DefenseBrainData;
-import de.nike.extramodules2.modules.data.DefenseSystemData;
-import de.nike.extramodules2.modules.data.OxygenStorageData;
-import de.nike.extramodules2.modules.data.PotionCureData;
+import de.nike.extramodules2.modules.data.*;
 import de.nike.extramodules2.modules.entities.DefenseBrainEntity;
+import de.nike.extramodules2.modules.entities.GeneratorEntity;
 import de.nike.extramodules2.modules.entities.OxygenEntity;
 import de.nike.extramodules2.modules.entities.PotionCureEntity;
 
@@ -38,6 +36,14 @@ public class ModuleTypes {
                     1,
                     2,
                     PotionCureEntity::new,
+                    new ModuleCategory[] {ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR_CHEST})
+                    .setMaxInstallable(1);
+
+    public static final ModuleType<GeneratorData> GENERATOR =
+            new ModuleTypeImpl<>("op_generator",
+                    2,
+                    2,
+                    GeneratorEntity::new,
                     new ModuleCategory[] {ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR_CHEST})
                     .setMaxInstallable(1);
 

@@ -1,5 +1,6 @@
 package de.nike.extramodules2.modules.entities;
 
+import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
@@ -11,6 +12,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 public class PotionCureEntity extends ModuleEntity {
 
@@ -28,13 +32,25 @@ public class PotionCureEntity extends ModuleEntity {
             StackModuleContext moduleContext = (StackModuleContext) context;
             if(!moduleContext.isEquipped()) return;
             if(!activated.getValue()) return;
+
+            IOPStorageModifiable energyStorage = moduleContext.getOpStorage();
+            if(energyStorage == null && EffectiveSide.get().isClient()) {
+                return;
+            }
             LivingEntity entity = moduleContext.getEntity();
             if (entity instanceof ServerPlayerEntity && entity.tickCount % 10 == 0 && ((StackModuleContext) context).isEquipped()) {
                 ServerPlayerEntity playerEntity = (ServerPlayerEntity) entity;
                 for(EffectInstance instance : playerEntity.getActiveEffects().toArray(new EffectInstance[playerEntity.getActiveEffects().size()])) {
                     Effect effect = instance.getEffect();
                     if(!effect.isBeneficial()) {
-                        playerEntity.removeEffect(effect);
+                        int level = instance.getAmplifier() + 1;
+                        int ticks = instance.getDuration();
+                        int opCost = level * ticks;
+                        if(energyStorage.getEnergyStored() >= opCost) {
+                            playerEntity.removeEffect(effect);
+                            energyStorage.modifyEnergyStored(-opCost);
+                            playerEntity.sendMessage(new StringTextComponent("Removed bad effect for " + opCost), ChatType.GAME_INFO, null);
+                        }
                     }
                 }
             }
