@@ -38,7 +38,7 @@ public class GeneratorEntity extends ModuleEntity {
     private final int TRANSPARENT = new Color(255, 255, 255, 0).getRGB();
     private final int FIRE_COLOR = new Color(255, 100, 0, 200).getRGB();
 
-    public static final int OP_PER_BURNTIME = 1000;
+    public static final int OP_PER_BURNTIME = 7000;
 
     private int burnTime = 0;
     private BooleanProperty active;
@@ -82,7 +82,6 @@ public class GeneratorEntity extends ModuleEntity {
                                 for (ItemStack stack : playerEntity.inventory.items) {
                                     if (stack.isEmpty()) continue;
                                     if(stack.getItem().getBurnTime(stack, null) > 0) {
-                                        System.out.println(ForgeHooks.getBurnTime(stack, IRecipeType.SMELTING));
                                         int bTime = stack.getItem().getBurnTime(stack, null);
                                         burnTime = bTime;
                                         calculateBurnTimeTicks(burnTime);

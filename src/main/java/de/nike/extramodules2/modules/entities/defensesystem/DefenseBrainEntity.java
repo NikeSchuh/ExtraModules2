@@ -48,6 +48,7 @@ public class DefenseBrainEntity extends ModuleEntity {
 
     public static final int EYE_COLOR = new Color(174, 167, 164).getRGB();
     public static final int RAGE_COLOR = new Color(255, 0, 0, 25).getRGB();
+    public static final int RAGE_COLOR_EYE = new Color(255, 0, 0, 50).getRGB();
     // Client Stuff
     @OnlyIn(Dist.CLIENT)
 
@@ -162,6 +163,7 @@ public class DefenseBrainEntity extends ModuleEntity {
 
         if (gurdianEyeMode == EyeMode.RAGE) {
             GuiHelper.drawRect(getter, matrixStack, x, y, width, height, RAGE_COLOR);
+            GuiHelper.drawRect(getter, matrixStack, rectX-2, rectY, rectWidth+4, rectHeight, RAGE_COLOR_EYE);
         }
 
         if (currentPosition == null) {
@@ -210,7 +212,7 @@ public class DefenseBrainEntity extends ModuleEntity {
 
                 Vector3d vector3f = attacker.position().subtract(player.position()).normalize().multiply(mul, mul, mul);
                 attacker.setDeltaMovement(vector3f);
-                attacker.hurt(DamageSource.indirectMagic(player, attacker), damage);
+                attacker.hurt(DamageSource.indirectMobAttack(player, attacker), damage);
                 player.level.playSound(null, attacker.blockPosition(), SoundEvents.ELDER_GUARDIAN_HURT, SoundCategory.HOSTILE, 0.7F, 0.8F);
                 if (getDefenseSystemData().isOdinsRage()) {
                     EntityType.LIGHTNING_BOLT.spawn((ServerWorld) player.level, null, null, attacker.blockPosition(), SpawnReason.TRIGGERED, false, false);
