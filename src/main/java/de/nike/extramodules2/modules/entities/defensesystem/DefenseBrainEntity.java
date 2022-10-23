@@ -23,7 +23,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.monster.CreeperEntity;
-import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -36,6 +35,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -66,26 +66,24 @@ public class DefenseBrainEntity extends ModuleEntity {
     private static int lastRectY = 0;
     private static int targetChangeDelay = 0;
     private static float rageModeChargeClient = 0.0f;
+    @OnlyIn(Dist.CLIENT)
+    private static float lastProgress = 0.0f;
     // Rage Mode
     private final int EYE_POSITION_CHANGE_DELAY = 5;
-    private final float RAGE_CHARGE_LOSE = 0.0001f;
+    private final float RAGE_CHARGE_LOSE = 0.005f;
     // Eye Rect
     private final int rectWidth = 8;
-
     // UNSAFE!
     private final int rectHeight = 6;
     private final int rectOffsetX = 12;
-
     // UNSAFE!
     private final int rectOffsetY = 14;
     // Eye Size
     private final int eyeWidth = 4;
-
     // Server stuff;
     private final int eyeHeight = 4;
     private BooleanProperty activated;
     private boolean charged = false;
-
     private float rageModeChargeServer = 0;
     private int rageModeTicks = 0;
 
@@ -98,104 +96,100 @@ public class DefenseBrainEntity extends ModuleEntity {
     @OnlyIn(Dist.CLIENT)
     public static void modeChange(int mode) {
         gurdianEyeMode = EyeMode.valueOf(mode);
-        if(mode == EyeMode.RAGE.getValue()) rageModeChargeClient = 0f;
+        if (mode == EyeMode.RAGE.getValue()) rageModeChargeClient = 0.1f;
     }
 
     @OnlyIn(Dist.CLIENT)
     public static void rageModeCharge(float charge) {
-        System.out.println("Packet: Charge: " + charge + "%");
         rageModeChargeClient = charge;
     }
 
     @Override
-    public void addToolTip(List<ITextComponent> list) {
-        list.add(new StringTextComponent("§7Rage: §b" + Math.round(rageModeChargeClient * 100) + "%"));
-    }
-
-    @Override
     public void tick(ModuleContext context) {
+        if (!(context instanceof StackModuleContext)) return;
         StackModuleContext stackModuleContext = (StackModuleContext) context;
-        if (!stackModuleContext.isEquipped()) {
-            return;
-        }
+        if (!stackModuleContext.isEquipped()) return;
+        if (!(stackModuleContext.getEntity() instanceof PlayerEntity)) return;
+        ;
+        PlayerEntity playerEntity = (PlayerEntity) stackModuleContext.getEntity();
         tickRageModeCharge(stackModuleContext, (PlayerEntity) stackModuleContext.getEntity());
         if (EffectiveSide.get().isClient()) {
-            if (stackModuleContext.getEntity() instanceof ClientPlayerEntity) {
-                ClientPlayerEntity clientPlayerEntity = (ClientPlayerEntity) stackModuleContext.getEntity();
-                ClientWorld clientWorld = clientPlayerEntity.clientLevel;
-                if (gurdianEyeMode == EyeMode.RAGE) {
-                    if (targetChangeDelay > 0) targetChangeDelay--;
-                    if (targetChangeDelay <= 0) {
-                        setEyeTarget(clientWorld.random.nextInt(10000) - 5000, clientWorld.random.nextInt(10000) - 5000, lastRectX, lastRectY);
-                        targetChangeDelay = EYE_POSITION_CHANGE_DELAY;
-                    }
-                }
-                AxisAlignedBB axisAlignedBB = new AxisAlignedBB(clientPlayerEntity.position().add(10, 5, 10), clientPlayerEntity.position().subtract(10, 5, 10));
-                for (MonsterEntity monsterEntity : clientWorld.getEntitiesOfClass(MonsterEntity.class, axisAlignedBB)) {
-                    Vector3d monsterPosition = monsterEntity.position();
+            ClientPlayerEntity clientPlayerEntity = ((ClientPlayerEntity) stackModuleContext.getEntity());
+            ClientWorld clientWorld = clientPlayerEntity.clientLevel;
+            if (gurdianEyeMode == EyeMode.RAGE) {
+                eyeVisualsRageMode(clientWorld);
+                AxisAlignedBB axisAlignedBB = new AxisAlignedBB(clientPlayerEntity.position().add(5, 5, 5), clientPlayerEntity.position().subtract(10, 5, 10));
+                for (LivingEntity livingEntity : clientWorld.getEntitiesOfClass(LivingEntity.class, axisAlignedBB)) {
+                    Vector3d livingEntityPosition = livingEntity.position();
                     for (int i = 0; i < 2; i++) {
-                        clientWorld.addParticle(ParticleTypes.SOUL, monsterPosition.x, monsterPosition.y + (monsterEntity.getEyeHeight() * Math.random()), monsterPosition.z, 0.1 * Math.random(), 0.1 * Math.random(), 0.1 * Math.random());
+                        clientWorld.addParticle(ParticleTypes.SOUL, livingEntityPosition.x, livingEntityPosition.y + (livingEntity.getEyeHeight() * Math.random()), livingEntityPosition.z, 0.1 * Math.random(), 0.1 * Math.random(), 0.1 * Math.random());
                     }
                 }
             }
-        }
-
-        // Server stuff
-        if (stackModuleContext.getEntity() instanceof ServerPlayerEntity) {
-            if (charged) return;
-            DefenseSystemData defenseSystemData = getDefenseSystemData();
-            if (defenseSystemData.getOpCost() <= 0) return;
-            IOPStorageModifiable storage = context.getOpStorage();
-            if (!(context instanceof StackModuleContext && EffectiveSide.get().isServer() && storage != null)) {
-                return;
-            }
-            if (storage.getOPStored() >= defenseSystemData.getOpCost()) {
-                storage.modifyEnergyStored(-defenseSystemData.getOpCost());
-                charged = true;
+        } else {
+            // Server stuff
+            if (stackModuleContext.getEntity() instanceof ServerPlayerEntity) {
+                if (charged) return;
+                DefenseSystemData defenseSystemData = getDefenseSystemData();
+                if (defenseSystemData.getOpCost() <= 0) return;
+                IOPStorageModifiable storage = context.getOpStorage();
+                if (!(context instanceof StackModuleContext && EffectiveSide.get().isServer() && storage != null)) {
+                    return;
+                }
+                if (storage.getOPStored() >= defenseSystemData.getOpCost()) {
+                    storage.modifyEnergyStored(-defenseSystemData.getOpCost());
+                    charged = true;
+                }
             }
         }
     }
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
+    public void eyeVisualsRageMode(ClientWorld clientWorld) {
+        if (targetChangeDelay > 0) targetChangeDelay--;
+        if (targetChangeDelay <= 0) {
+            setEyeTarget(clientWorld.random.nextInt(10000) - 5000, clientWorld.random.nextInt(10000) - 5000, lastRectX, lastRectY);
+            targetChangeDelay = EYE_POSITION_CHANGE_DELAY;
+        }
+    }
+
     public void serverDeactivateRageMode(ServerPlayerEntity serverPlayerEntity) {
         EMNetwork.sendEyeChangeMode(serverPlayerEntity, EyeMode.CHASING.getValue());
         rageModeChargeServer = 0;
         rageModeTicks = -1;
+        gurdianEyeMode = EyeMode.CHASING;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void clientActivateRageMode(ClientPlayerEntity clientPlayerEntity) {
 
     }
 
     @OnlyIn(Dist.DEDICATED_SERVER)
-    public boolean isRageMode() {
+    public boolean isInRageMode() {
         return gurdianEyeMode == EyeMode.RAGE;
     }
 
     public void tickRageModeCharge(StackModuleContext stackModuleContext, PlayerEntity playerEntity) {
-        if(EffectiveSide.get().isServer()) {
+        if (EffectiveSide.get().isServer()) {
             if (rageModeTicks > 0) rageModeTicks--;
-            if(rageModeChargeServer > 0.0f) rageModeChargeServer = Math.max(0, rageModeChargeServer-RAGE_CHARGE_LOSE);
+            if (rageModeChargeServer > 0.0f)
+                rageModeChargeServer = Math.max(0, rageModeChargeServer - RAGE_CHARGE_LOSE);
             if (rageModeTicks == 0) {
                 serverDeactivateRageMode((ServerPlayerEntity) playerEntity);
             }
         } else {
-            if(gurdianEyeMode != EyeMode.RAGE && rageModeChargeClient > 0) {
-                rageModeChargeClient= Math.max(0, rageModeChargeClient-RAGE_CHARGE_LOSE);
+            if (gurdianEyeMode != EyeMode.RAGE && rageModeChargeClient > 0) {
+                rageModeChargeClient = Math.max(0, rageModeChargeClient - RAGE_CHARGE_LOSE);
             }
             if (gurdianEyeMode == EyeMode.RAGE) {
-            if(playerEntity.tickCount % 5 == 0) {
-                    playerEntity.playSound(SoundEvents.ELDER_GUARDIAN_AMBIENT, 1f, (float) (0.75f +Math.random() - Math.random()));
+                if (playerEntity.tickCount % 5 == 0) {
+                    playerEntity.playSound(SoundEvents.ELDER_GUARDIAN_AMBIENT, 1f, (float) (0.75f + Math.random() - Math.random()));
                 }
-                if(playerEntity.tickCount % 10 == 0) {
-                    playerEntity.playSound(SoundEvents.GUARDIAN_AMBIENT, 1f, (float) (0.75f +Math.random() - Math.random()));
+                if (playerEntity.tickCount % 10 == 0) {
+                    playerEntity.playSound(SoundEvents.GUARDIAN_AMBIENT, 1f, (float) (0.75f + Math.random() - Math.random()));
                 }
             }
         }
     }
-
-    @OnlyIn(Dist.CLIENT) private static float lastProgress = 0.0f;
 
     @Override
     @OnlyIn(Dist.CLIENT)
@@ -213,7 +207,7 @@ public class DefenseBrainEntity extends ModuleEntity {
 
         if (gurdianEyeMode == EyeMode.RAGE) {
             GuiHelper.drawRect(getter, matrixStack, x, y, width, height, RAGE_COLOR);
-            GuiHelper.drawRect(getter, matrixStack, rectX-2, rectY, rectWidth+4, rectHeight, RAGE_COLOR_EYE);
+            GuiHelper.drawRect(getter, matrixStack, rectX - 2, rectY, rectWidth + 4, rectHeight, RAGE_COLOR_EYE);
         }
 
         if (currentPosition == null) {
@@ -223,7 +217,7 @@ public class DefenseBrainEntity extends ModuleEntity {
             setEyeTarget(mouseX, mouseY, rectX, rectY);
         }
 
-        if(rageModeChargeClient > 0 && gurdianEyeMode != EyeMode.RAGE) {
+        if (rageModeChargeClient > 0 && gurdianEyeMode != EyeMode.RAGE) {
             lastProgress = NikesMath.lerp(lastProgress, rageModeChargeClient, 0.01f);
             GuiHelper.drawRect(getter, matrixStack, x, (y + height) - (height * lastProgress), width, height * lastProgress, RAGE_COLOR);
         }
@@ -231,9 +225,6 @@ public class DefenseBrainEntity extends ModuleEntity {
         Vector2Float next = Vector2Float.lerp(currentPosition, currentTarget, 0.05f);
         currentPosition = next;
         GuiHelper.drawRect(getter, new MatrixStack(), currentPosition.x, currentPosition.y, eyeWidth, eyeHeight, EYE_COLOR);
-        // GuiHelperOld.drawSprite(builder, drawX, drawY, eyeWidth, eyeHeight,
-        // BCSprites.get(ExtraModules2.MODID, "textures/module/brain_eye.png").sprite(),
-        // 0);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -241,6 +232,26 @@ public class DefenseBrainEntity extends ModuleEntity {
         float targetX = (float) Math.max(Math.min(x - eyeWidth / 2, rectX + rectWidth - eyeWidth), rectX);
         float targetY = (float) Math.max(Math.min(y - eyeHeight / 2, rectY + rectHeight - eyeHeight), rectY);
         currentTarget = new Vector2Float(targetX, targetY);
+    }
+
+    public void serverActivateRageMode(ServerPlayerEntity player) {
+        gurdianEyeMode = EyeMode.RAGE;
+        rageModeChargeServer = 0;
+        rageModeTicks = 100;
+
+        player.level.playSound(null, player.blockPosition(), SoundEvents.GUARDIAN_DEATH, SoundCategory.PLAYERS, 1f, 0.7f);
+        player.level.playSound(null, player.blockPosition(), SoundEvents.ELDER_GUARDIAN_CURSE, SoundCategory.PLAYERS, 1f, 0.5f);
+        EMNetwork.sendEyeChangeMode(player, EyeMode.RAGE.getValue());
+
+        AxisAlignedBB axisAlignedBB = new AxisAlignedBB(player.position().add(5, 3, 5), player.position().subtract(5, 3, 5));
+        for (LivingEntity livingEntity : player.level.getEntitiesOfClass(LivingEntity.class, axisAlignedBB)) {
+            if (livingEntity.equals(player)) continue;
+            Vector3d livingPosition = livingEntity.position();
+            Vector3d throwDirection = livingPosition.subtract(player.position()).normalize().multiply(2.5f, 2.5f, 2.5f);
+            livingEntity.setDeltaMovement(throwDirection);
+            livingEntity.hurt(DamageSource.CACTUS, 10);
+        }
+
     }
 
     public void attacked(LivingAttackEvent event) {
@@ -253,33 +264,15 @@ public class DefenseBrainEntity extends ModuleEntity {
                 DefenseSystemData defenseSystemData = getDefenseSystemData();
                 LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
 
-                if(!(gurdianEyeMode == EyeMode.RAGE)) {
-                    if(event.getAmount() > 0.2f) {
-                        rageModeChargeServer = Math.min(1.0f, rageModeChargeServer +  (event.getAmount() / 20));
+                if (!(gurdianEyeMode == EyeMode.RAGE)) {
+                    if (event.getAmount() > 0.2f) {
+                        rageModeChargeServer = Math.min(1.0f, rageModeChargeServer + (event.getAmount() / 20));
                         EMNetwork.sendEyeRageCharge(player, rageModeChargeServer);
                         if (rageModeChargeServer >= 1.0f) {
-                            gurdianEyeMode = EyeMode.RAGE;
-                            rageModeChargeServer = 0;
-
-                            player.level.playSound(null, player.blockPosition(), SoundEvents.GUARDIAN_DEATH, SoundCategory.PLAYERS,1f, 0.7f);
-                            player.level.playSound(null, player.blockPosition(), SoundEvents.ELDER_GUARDIAN_CURSE, SoundCategory.PLAYERS,1f, 0.5f);
-                            EMNetwork.sendEyeChangeMode(player, EyeMode.RAGE.getValue());
-
-                            AxisAlignedBB axisAlignedBB = new AxisAlignedBB(player.position().add(5, 3, 5), player.position().subtract(5, 3, 5));
-                            for (LivingEntity livingEntity : player.level.getEntitiesOfClass(LivingEntity.class, axisAlignedBB)) {
-                                if(livingEntity.equals(player)) continue;
-                                Vector3d livingPosition = livingEntity.position();
-                                Vector3d throwDirection = livingPosition.subtract(player.position()).normalize().multiply(2.5f, 2.5f, 2.5f);
-                                livingEntity.setDeltaMovement(throwDirection);
-                                livingEntity.hurt(DamageSource.CACTUS, 20);
-                            }
-
+                            serverActivateRageMode(player);
                         }
                     }
-                }
-                if(gurdianEyeMode == EyeMode.RAGE) {
-                    rageModeTicks = 100;
-                }
+                } else rageModeTicks = 100;
 
                 if (!player.canAttackType(attacker.getType())) return;
                 if (!player.canAttack(attacker)) return;
@@ -323,6 +316,12 @@ public class DefenseBrainEntity extends ModuleEntity {
     public DefenseSystemData getDefenseSystemData() {
         return host.getModuleData(ModuleTypes.DEFENSE_SYSTEM, new DefenseSystemData(0, 0, false));
     }
+
+    @Override
+    public void addToolTip(List<ITextComponent> list) {
+        list.add(new StringTextComponent(TextFormatting.GRAY + "Rage: "+ TextFormatting.GREEN + Math.round(rageModeChargeClient * 100) + "%"));
+    }
+
 
     @OnlyIn(Dist.CLIENT)
     @Override

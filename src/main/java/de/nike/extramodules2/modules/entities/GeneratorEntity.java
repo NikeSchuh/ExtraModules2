@@ -1,7 +1,9 @@
 package de.nike.extramodules2.modules.entities;
 
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
+import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
+import com.brandon3055.brandonscore.capability.OPWrappers;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
@@ -12,6 +14,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.nike.extramodules2.items.EMItems;
 import de.nike.extramodules2.modules.data.GeneratorData;
+import de.nike.extramodules2.utils.FormatUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -22,15 +25,16 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.awt.*;
+import java.awt.Color;
+import java.text.DecimalFormat;
+import java.util.List;
 
 public class GeneratorEntity extends ModuleEntity {
 
@@ -44,6 +48,8 @@ public class GeneratorEntity extends ModuleEntity {
     private BooleanProperty active;
     private BooleanProperty generatorSounds;
     private int maxBurnTime = 0;
+
+    private static final DecimalFormat toolTipFormat = new DecimalFormat("#.##");
 
     public GeneratorEntity(Module<GeneratorData> module) {
         super(module);
@@ -145,6 +151,15 @@ public class GeneratorEntity extends ModuleEntity {
         }
         // drawBackgroundString(getter, mStack, mc.font, tText, x + width / 2F, y +
         // height / 2F + 7, 0, 0x4000FF00, 1, false, true);
+    }
+
+    @Override
+    public void addToolTip(List<ITextComponent> list) {
+        super.addToolTip(list);
+        if(!(burnTime > 0 && maxBurnTime > 0)) return;
+        GeneratorData generatorData = (GeneratorData) module.getData();
+        list.add(new StringTextComponent(TextFormatting.GRAY + "Energy: " + TextFormatting.GREEN + FormatUtils.formatE(burnTime * generatorData.getOpGeneration()) + " OP " + TextFormatting.BLUE + "(" + toolTipFormat.format((1 - ((double) burnTime / maxBurnTime)) * 100) + "%)"));
+        list.add(new StringTextComponent(TextFormatting.GRAY + "Burnrate: " + TextFormatting.GREEN + toolTipFormat.format((float)generatorData.getOpGeneration() / OP_PER_BURNTIME) + "U/t"));
     }
 
     @Override
