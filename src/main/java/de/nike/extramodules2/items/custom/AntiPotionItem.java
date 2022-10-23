@@ -23,69 +23,68 @@ import java.util.List;
 
 public class AntiPotionItem extends Item {
 
-    public AntiPotionItem(Properties p_i48487_1_) {
-        super(p_i48487_1_);
-    }
+	public AntiPotionItem(Properties p_i48487_1_) {
+		super(p_i48487_1_);
+	}
 
-    public ItemStack finishUsingItem(ItemStack p_77654_1_, World p_77654_2_, LivingEntity p_77654_3_) {
-        PlayerEntity playerentity = p_77654_3_ instanceof PlayerEntity ? (PlayerEntity)p_77654_3_ : null;
-        if (playerentity instanceof ServerPlayerEntity) {
-            CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayerEntity)playerentity, p_77654_1_);
-        }
+	public ItemStack finishUsingItem(ItemStack p_77654_1_, World p_77654_2_, LivingEntity p_77654_3_) {
+		PlayerEntity playerentity = p_77654_3_ instanceof PlayerEntity ? (PlayerEntity) p_77654_3_ : null;
+		if (playerentity instanceof ServerPlayerEntity) {
+			CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayerEntity) playerentity, p_77654_1_);
+		}
 
-        if (!p_77654_2_.isClientSide) {
-            for(EffectInstance effectinstance : playerentity.getActiveEffects().toArray(new EffectInstance[playerentity.getActiveEffects().size()])) {
-                if(!effectinstance.getEffect().isBeneficial()) {
-                    playerentity.removeEffect(effectinstance.getEffect());
-                }
-            }
-        }
+		if (!p_77654_2_.isClientSide) {
+			for (EffectInstance effectinstance : playerentity.getActiveEffects().toArray(new EffectInstance[playerentity.getActiveEffects().size()])) {
+				if (!effectinstance.getEffect().isBeneficial()) {
+					playerentity.removeEffect(effectinstance.getEffect());
+				}
+			}
+		}
 
-        if (playerentity != null) {
-            playerentity.awardStat(Stats.ITEM_USED.get(this));
-            if (!playerentity.abilities.instabuild) {
-                p_77654_1_.shrink(1);
-            }
-        }
+		if (playerentity != null) {
+			playerentity.awardStat(Stats.ITEM_USED.get(this));
+			if (!playerentity.abilities.instabuild) {
+				p_77654_1_.shrink(1);
+			}
+		}
 
-        if (playerentity == null || !playerentity.abilities.instabuild) {
-            if (p_77654_1_.isEmpty()) {
-                return new ItemStack(Items.GLASS_BOTTLE);
-            }
+		if (playerentity == null || !playerentity.abilities.instabuild) {
+			if (p_77654_1_.isEmpty()) {
+				return new ItemStack(Items.GLASS_BOTTLE);
+			}
 
-            if (playerentity != null) {
-                playerentity.inventory.add(new ItemStack(Items.GLASS_BOTTLE));
-            }
-        }
+			if (playerentity != null) {
+				playerentity.inventory.add(new ItemStack(Items.GLASS_BOTTLE));
+			}
+		}
 
-        return p_77654_1_;
-    }
+		return p_77654_1_;
+	}
 
+	public int getUseDuration(ItemStack p_77626_1_) {
+		return 32;
+	}
 
-    public int getUseDuration(ItemStack p_77626_1_) {
-        return 32;
-    }
+	public UseAction getUseAnimation(ItemStack p_77661_1_) {
+		return UseAction.DRINK;
+	}
 
-    public UseAction getUseAnimation(ItemStack p_77661_1_) {
-        return UseAction.DRINK;
-    }
+	public ActionResult<ItemStack> use(World world, PlayerEntity p_77659_2_, Hand p_77659_3_) {
+		return DrinkHelper.useDrink(world, p_77659_2_, p_77659_3_);
+	}
 
-    public ActionResult<ItemStack> use(World world, PlayerEntity p_77659_2_, Hand p_77659_3_) {
-        return DrinkHelper.useDrink(world, p_77659_2_, p_77659_3_);
-    }
+	@Override
+	public boolean isFoil(ItemStack p_77636_1_) {
+		return true;
+	}
 
-    @Override
-    public boolean isFoil(ItemStack p_77636_1_) {
-        return true;
-    }
+	@Override
+	public boolean isEnchantable(ItemStack p_77616_1_) {
+		return false;
+	}
 
-    @Override
-    public boolean isEnchantable(ItemStack p_77616_1_) {
-        return false;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable World p_77624_2_, List<ITextComponent> lore, ITooltipFlag flags) {
-        lore.add(new TranslationTextComponent("item.extramodules2.anti_potion.lore"));
-    }
+	@OnlyIn(Dist.CLIENT)
+	public void appendHoverText(ItemStack stack, @Nullable World p_77624_2_, List<ITextComponent> lore, ITooltipFlag flags) {
+		lore.add(new TranslationTextComponent("item.extramodules2.anti_potion.lore"));
+	}
 }

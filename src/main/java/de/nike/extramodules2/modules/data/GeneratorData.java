@@ -11,23 +11,23 @@ import java.util.Map;
 
 public class GeneratorData implements ModuleData<GeneratorData> {
 
-    private final int opGeneration;
+	private final int opGeneration;
 
-    public GeneratorData(int opGeneration) {
-        this.opGeneration = opGeneration;
-    }
+	public GeneratorData(int opGeneration) {
+		this.opGeneration = opGeneration;
+	}
 
-    @Override
-    public GeneratorData combine(GeneratorData other) {
-        return new GeneratorData(opGeneration + other.opGeneration);
-    }
+	@Override
+	public GeneratorData combine(GeneratorData other) {
+		return new GeneratorData(opGeneration + other.opGeneration);
+	}
 
-    public int getOpGeneration() {
-        return opGeneration;
-    }
+	public int getOpGeneration() {
+		return opGeneration;
+	}
 
-    @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack) {
-        map.put(new TranslationTextComponent("module.extramodules2.generator.generation"), new StringTextComponent("" + opGeneration + " OP/t"));
-    }
+	@Override
+	public void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack) {
+		map.put(new TranslationTextComponent("module.extramodules2.generator.generation"), new StringTextComponent("" + opGeneration + " OP/t"));
+	}
 }

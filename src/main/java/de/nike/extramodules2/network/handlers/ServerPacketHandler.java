@@ -7,10 +7,10 @@ import net.minecraft.client.network.play.IClientPlayNetHandler;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.IServerPlayNetHandler;
 
-public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHandler{
+public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHandler {
 
-    @Override
-    public void handlePacket(PacketCustom packet, ServerPlayerEntity sender, IServerPlayNetHandler handler) {
+	@Override
+	public void handlePacket(PacketCustom packet, ServerPlayerEntity sender, IServerPlayNetHandler handler) {
 
-    }
+	}
 }

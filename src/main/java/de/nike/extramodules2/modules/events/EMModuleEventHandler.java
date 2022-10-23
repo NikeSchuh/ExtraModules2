@@ -27,72 +27,72 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 @Mod.EventBusSubscriber(modid = ExtraModules2.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EMModuleEventHandler {
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onEntityAttacked(LivingAttackEvent event) {
-        if (event.isCanceled() || event.getAmount() <= 0) {
-            return;
-        }
+	@SubscribeEvent(priority = EventPriority.LOW)
+	public static void onEntityAttacked(LivingAttackEvent event) {
+		if (event.isCanceled() || event.getAmount() <= 0) {
+			return;
+		}
 
-        LivingEntity entity = event.getEntityLiving();
-        ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
-        LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-        if (chestStack.isEmpty() || !optionalHost.isPresent()) {
-            return;
-        }
-        ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
-        DefenseBrainEntity defenseBrain = host.getEntitiesByType(ModuleTypes.DEFENSE_BRAIN).map(e -> (DefenseBrainEntity) e).findAny().orElse(null);
-        if (defenseBrain == null) {
-            return;
-        }
-        defenseBrain.attacked(event);
-    }
+		LivingEntity entity = event.getEntityLiving();
+		ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
+		LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+		if (chestStack.isEmpty() || !optionalHost.isPresent()) {
+			return;
+		}
+		ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
+		DefenseBrainEntity defenseBrain = host.getEntitiesByType(ModuleTypes.DEFENSE_BRAIN).map(e -> (DefenseBrainEntity) e).findAny().orElse(null);
+		if (defenseBrain == null) {
+			return;
+		}
+		defenseBrain.attacked(event);
+	}
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void onLivingDamage(LivingDamageEvent event) {
-        if (event.isCanceled() || event.getAmount() <= 0 || event.getEntityLiving().level.isClientSide) {
-            return;
-        }
+	@SubscribeEvent(priority = EventPriority.HIGH)
+	public static void onLivingDamage(LivingDamageEvent event) {
+		if (event.isCanceled() || event.getAmount() <= 0 || event.getEntityLiving().level.isClientSide) {
+			return;
+		}
 
-        LivingEntity entity = event.getEntityLiving();
-        ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
-        LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+		LivingEntity entity = event.getEntityLiving();
+		ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
+		LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
 
-        if (chestStack.isEmpty() || !optionalHost.isPresent()) {
-            return;
-        }
+		if (chestStack.isEmpty() || !optionalHost.isPresent()) {
+			return;
+		}
 
-        ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
-        DefenseBrainEntity defenseBrain = host.getEntitiesByType(ModuleTypes.DEFENSE_BRAIN).map(e -> (DefenseBrainEntity) e).findAny().orElse(null);
-        if (defenseBrain == null) {
-            return;
-        }
-        defenseBrain.damaged(event);
-    }
+		ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
+		DefenseBrainEntity defenseBrain = host.getEntitiesByType(ModuleTypes.DEFENSE_BRAIN).map(e -> (DefenseBrainEntity) e).findAny().orElse(null);
+		if (defenseBrain == null) {
+			return;
+		}
+		defenseBrain.damaged(event);
+	}
 
-    @SubscribeEvent
-    public static void onExplosion(ExplosionEvent.Start event) {
-        if (event.isCanceled() || event.getExplosion().getSourceMob() == null) {
-            return;
-        }
-        Entity exploder = event.getExplosion().getSourceMob();
-        if(exploder instanceof CreeperEntity) {
-            CreeperEntity entity = (CreeperEntity) exploder;
-            for(PlayerEntity player : entity.level.getNearbyPlayers(EntityPredicate.DEFAULT, entity, new AxisAlignedBB(entity.position().add(5, 5, 5), entity.position().subtract(5, 5, 5)))) {
-                ItemStack chestStack = ModularChestpiece.getChestpiece(player);
-                LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+	@SubscribeEvent
+	public static void onExplosion(ExplosionEvent.Start event) {
+		if (event.isCanceled() || event.getExplosion().getSourceMob() == null) {
+			return;
+		}
+		Entity exploder = event.getExplosion().getSourceMob();
+		if (exploder instanceof CreeperEntity) {
+			CreeperEntity entity = (CreeperEntity) exploder;
+			for (PlayerEntity player : entity.level.getNearbyPlayers(EntityPredicate.DEFAULT, entity, new AxisAlignedBB(entity.position().add(5, 5, 5), entity.position().subtract(5, 5, 5)))) {
+				ItemStack chestStack = ModularChestpiece.getChestpiece(player);
+				LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
 
-                if (chestStack.isEmpty() || !optionalHost.isPresent()) {
-                    return;
-                }
+				if (chestStack.isEmpty() || !optionalHost.isPresent()) {
+					return;
+				}
 
-                ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
-                DefenseBrainEntity defenseBrain = host.getEntitiesByType(ModuleTypes.DEFENSE_BRAIN).map(e -> (DefenseBrainEntity) e).findAny().orElse(null);
-                if (defenseBrain == null) {
-                    return;
-                }
-                defenseBrain.creeperExplode((CreeperEntity) exploder, (ServerPlayerEntity) player, event);
-            }
-        }
-    }
+				ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
+				DefenseBrainEntity defenseBrain = host.getEntitiesByType(ModuleTypes.DEFENSE_BRAIN).map(e -> (DefenseBrainEntity) e).findAny().orElse(null);
+				if (defenseBrain == null) {
+					return;
+				}
+				defenseBrain.creeperExplode((CreeperEntity) exploder, (ServerPlayerEntity) player, event);
+			}
+		}
+	}
 
 }
