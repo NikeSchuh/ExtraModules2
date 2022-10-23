@@ -16,10 +16,17 @@ public class EMNetwork {
 
 	// Server -> Client
 	public static final int S_EYE_MODE_CHANGE = 1;
+	public static final int S_EYE_RAGE_CHARGE = 2;
 
 	public static void sendEyeChangeMode(ServerPlayerEntity target, int mode) {
 		PacketCustom packetCustom = new PacketCustom(CHANNEL, S_EYE_MODE_CHANGE);
 		packetCustom.writeVarInt(mode);
+		packetCustom.sendToPlayer(target);
+	}
+
+	public static void sendEyeRageCharge(ServerPlayerEntity target, float ticks) {
+		PacketCustom packetCustom = new PacketCustom(CHANNEL, S_EYE_RAGE_CHARGE);
+		packetCustom.writeFloat(ticks);
 		packetCustom.sendToPlayer(target);
 	}
 

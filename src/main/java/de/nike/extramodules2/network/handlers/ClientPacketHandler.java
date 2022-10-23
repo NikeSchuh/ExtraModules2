@@ -15,6 +15,9 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
 		case EMNetwork.S_EYE_MODE_CHANGE:
 			DefenseBrainEntity.modeChange(packet.readVarInt());
 			break;
+			case EMNetwork.S_EYE_RAGE_CHARGE:
+				DefenseBrainEntity.rageModeCharge(packet.readFloat());
+				break;
 		}
 	}
 }
