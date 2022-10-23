@@ -3,6 +3,7 @@ package de.nike.extramodules2;
 import com.sun.prism.TextureMap;
 import de.nike.extramodules2.items.EMItems;
 import de.nike.extramodules2.modules.sprites.Sprites;
+import de.nike.extramodules2.network.EMNetwork;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -31,18 +32,19 @@ import java.util.stream.Collectors;
 @Mod("extramodules2")
 public class ExtraModules2
 {
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "extramodules2";
 
     public ExtraModules2() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         EMItems.register(eventBus);
+        EMNetwork.init();
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+        eventBus.addListener(this::setup);
+        eventBus.addListener(this::enqueueIMC);
+        eventBus.addListener(this::processIMC);
+        eventBus.addListener(this::doClientStuff);
         MinecraftForge.EVENT_BUS.register(this);
     }
 

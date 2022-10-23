@@ -11,9 +11,11 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import de.nike.extramodules2.ExtraModules2;
 import de.nike.extramodules2.modules.ModuleTypes;
 import de.nike.extramodules2.modules.data.DefenseBrainData;
 import de.nike.extramodules2.modules.data.DefenseSystemData;
+import de.nike.extramodules2.network.EMNetwork;
 import de.nike.extramodules2.utils.vectors.Vector2Float;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -55,8 +57,8 @@ public class DefenseBrainEntity extends ModuleEntity {
     private static Vector2Float currentTarget;
     private static EyeMode gurdianEyeMode = EyeMode.CHASING;
 
-    private static boolean ragemode  =false;
-    private static int rageModeTicks = 0;
+    // Rage Mode
+    private final int EYE_POSITION_CHANGE_DELAY = 5;
 
     // Eye Rect
     private final int rectWidth = 8;
@@ -80,8 +82,10 @@ public class DefenseBrainEntity extends ModuleEntity {
 
 
     // Server stuff;
+
     private BooleanProperty activated;
     private boolean charged = false;
+    private int rageModeTicks = 0;
 
     public DefenseBrainEntity(Module<DefenseBrainData> module) {
         super(module);
@@ -104,18 +108,11 @@ public class DefenseBrainEntity extends ModuleEntity {
                 ClientPlayerEntity clientPlayerEntity = (ClientPlayerEntity) stackModuleContext.getEntity();
                 ClientWorld clientWorld = clientPlayerEntity.clientLevel;
 
-                if(rageModeTicks > 0) rageModeTicks--;
-                if(rageModeTicks == 0) {
-                    ragemode = false;
-                    gurdianEyeMode = EyeMode.CHASING;
-                }
-
-                if (gurdianEyeMode == EyeMode.NOT_CHASING) {
-                    gurdianEyeMode = EyeMode.NOT_CHASING;
+                if (gurdianEyeMode == EyeMode.RAGE) {
                     if (targetChangeDelay > 0) targetChangeDelay--;
                     if (targetChangeDelay <= 0) {
                         setEyeTarget(clientWorld.random.nextInt(10000) - 5000, clientWorld.random.nextInt(10000) - 5000, lastRectX, lastRectY);
-                        targetChangeDelay = 2;
+                        targetChangeDelay = EYE_POSITION_CHANGE_DELAY;
                     }
                 }
 
@@ -131,16 +128,28 @@ public class DefenseBrainEntity extends ModuleEntity {
 
 
         // Server stuff
-        if(charged) return;
-        DefenseSystemData defenseSystemData = getDefenseSystemData();
-        if(defenseSystemData.getOpCost() <= 0) return;
-        IOPStorageModifiable storage = context.getOpStorage();
-        if (!(context instanceof StackModuleContext && EffectiveSide.get().isServer() && storage != null)) {
-            return;
-        }
-        if (storage.getOPStored() >= defenseSystemData.getOpCost()) {
-            storage.modifyEnergyStored(-defenseSystemData.getOpCost());
-            charged = true;
+
+
+        if(stackModuleContext.getEntity() instanceof ServerPlayerEntity) {
+            if (rageModeTicks > 0) {
+                rageModeTicks--;
+            }
+            if (rageModeTicks == 0) {
+                EMNetwork.sendEyeChangeMode((ServerPlayerEntity) stackModuleContext.getEntity(), EyeMode.CHASING.getValue());
+                rageModeTicks = -1;
+            }
+
+            if (charged) return;
+            DefenseSystemData defenseSystemData = getDefenseSystemData();
+            if (defenseSystemData.getOpCost() <= 0) return;
+            IOPStorageModifiable storage = context.getOpStorage();
+            if (!(context instanceof StackModuleContext && EffectiveSide.get().isServer() && storage != null)) {
+                return;
+            }
+            if (storage.getOPStored() >= defenseSystemData.getOpCost()) {
+                storage.modifyEnergyStored(-defenseSystemData.getOpCost());
+                charged = true;
+            }
         }
     }
 
@@ -156,7 +165,7 @@ public class DefenseBrainEntity extends ModuleEntity {
 
         // GuiHelper.drawRect(getter, matrixStack, rectX, rectY, rectWidth, rectHeight, Color.WHITE.getRGB()); // BoundRect
 
-        if(ragemode) {
+        if(gurdianEyeMode == EyeMode.RAGE) {
             GuiHelper.drawRect(getter, matrixStack, x, y ,width, height, RAGE_COLOR);
         }
 
@@ -166,6 +175,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         if(gurdianEyeMode == EyeMode.CHASING) {
             setEyeTarget(mouseX, mouseY, rectX, rectY);
         }
+
         Vector2Float next = Vector2Float.lerp(currentPosition, currentTarget, 0.05f);
         currentPosition = next;
 
@@ -180,23 +190,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         currentTarget = new Vector2Float(targetX, targetY);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public void activateRageMode(int ticks) {
-        ragemode = true;
-        rageModeTicks = ticks;
-        gurdianEyeMode = EyeMode.NOT_CHASING;
-    }
-
     public void attacked(LivingAttackEvent event) {
-
-        if(EffectiveSide.get().isClient()) {
-            if(event.getEntityLiving() instanceof ClientPlayerEntity) {
-                ClientPlayerEntity clientPlayerEntity = (ClientPlayerEntity) event.getEntityLiving();
-                activateRageMode(100);
-                clientPlayerEntity.playSound(SoundEvents.ELDER_GUARDIAN_AMBIENT, 1f, 1f);
-            }
-        }
-
         if(!activated.getValue()) return;
         if(!charged) return;
         if(event.getSource().getEntity() == null) return;
@@ -205,6 +199,9 @@ public class DefenseBrainEntity extends ModuleEntity {
             if (event.getSource().getEntity() instanceof LivingEntity) {
                 DefenseSystemData defenseSystemData = getDefenseSystemData();
                 LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
+
+                rageModeTicks = 100;
+                EMNetwork.sendEyeChangeMode(player, EyeMode.RAGE.getValue());
 
                 if(!player.canAttackType(attacker.getType())) return;
                 if(!player.canAttack(attacker)) return;
@@ -226,6 +223,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         }
     }
 
+
     public void creeperExplode(CreeperEntity creeper, ServerPlayerEntity player, ExplosionEvent.Start event) {
         if(!charged) return;
         event.setCanceled(true);
@@ -245,10 +243,15 @@ public class DefenseBrainEntity extends ModuleEntity {
         return;
     }
 
-
-
     public DefenseSystemData getDefenseSystemData() {
         return host.getModuleData(ModuleTypes.DEFENSE_SYSTEM, new DefenseSystemData(0, 0, false));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void modeChange(int mode) {
+        System.out.println("Raw Int: " + mode);
+       // System.out.println("Server -> Client Mode Change: from " + gurdianEyeMode.name() + " to " + EyeMode.valueOf(mode));
+        gurdianEyeMode = EyeMode.valueOf(mode);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -287,6 +290,7 @@ public class DefenseBrainEntity extends ModuleEntity {
     public void writeToItemStack(ItemStack stack, ModuleContext context) {
         super.writeToItemStack(stack, context);
         stack.getOrCreateTag().putBoolean("charged", charged);
+        stack.getOrCreateTag().putInt("ragemodeticks", rageModeTicks);
     }
 
     @Override
@@ -294,6 +298,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         super.readFromItemStack(stack, context);
         if(stack.hasTag()) {
             charged = stack.getOrCreateTag().getBoolean("charged");
+            rageModeTicks = stack.getOrCreateTag().getInt("ragemodeticks");
         }
     }
 
@@ -301,12 +306,14 @@ public class DefenseBrainEntity extends ModuleEntity {
     public void writeToNBT(CompoundNBT compound) {
         super.writeToNBT(compound);
         compound.putBoolean("charged", charged);
+        compound.putInt("ragemodeticks", rageModeTicks);
     }
 
     @Override
     public void readFromNBT(CompoundNBT compound) {
         super.readFromNBT(compound);
         charged = compound.getBoolean("charged");
+        rageModeTicks = compound.getInt("ragemodeticks");
     }
 }
 

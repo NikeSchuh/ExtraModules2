@@ -1,3 +1,4 @@
+//Inspired from FoxMCloud5655 https://github.com/FoxMcloud5655/Draconic-Additions/blob/696f7c3ae6a71e0106b4dad67746caff778a279c/build.gradle
 buildscript {
     repositories {
         mavenLocal()
