@@ -6,8 +6,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class Sprites {
 
-    public static final ResourceLocation guradianEyeSprite = new ResourceLocation(ExtraModules2.MODID, "textures/module/brain_eye.png");
+	public static final ResourceLocation guradianEyeSprite = new ResourceLocation(ExtraModules2.MODID, "textures/module/brain_eye.png");
 
-    public static TextureAtlasSprite GURADIAN_EYE;
+	public static TextureAtlasSprite GURADIAN_EYE;
 
 }

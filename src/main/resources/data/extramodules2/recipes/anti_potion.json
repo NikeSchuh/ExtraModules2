@@ -1,0 +1,46 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "result": {
+    "item": "extramodules2:anti_potion"
+  },
+  "catalyst": {
+    "item": "minecraft:glass_bottle"
+  },
+  "total_energy": 100000000,
+  "tier": "WYVERN",
+  "ingredients": [
+    {
+      "type": "forge:nbt",
+      "item": "minecraft:potion",
+      "count": 1,
+      "nbt": "{Potion:\"minecraft:strong_slowness\"}"
+    },
+    {
+      "type": "forge:nbt",
+      "item": "minecraft:potion",
+      "count": 1,
+      "nbt": "{Potion:\"minecraft:strong_poison\"}"
+    },
+    {
+      "type": "forge:nbt",
+      "item": "minecraft:potion",
+      "count": 1,
+      "nbt": "{Potion:\"minecraft:weakness\"}"
+    },
+    {
+      "item": "minecraft:wither_skeleton_skull"
+    },
+    {
+      "item": "minecraft:warped_fungus"
+    },
+    {
+      "item": "minecraft:crimson_fungus"
+    },
+    {
+      "item": "minecraft:shulker_shell"
+    },
+    {
+      "item": "minecraft:milk_bucket"
+    }
+  ]
+}

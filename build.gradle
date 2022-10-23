@@ -1,3 +1,4 @@
+// Inspired from FoxMcloud5655 https://github.com/FoxMcloud5655/Draconic-Additions/blob/696f7c3ae6a71e0106b4dad67746caff778a279c/build.gradle
 buildscript {
     repositories {
         mavenLocal()
@@ -20,7 +21,7 @@ apply plugin: 'net.minecraftforge.gradle'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
-//Add generated resources to main resources.
+// Add generated resources to main resources.
 sourceSets.main.resources.srcDirs += "src/generated/resources"
 
 file('build.properties').withReader {
@@ -50,7 +51,7 @@ minecraft {
         }
         data {
             workingDirectory file('run')
-            args '--mod', 'extramodules', '--all', '--output', file("src/generated/resources"), '--existing', file("src/main/resources"), '--existing', file("../Draconic-Evolution/src/main/resources")
+            args '--mod', 'extramodules2', '--all', '--output', file("src/generated/resources"), '--existing', file("src/main/resources")
             mods { extramodules2 { source sourceSets.main } }
         }
     }
@@ -99,10 +100,10 @@ jar {
     from file("LICENSE")
     manifest {
         attributes 'Specification-Title': archivesBaseName
-        attributes 'Specification-Vendor': 'Nike_Schuh'
+        attributes 'Specification-Vendor': 'NikeSchuh'
         attributes 'Specification-Version': "1"
         attributes 'Implementation-Title': archivesBaseName
-        attributes 'Implementation-Vendor': 'Nike_Schuh'
+        attributes 'Implementation-Vendor': 'NikeSchuh'
         attributes 'Implementation-Version': version
         attributes 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
     }

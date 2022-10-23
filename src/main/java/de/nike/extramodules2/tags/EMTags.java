@@ -8,17 +8,16 @@ import net.minecraftforge.common.Tags;
 
 public class EMTags {
 
+	public static class Items {
 
-    public static class Items {
+		private static Tags.IOptionalNamedTag<Item> createTag(String name) {
+			return ItemTags.createOptional(new ResourceLocation(ExtraModules2.MODID, name));
+		}
 
-        private static Tags.IOptionalNamedTag<Item> createTag(String name) {
-            return ItemTags.createOptional(new ResourceLocation(ExtraModules2.MODID, name));
-        }
+		private static Tags.IOptionalNamedTag<Item> createForgeTag(String name) {
+			return ItemTags.createOptional(new ResourceLocation("forge", name));
+		}
 
-        private static Tags.IOptionalNamedTag<Item> createForgeTag(String name) {
-            return ItemTags.createOptional(new ResourceLocation("forge", name));
-        }
-
-    }
+	}
 
 }

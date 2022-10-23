@@ -11,21 +11,18 @@ import java.util.Map;
 
 public class DefenseBrainData implements ModuleData<DefenseBrainData> {
 
+	public DefenseBrainData() {
 
-    public DefenseBrainData() {
+	}
 
-    }
+	@Override
+	public DefenseBrainData combine(DefenseBrainData other) {
+		return new DefenseBrainData();
+	}
 
-    @Override
-    public DefenseBrainData combine(DefenseBrainData other) {
-        return new DefenseBrainData();
-    }
+	@Override
+	public void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack) {
 
-
-
-    @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack) {
-
-    }
+	}
 
 }

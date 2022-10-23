@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#P#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    "B": {
+      "item": "extramodules2:superior_module_core"
+    },
+    "A": {
+      "item": "draconicevolution:awakened_core"
+    },
+    "P": {
+      "item": "extramodules2:anti_potion"
+    }
+  },
+  "result": {
+    "item": "extramodules2:draconic_potion_curer_module"
+  }
+}
