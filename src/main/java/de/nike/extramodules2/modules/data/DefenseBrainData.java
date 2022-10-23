@@ -16,6 +16,7 @@ public class DefenseBrainData implements ModuleData<DefenseBrainData> {
 
     }
 
+
     @Override
     public DefenseBrainData combine(DefenseBrainData other) {
         return new DefenseBrainData();

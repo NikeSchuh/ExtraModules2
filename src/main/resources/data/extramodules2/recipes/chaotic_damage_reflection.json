@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "ABA",
+    "#P#"
+  ],
+  "key": {
+    "#": {
+      "item": "draconicevolution:medium_chaos_frag"
+    },
+    "B": {
+      "item": "extramodules2:superior_module_core"
+    },
+    "A": {
+      "item": "extramodules2:draconic_defense_reflection_module"
+    },
+    "P": {
+      "item": "draconicevolution:chaotic_core"
+    }
+  },
+  "result": {
+    "item": "extramodules2:chaotic_defense_reflection_module"
+  }
+}

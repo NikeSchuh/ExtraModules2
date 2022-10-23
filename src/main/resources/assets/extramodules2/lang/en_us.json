@@ -12,6 +12,8 @@
   "item.extramodules2.advanced_module_core": "Advanced Module Core",
   "item.extramodules2.superior_module_core": "Superior Module Core",
   "item.extramodules2.module_controller": "Module Controller",
+  "item.extramodules2.anti_potion": "§bAnti Potion",
+  "item.extramodules2.anti_potion.lore": "§7Removes all §cbad §7effects.",
   "item.extramodules2.draconic_potion_curer_module": "Draconic Potion Curer Module",
   "module_type.draconicevolution.oxygen_storage.name": "Oxygen Storage",
   "module_type.draconicevolution.defense_system.name": "Defense System",

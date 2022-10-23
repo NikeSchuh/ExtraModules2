@@ -2,9 +2,11 @@ package de.nike.extramodules2.items;
 
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import de.nike.extramodules2.ExtraModules2;
+import de.nike.extramodules2.items.custom.AntiPotionItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.PotionItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -31,6 +33,9 @@ public class EMItems {
             ITEMS.register("superior_module_core", () ->new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)));
     public static final RegistryObject<Item> MODULE_CONTROLLER =
             ITEMS.register("module_controller", () ->new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)));
+    public static final RegistryObject<Item> ANTI_POTION =
+            ITEMS.register("anti_potion", ()-> new AntiPotionItem(new Item.Properties().tab(EXTRAMODULES_ITEMS).stacksTo(1)));
+
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

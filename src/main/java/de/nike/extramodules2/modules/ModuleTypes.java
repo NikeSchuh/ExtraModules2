@@ -4,7 +4,7 @@ import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.types.ModuleTypeImpl;
 import de.nike.extramodules2.modules.data.*;
-import de.nike.extramodules2.modules.entities.DefenseBrainEntity;
+import de.nike.extramodules2.modules.entities.defensesystem.DefenseBrainEntity;
 import de.nike.extramodules2.modules.entities.GeneratorEntity;
 import de.nike.extramodules2.modules.entities.OxygenEntity;
 import de.nike.extramodules2.modules.entities.PotionCureEntity;

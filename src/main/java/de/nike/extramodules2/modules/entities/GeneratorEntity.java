@@ -141,7 +141,7 @@ public class GeneratorEntity extends ModuleEntity {
         GuiHelper.drawRect(getter, mStack, x, (y + height) - (height * progress), width, height * progress, FILL_COLOR);
         GuiHelper.drawRect(getter, mStack, x + 16, y + 16, 1.8,4.8, FIRE_COLOR);
         GuiHelper.drawRect(getter, mStack, x + 19.3, y + 16, 1.8,4.8, FIRE_COLOR);
-        GuiHelper.drawRect(getter, mStack, x + 12.5, y + 16, 1.8,4.8, FIRE_COLOR);
+        GuiHelper.drawRect(getter, mStack, x + 12.8, y + 16, 1.8,4.8, FIRE_COLOR);
         }
 
         if(burnTime > 0) {
