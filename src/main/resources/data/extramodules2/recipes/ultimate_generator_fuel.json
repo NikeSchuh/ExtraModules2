@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#K#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "extramodules2:generator_fuel"
+    },
+    "K": {
+      "item": "draconicevolution:dragon_heart"
+    }
+  },
+  "result": {
+    "item": "extramodules2:ultimate_generator_fuel",
+    "count": 1
+  }
+}

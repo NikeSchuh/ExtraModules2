@@ -8,6 +8,8 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
+import com.google.common.collect.LinkedHashMultimap;
+import com.ibm.icu.impl.locale.XCldrStub;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.nike.extramodules2.modules.ModuleTypes;
 import de.nike.extramodules2.modules.data.DefenseBrainData;
@@ -19,9 +21,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -46,9 +53,13 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.awt.*;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class DefenseBrainEntity extends ModuleEntity {
+
+    public static final int RAGEMODE_TICKCOST = 250000;
 
     public static final int EYE_COLOR = new Color(174, 167, 164).getRGB();
     public static final int RAGE_COLOR = new Color(255, 0, 0, 25).getRGB();
@@ -96,7 +107,7 @@ public class DefenseBrainEntity extends ModuleEntity {
     @OnlyIn(Dist.CLIENT)
     public static void modeChange(int mode) {
         gurdianEyeMode = EyeMode.valueOf(mode);
-        if (mode == EyeMode.RAGE.getValue()) rageModeChargeClient = 0.1f;
+        if (mode == EyeMode.CHASING.getValue()) rageModeChargeClient = 0.01f;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -110,18 +121,18 @@ public class DefenseBrainEntity extends ModuleEntity {
         StackModuleContext stackModuleContext = (StackModuleContext) context;
         if (!stackModuleContext.isEquipped()) return;
         if (!(stackModuleContext.getEntity() instanceof PlayerEntity)) return;
-        ;
         PlayerEntity playerEntity = (PlayerEntity) stackModuleContext.getEntity();
         tickRageModeCharge(stackModuleContext, (PlayerEntity) stackModuleContext.getEntity());
         if (EffectiveSide.get().isClient()) {
             ClientPlayerEntity clientPlayerEntity = ((ClientPlayerEntity) stackModuleContext.getEntity());
             ClientWorld clientWorld = clientPlayerEntity.clientLevel;
-            if (gurdianEyeMode == EyeMode.RAGE) {
+            if (isInRageMode()) {
                 eyeVisualsRageMode(clientWorld);
                 AxisAlignedBB axisAlignedBB = new AxisAlignedBB(clientPlayerEntity.position().add(5, 5, 5), clientPlayerEntity.position().subtract(10, 5, 10));
                 for (LivingEntity livingEntity : clientWorld.getEntitiesOfClass(LivingEntity.class, axisAlignedBB)) {
                     Vector3d livingEntityPosition = livingEntity.position();
-                    for (int i = 0; i < 2; i++) {
+                    if(livingEntity.equals(playerEntity)) continue;
+                    if (playerEntity.tickCount % 4 == 0) {
                         clientWorld.addParticle(ParticleTypes.SOUL, livingEntityPosition.x, livingEntityPosition.y + (livingEntity.getEyeHeight() * Math.random()), livingEntityPosition.z, 0.1 * Math.random(), 0.1 * Math.random(), 0.1 * Math.random());
                     }
                 }
@@ -163,20 +174,65 @@ public class DefenseBrainEntity extends ModuleEntity {
 
     }
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
     public boolean isInRageMode() {
         return gurdianEyeMode == EyeMode.RAGE;
     }
 
     public void tickRageModeCharge(StackModuleContext stackModuleContext, PlayerEntity playerEntity) {
         if (EffectiveSide.get().isServer()) {
-            if (rageModeTicks > 0) rageModeTicks--;
+            if (stackModuleContext.getOpStorage() != null) {
+                IOPStorageModifiable storage = stackModuleContext.getOpStorage();
+                if (isInRageMode()) {
+                    rageModeTicks--;
+                    if (storage.getEnergyStored() > RAGEMODE_TICKCOST) {
+                        storage.modifyEnergyStored(-RAGEMODE_TICKCOST);
+                    } else {
+                        rageModeTicks = Math.max(0, rageModeTicks - 20);
+                    }
+
+                    // Damage
+                    if (playerEntity.tickCount % 20 == 0) {
+                        boolean b = false;
+                        DefenseSystemData systemData = getDefenseSystemData();
+                        AxisAlignedBB axisAlignedBB = new AxisAlignedBB(playerEntity.position().add(8, 8, 8), playerEntity.position().subtract(8, 3, 8));
+                        for (LivingEntity livingEntity : playerEntity.level.getEntitiesOfClass(LivingEntity.class, axisAlignedBB)) {
+                            if(livingEntity.equals(playerEntity)) continue;
+                            if(livingEntity instanceof EnderDragonEntity) continue;
+                            if(livingEntity.isInvulnerable()) continue;
+                            if(livingEntity.isDeadOrDying()) continue;
+                            if(storage.getEnergyStored() < systemData.getOpCost()) continue;
+                            if(!playerEntity.canSee(livingEntity)) continue;
+                            storage.modifyEnergyStored(-systemData.getOpCost());
+                            livingEntity.hurt(DamageSource.playerAttack(playerEntity), Math.max(systemData.getReflectedDamage(), 10));
+                            if(getDefenseSystemData().isOdinsRage()) {
+                                EntityType.LIGHTNING_BOLT.spawn((ServerWorld) livingEntity.level, null, null, livingEntity.blockPosition(), SpawnReason.TRIGGERED, true, true);
+                            }
+
+                            b = true;
+                        }
+                        if(b) rageModeTicks = 100;
+                    }
+
+                }
+            }
             if (rageModeChargeServer > 0.0f)
                 rageModeChargeServer = Math.max(0, rageModeChargeServer - RAGE_CHARGE_LOSE);
             if (rageModeTicks == 0) {
                 serverDeactivateRageMode((ServerPlayerEntity) playerEntity);
             }
         } else {
+
+            // Random Messages
+            if(playerEntity.tickCount % 10000 == 0) {
+                if(Math.random() < 0.1D) {
+                    int msg = playerEntity.level.random.nextInt(5);
+                    playerEntity.sendMessage(new TranslationTextComponent("module.extramodules2.defense_brain.randomtick" + msg), null);
+                    playerEntity.playSound(SoundEvents.GUARDIAN_AMBIENT, 2f, 2f);
+                }
+            }
+
+
+
             if (gurdianEyeMode != EyeMode.RAGE && rageModeChargeClient > 0) {
                 rageModeChargeClient = Math.max(0, rageModeChargeClient - RAGE_CHARGE_LOSE);
             }
@@ -217,7 +273,7 @@ public class DefenseBrainEntity extends ModuleEntity {
             setEyeTarget(mouseX, mouseY, rectX, rectY);
         }
 
-        if (rageModeChargeClient > 0 && gurdianEyeMode != EyeMode.RAGE) {
+        if ((rageModeChargeClient > 0 || lastProgress > 0) && !isInRageMode()) {
             lastProgress = NikesMath.lerp(lastProgress, rageModeChargeClient, 0.01f);
             GuiHelper.drawRect(getter, matrixStack, x, (y + height) - (height * lastProgress), width, height * lastProgress, RAGE_COLOR);
         }
@@ -266,7 +322,7 @@ public class DefenseBrainEntity extends ModuleEntity {
 
                 if (!(gurdianEyeMode == EyeMode.RAGE)) {
                     if (event.getAmount() > 0.2f) {
-                        rageModeChargeServer = Math.min(1.0f, rageModeChargeServer + (event.getAmount() / 20));
+                        rageModeChargeServer = Math.min(1.0f, rageModeChargeServer + (event.getAmount() / 50));
                         EMNetwork.sendEyeRageCharge(player, rageModeChargeServer);
                         if (rageModeChargeServer >= 1.0f) {
                             serverActivateRageMode(player);
@@ -309,17 +365,15 @@ public class DefenseBrainEntity extends ModuleEntity {
         charged = false;
     }
 
-    public void damaged(LivingDamageEvent event) {
-        return;
-    }
-
     public DefenseSystemData getDefenseSystemData() {
         return host.getModuleData(ModuleTypes.DEFENSE_SYSTEM, new DefenseSystemData(0, 0, false));
     }
 
     @Override
     public void addToolTip(List<ITextComponent> list) {
-        list.add(new StringTextComponent(TextFormatting.GRAY + "Rage: "+ TextFormatting.GREEN + Math.round(rageModeChargeClient * 100) + "%"));
+        if(!isInRageMode()) {
+            list.add(new StringTextComponent(TextFormatting.GRAY + "Rage: " + TextFormatting.GREEN + Math.round(rageModeChargeClient * 100) + "%"));
+        } else list.add(new StringTextComponent(TextFormatting.GRAY + "Rage: "+ TextFormatting.GREEN + "100%"));
     }
 
 
@@ -358,6 +412,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         super.writeToItemStack(stack, context);
         stack.getOrCreateTag().putBoolean("charged", charged);
         stack.getOrCreateTag().putInt("ragemodeticks", rageModeTicks);
+        stack.getOrCreateTag().putFloat("rage", rageModeChargeServer);
     }
 
     @Override
@@ -366,6 +421,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         if (stack.hasTag()) {
             charged = stack.getOrCreateTag().getBoolean("charged");
             rageModeTicks = stack.getOrCreateTag().getInt("ragemodeticks");
+            rageModeChargeServer = stack.getOrCreateTag().getFloat("rage");
         }
     }
 
@@ -374,6 +430,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         super.writeToNBT(compound);
         compound.putBoolean("charged", charged);
         compound.putInt("ragemodeticks", rageModeTicks);
+        compound.putFloat("rage", rageModeChargeServer);
     }
 
     @Override
@@ -381,5 +438,6 @@ public class DefenseBrainEntity extends ModuleEntity {
         super.readFromNBT(compound);
         charged = compound.getBoolean("charged");
         rageModeTicks = compound.getInt("ragemodeticks");
+        rageModeChargeServer = compound.getFloat("rage");
     }
 }

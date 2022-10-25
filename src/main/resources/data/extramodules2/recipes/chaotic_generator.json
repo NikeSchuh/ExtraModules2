@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#P#"
+  ],
+  "key": {
+    "#": {
+      "item": "extramodules2:ultimate_generator_fuel"
+    },
+    "B": {
+      "item": "extramodules2:superior_module_core"
+    },
+    "A": {
+      "item": "extramodules2:draconic_generator_module"
+    },
+    "P": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "result": {
+    "item": "extramodules2:chaotic_generator_module"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#P#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium"
+    },
+    "B": {
+      "item": "extramodules2:advanced_module_core"
+    },
+    "A": {
+      "item": "minecraft:diamond_chestplate"
+    },
+    "P": {
+      "type": "forge:nbt",
+      "item": "minecraft:potion",
+      "count": 1,
+      "nbt": "{Potion:\"minecraft:strong_turtle_master\"}"
+    }
+  },
+  "result": {
+    "item": "extramodules2:wyvern_armor_module"
+  }
+}

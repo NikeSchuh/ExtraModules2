@@ -28,6 +28,6 @@ public class OxygenStorageData implements ModuleData<OxygenStorageData> {
 
 	@Override
 	public void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack) {
-		map.put(new TranslationTextComponent("module.extramodules2.oxygen_storage.oxygen_storage"), new StringTextComponent(oxygenStored + ""));
+
 	}
 }

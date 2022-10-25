@@ -42,7 +42,7 @@ public class GeneratorEntity extends ModuleEntity {
     private final int TRANSPARENT = new Color(255, 255, 255, 0).getRGB();
     private final int FIRE_COLOR = new Color(255, 100, 0, 200).getRGB();
 
-    public static final int OP_PER_BURNTIME = 7000;
+    public static final int OP_PER_BURNTIME = 40;
 
     private int burnTime = 0;
     private BooleanProperty active;
@@ -95,7 +95,7 @@ public class GeneratorEntity extends ModuleEntity {
                                         if(generatorSounds.getValue()) {
                                             playerEntity.level.playSound(null, playerEntity.blockPosition(), SoundEvents.ITEM_PICKUP, SoundCategory.BLOCKS, 1f, 1.0f);
                                         }
-                                        playerEntity.sendMessage(new StringTextComponent("Consumed " + stack.getItem() + " for " + (bTime * OP_PER_BURNTIME) + "op"), ChatType.GAME_INFO, null);
+                                        playerEntity.sendMessage(new StringTextComponent(TextFormatting.GRAY +  "Consumed " + stack.getItem().getName(stack) + " for "  + TextFormatting.GREEN + (FormatUtils.formatE(bTime * OP_PER_BURNTIME)) + " OP"), ChatType.GAME_INFO, null);
                                         stack.shrink(1);
                                         break;
                                     }
@@ -156,10 +156,11 @@ public class GeneratorEntity extends ModuleEntity {
     @Override
     public void addToolTip(List<ITextComponent> list) {
         super.addToolTip(list);
-        if(!(burnTime > 0 && maxBurnTime > 0)) return;
         GeneratorData generatorData = (GeneratorData) module.getData();
+        list.add(new StringTextComponent(TextFormatting.GRAY +  new TranslationTextComponent("module.extramodules2.generator.generation").withStyle(Style.EMPTY).getString() + ": " + TextFormatting.GREEN + generatorData.getOpGeneration() + " OP/t"));
+        list.add(new StringTextComponent(TextFormatting.GRAY + "Burnrate: " + TextFormatting.GREEN + toolTipFormat.format((float)generatorData.getOpGeneration() / OP_PER_BURNTIME) + "x/t"));
+        if(!(burnTime > 0 && maxBurnTime > 0)) return;
         list.add(new StringTextComponent(TextFormatting.GRAY + "Energy: " + TextFormatting.GREEN + FormatUtils.formatE(burnTime * generatorData.getOpGeneration()) + " OP " + TextFormatting.BLUE + "(" + toolTipFormat.format((1 - ((double) burnTime / maxBurnTime)) * 100) + "%)"));
-        list.add(new StringTextComponent(TextFormatting.GRAY + "Burnrate: " + TextFormatting.GREEN + toolTipFormat.format((float)generatorData.getOpGeneration() / OP_PER_BURNTIME) + "U/t"));
     }
 
     @Override

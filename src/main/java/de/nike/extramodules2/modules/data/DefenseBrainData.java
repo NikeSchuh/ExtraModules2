@@ -11,10 +11,6 @@ import java.util.Map;
 
 public class DefenseBrainData implements ModuleData<DefenseBrainData> {
 
-	public DefenseBrainData() {
-
-	}
-
 	@Override
 	public DefenseBrainData combine(DefenseBrainData other) {
 		return new DefenseBrainData();

@@ -13,6 +13,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import de.nike.extramodules2.modules.data.OxygenStorageData;
+import de.nike.extramodules2.utils.TranslationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -21,10 +22,17 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.text.DecimalFormat;
+import java.util.List;
+
 public class OxygenEntity extends ModuleEntity {
+
+	private static final DecimalFormat toolTipFormat = new DecimalFormat("#.##");
 
 	public static final int OXYGEN_REFILL_RATE = 100;
 
@@ -120,6 +128,14 @@ public class OxygenEntity extends ModuleEntity {
 		if (stack.hasTag()) {
 			this.oxygenStored = stack.getOrCreateTag().getInt("oxygen_stored");
 		}
+	}
+
+	@Override
+	public void addToolTip(List<ITextComponent> list) {
+		OxygenStorageData storageData = (OxygenStorageData) module.getData();
+		list.add(TranslationUtils.string(TextFormatting.GRAY +  TranslationUtils.getTranslation("module.extramodules2.oxygen_storage.oxygen_storage") + ": " + TextFormatting.GREEN + (storageData.getOxygenStored() / 10 / 2)));
+		if(oxygenStored == 0) return;
+		list.add(TranslationUtils.string(TextFormatting.GRAY +  TranslationUtils.getTranslation("module.extramodules2.oxygen_storage.oxygen") + ": " + TextFormatting.GREEN + (oxygenStored / 10 / 2) + TextFormatting.BLUE + " (" + toolTipFormat.format(((double)(oxygenStored / 10 / 2) / (storageData.getOxygenStored() / 10 / 2)) * 100) + "%)"));
 	}
 
 	@Override

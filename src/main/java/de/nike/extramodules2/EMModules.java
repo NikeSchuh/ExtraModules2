@@ -15,11 +15,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 
 import de.nike.extramodules2.modules.ModuleTypes;
-import de.nike.extramodules2.modules.data.DefenseBrainData;
-import de.nike.extramodules2.modules.data.DefenseSystemData;
-import de.nike.extramodules2.modules.data.GeneratorData;
-import de.nike.extramodules2.modules.data.OxygenStorageData;
-import de.nike.extramodules2.modules.data.PotionCureData;
+import de.nike.extramodules2.modules.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -49,6 +45,8 @@ public class EMModules {
 	public static Module<PotionCureData> draconicPotionCurer;
 	@ObjectHolder("chaotic_generator")
 	public static Module<GeneratorData> chaoticGenerator;
+	@ObjectHolder("armor")
+	public static Module<ArmorData> armor;
 
 	private static Function<Module<OxygenStorageData>, OxygenStorageData> oxygenStorageData(int oxygenStorage) {
 		return e -> {
@@ -92,17 +90,43 @@ public class EMModules {
 		};
 	}
 
+	private static Function<Module<ArmorData>, ArmorData> armorData(int armor, int toughness) {
+		return e -> {
+			return new ArmorData(armor, toughness);
+		};
+	}
+
+
+	private static Function<Module<ExtraHealthData>, ExtraHealthData> extraHealthData(double extraHealth) {
+		return  e -> {
+			return new ExtraHealthData(extraHealth);
+		};
+	}
+
+	private static Function<Module<HitCooldownData>, HitCooldownData> hitCooldownData(float seconds) {
+		return  e -> {
+			return new HitCooldownData(seconds);
+		};
+	}
+
 	public static void registerModules() {
-		register(new ModuleImpl<>(ModuleTypes.OXYGEN_STORAGE, TechLevel.DRACONIC, oxygenStorageData(2000)), "draconic_oxygen_storage");
+		register(new ModuleImpl<>(ModuleTypes.OXYGEN_STORAGE, TechLevel.DRACONIC, oxygenStorageData(4000)), "draconic_oxygen_storage");
 		register(new ModuleImpl<>(ModuleTypes.DEFENSE_BRAIN, TechLevel.DRACONIC, defenseBrain()), "draconic_defense_brain");
 		register(new ModuleImpl<>(ModuleTypes.DEFENSE_SYSTEM, TechLevel.WYVERN, defenseSystemData(2, 64000)), "wyvern_defense_reflection");
 		register(new ModuleImpl<>(ModuleTypes.DEFENSE_SYSTEM, TechLevel.DRACONIC, defenseSystemData(4, 128000)), "draconic_defense_reflection");
 		register(new ModuleImpl<>(ModuleTypes.DEFENSE_SYSTEM, TechLevel.CHAOTIC, defenseSystemData(10, 256000)), "chaotic_defense_reflection");
-		register(new ModuleImpl<>(ModuleTypes.DEFENSE_SYSTEM, TechLevel.DRACONIC, defenseSystemData(0, 10000000, true)), "draconic_odins_rage");
+		register(new ModuleImpl<>(ModuleTypes.DEFENSE_SYSTEM, TechLevel.DRACONIC, defenseSystemData(0, 10000000, true)).setMaxInstall(1), "draconic_odins_rage");
 		register(new ModuleImpl<>(ModuleTypes.POTION_CURER, TechLevel.DRACONIC, potionCurer()), "draconic_potion_curer");
-		register(new ModuleImpl<>(ModuleTypes.GENERATOR, TechLevel.CHAOTIC, generatorData(12600)), "chaotic_generator");
 		register(new ModuleImpl<>(ModuleTypes.GENERATOR, TechLevel.DRACONIC, generatorData(2000)), "draconic_generator");
-
+		register(new ModuleImpl<>(ModuleTypes.GENERATOR, TechLevel.CHAOTIC, generatorData(12600)), "chaotic_generator");
+		register(new ModuleImpl<>(ModuleTypes.ARMOR, TechLevel.WYVERN, armorData(1, 0)), "wyvern_armor");
+		register(new ModuleImpl<>(ModuleTypes.ARMOR, TechLevel.DRACONIC, armorData(2, 1)), "draconic_armor");
+		register(new ModuleImpl<>(ModuleTypes.ARMOR, TechLevel.CHAOTIC, armorData(4, 2)), "chaotic_armor");
+		register(new ModuleImpl<>(ModuleTypes.EXTRA_HEALTH, TechLevel.WYVERN, extraHealthData(5)), "wyvern_extra_health");
+		register(new ModuleImpl<>(ModuleTypes.EXTRA_HEALTH, TechLevel.DRACONIC, extraHealthData(20)), "draconic_extra_health");
+		register(new ModuleImpl<>(ModuleTypes.EXTRA_HEALTH, TechLevel.CHAOTIC, extraHealthData(40)), "chaotic_extra_health");
+		register(new ModuleImpl<>(ModuleTypes.HIT_COOLDOWN, TechLevel.DRACONIC, hitCooldownData(0.25f)), "draconic_hit_cooldown");
+		register(new ModuleImpl<>(ModuleTypes.HIT_COOLDOWN, TechLevel.CHAOTIC, hitCooldownData(0.5f)), "chaotic_hit_cooldown");
 	}
 
 	private static void register(ModuleImpl<?> module, String name) {

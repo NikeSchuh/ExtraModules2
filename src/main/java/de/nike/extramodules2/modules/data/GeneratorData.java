@@ -28,6 +28,6 @@ public class GeneratorData implements ModuleData<GeneratorData> {
 
 	@Override
 	public void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack) {
-		map.put(new TranslationTextComponent("module.extramodules2.generator.generation"), new StringTextComponent("" + opGeneration + " OP/t"));
+
 	}
 }

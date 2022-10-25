@@ -5,6 +5,9 @@ import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
 import de.nike.extramodules2.ExtraModules2;
 import de.nike.extramodules2.modules.ModuleTypes;
+import de.nike.extramodules2.modules.entities.ArmorEntity;
+import de.nike.extramodules2.modules.entities.ExtraHealthEntity;
+import de.nike.extramodules2.modules.entities.HitCooldownEntitiy;
 import de.nike.extramodules2.modules.entities.defensesystem.DefenseBrainEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
@@ -14,15 +17,19 @@ import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
+import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
 @Mod.EventBusSubscriber(modid = ExtraModules2.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EMModuleEventHandler {
@@ -48,12 +55,13 @@ public class EMModuleEventHandler {
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
-	public static void onLivingDamage(LivingDamageEvent event) {
-		if (event.isCanceled() || event.getAmount() <= 0 || event.getEntityLiving().level.isClientSide) {
-			return;
-		}
+	public static void onLivingDamage(LivingAttackEvent event) {
+		if(event.isCanceled()) return;
+		if(event.getAmount() < 0) return;
+		if(!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
+		System.out.println("Event triggered");
 
-		LivingEntity entity = event.getEntityLiving();
+		ServerPlayerEntity entity = (ServerPlayerEntity) event.getEntityLiving();
 		ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
 		LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
 
@@ -62,11 +70,12 @@ public class EMModuleEventHandler {
 		}
 
 		ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
-		DefenseBrainEntity defenseBrain = host.getEntitiesByType(ModuleTypes.DEFENSE_BRAIN).map(e -> (DefenseBrainEntity) e).findAny().orElse(null);
-		if (defenseBrain == null) {
+		HitCooldownEntitiy hitCooldownEntitiy = host.getEntitiesByType(ModuleTypes.HIT_COOLDOWN).map(e -> (HitCooldownEntitiy) e).findAny().orElse(null);
+		if (hitCooldownEntitiy == null) {
 			return;
 		}
-		defenseBrain.damaged(event);
+		System.out.println("Passed to hitcooldownentitiy");
+		hitCooldownEntitiy.damaged(entity, event);
 	}
 
 	@SubscribeEvent
@@ -93,6 +102,69 @@ public class EMModuleEventHandler {
 				defenseBrain.creeperExplode((CreeperEntity) exploder, (ServerPlayerEntity) player, event);
 			}
 		}
+	}
+
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public static void onEquip(LivingEquipmentChangeEvent event) {
+		if(event.isCanceled()) return;
+		if(!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
+		if(event.getTo().isEmpty()) return;
+		if(!(event.getTo().getItem() instanceof ModularChestpiece)) return;
+		if(!(event.getFrom().isEmpty())) return;
+		ServerPlayerEntity entity = (ServerPlayerEntity) event.getEntityLiving();
+		ItemStack chestStack = event.getTo();
+		LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+		optionalHost.ifPresent(host -> {
+			ArmorEntity.equip(entity, host);
+			ExtraHealthEntity.equip(entity, host);
+		});
+	}
+
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public static void onUnEquip(LivingEquipmentChangeEvent event) {
+		if(event.isCanceled()) return;
+		if(!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
+		if(!(event.getFrom().getItem() instanceof ModularChestpiece)) return;
+		if(!(event.getTo().isEmpty())) return;
+		ServerPlayerEntity entity = (ServerPlayerEntity) event.getEntityLiving();
+		ItemStack chestStack = event.getFrom();
+		LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+		optionalHost.ifPresent(host -> {
+			ArmorEntity.unequip(entity, host);
+			ExtraHealthEntity.unequip(entity, host);
+		});
+	}
+
+
+	@SubscribeEvent
+	public static void curioEquip(CurioChangeEvent event) {
+		if(event.isCanceled()) return;
+		if(!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
+		if(event.getTo().isEmpty()) return;
+		if(!(event.getTo().getItem() instanceof ModularChestpiece)) return;
+		if(!(event.getFrom().isEmpty())) return;
+		ServerPlayerEntity entity = (ServerPlayerEntity) event.getEntityLiving();
+		ItemStack chestStack = event.getTo();
+		LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+		optionalHost.ifPresent(host -> {
+			ArmorEntity.equip(entity, host);
+			ExtraHealthEntity.equip(entity, host);
+		});
+	}
+
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public static void curioUnequip(CurioChangeEvent event) {
+		if(event.isCanceled()) return;
+		if(!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
+		if(!(event.getFrom().getItem() instanceof ModularChestpiece)) return;
+		if(!(event.getTo().isEmpty())) return;
+		ServerPlayerEntity entity = (ServerPlayerEntity) event.getEntityLiving();
+		ItemStack chestStack = event.getFrom();
+		LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+		optionalHost.ifPresent(host -> {
+			ArmorEntity.unequip(entity, host);
+			ExtraHealthEntity.unequip(entity, host);
+		});
 	}
 
 }

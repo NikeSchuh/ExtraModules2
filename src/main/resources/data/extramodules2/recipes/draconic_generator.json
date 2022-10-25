@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#P#"
+  ],
+  "key": {
+    "#": {
+      "item": "extramodules2:generator_fuel"
+    },
+    "B": {
+      "item": "extramodules2:superior_module_core"
+    },
+    "A": {
+      "item": "extramodules2:module_controller"
+    },
+    "P": {
+      "item": "draconicevolution:generator"
+    }
+  },
+  "result": {
+    "item": "extramodules2:draconic_generator_module"
+  }
+}

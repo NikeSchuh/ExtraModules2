@@ -30,7 +30,13 @@ public class EMItems {
 	public static final RegistryObject<Item> GENERATOR_FUEL = ITEMS.register("generator_fuel", () -> new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)) {
 		@Override
 		public int getBurnTime(ItemStack itemStack, @Nullable IRecipeType<?> recipeType) {
-			return 36000;
+			return 1800000;
+		}
+	});
+	public static final RegistryObject<Item> ULTIMATE_GENERATOR_FUEL = ITEMS.register("ultimate_generator_fuel", () -> new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)) {
+		@Override
+		public int getBurnTime(ItemStack itemStack, @Nullable IRecipeType<?> recipeType) {
+			return 32000000;
 		}
 	});
 	public static final RegistryObject<Item> ADVANCED_MODULE_CORE = ITEMS.register("advanced_module_core", () -> new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)));
