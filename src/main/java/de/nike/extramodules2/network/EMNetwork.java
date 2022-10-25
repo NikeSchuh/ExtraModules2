@@ -17,6 +17,7 @@ public class EMNetwork {
 	// Server -> Client
 	public static final int S_EYE_MODE_CHANGE = 1;
 	public static final int S_EYE_RAGE_CHARGE = 2;
+	public static final int S_HIT_COOLDOWN = 3;
 
 	public static void sendEyeChangeMode(ServerPlayerEntity target, int mode) {
 		PacketCustom packetCustom = new PacketCustom(CHANNEL, S_EYE_MODE_CHANGE);
@@ -27,6 +28,12 @@ public class EMNetwork {
 	public static void sendEyeRageCharge(ServerPlayerEntity target, float ticks) {
 		PacketCustom packetCustom = new PacketCustom(CHANNEL, S_EYE_RAGE_CHARGE);
 		packetCustom.writeFloat(ticks);
+		packetCustom.sendToPlayer(target);
+	}
+
+	public static void sendHitCooldownUpdate(ServerPlayerEntity target, int ticks) {
+		PacketCustom packetCustom = new PacketCustom(CHANNEL, S_HIT_COOLDOWN);
+		packetCustom.writeVarInt(ticks);
 		packetCustom.sendToPlayer(target);
 	}
 

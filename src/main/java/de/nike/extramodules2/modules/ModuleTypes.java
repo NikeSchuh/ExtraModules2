@@ -16,5 +16,5 @@ public class ModuleTypes {
 	public static final ModuleType<GeneratorData> GENERATOR = new ModuleTypeImpl<>("op_generator", 2, 2, GeneratorEntity::new, new ModuleCategory[] {ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR_CHEST}).setMaxInstallable(1);
 	public static final ModuleType<ArmorData> ARMOR  =new ModuleTypeImpl<>("armor", 1, 1, ArmorEntity::new, new ModuleCategory[] {ModuleCategory.CHESTPIECE, ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR, ModuleCategory.ARMOR_CHEST}).setMaxInstallable(5);
 	public static final ModuleType<ExtraHealthData> EXTRA_HEALTH = new ModuleTypeImpl<>("extra_health", 2, 1, ExtraHealthEntity::new, new ModuleCategory[] {ModuleCategory.CHESTPIECE, ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR, ModuleCategory.ARMOR_CHEST}).setMaxInstallable(2);
-	public static final ModuleType<HitCooldownData> HIT_COOLDOWN = new ModuleTypeImpl<>("hit_cooldown", 1, 2, HitCooldownEntitiy::new, new ModuleCategory[] {ModuleCategory.CHESTPIECE, ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR, ModuleCategory.ARMOR_CHEST}).setMaxInstallable(1);
+	public static final ModuleType<HitCooldownData> HIT_COOLDOWN = new ModuleTypeImpl<>("hit_cooldown", 2, 3, HitCooldownEntitiy::new, new ModuleCategory[] {ModuleCategory.CHESTPIECE, ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR, ModuleCategory.ARMOR_CHEST}).setMaxInstallable(1);
 }

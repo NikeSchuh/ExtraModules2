@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
+import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import de.nike.extramodules2.modules.ModuleTypes;

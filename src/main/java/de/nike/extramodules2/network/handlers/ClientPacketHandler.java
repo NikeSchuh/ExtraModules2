@@ -2,6 +2,7 @@ package de.nike.extramodules2.network.handlers;
 
 import codechicken.lib.packet.ICustomPacketHandler;
 import codechicken.lib.packet.PacketCustom;
+import de.nike.extramodules2.modules.entities.HitCooldownEntitiy;
 import de.nike.extramodules2.modules.entities.defensesystem.DefenseBrainEntity;
 import de.nike.extramodules2.network.EMNetwork;
 import net.minecraft.client.Minecraft;
@@ -17,6 +18,9 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
 			case EMNetwork.S_EYE_RAGE_CHARGE:
 				DefenseBrainEntity.rageModeCharge(packet.readFloat());
 				break;
+				case EMNetwork.S_HIT_COOLDOWN:
+					HitCooldownEntitiy.clientTicksUpdate(packet.readVarInt());
+					break;
 		}
 	}
 }

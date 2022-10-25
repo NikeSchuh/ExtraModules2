@@ -29,9 +29,9 @@ public class DefenseSystemData implements ModuleData<DefenseSystemData> {
 	@Override
 	public void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack) {
 		if (reflectedDamage > 0)
-			map.put(new TranslationTextComponent("module.extramodules2.defense_brain.reflected_damage"), new StringTextComponent("+" + reflectedDamage));
+			map.put(new TranslationTextComponent("module.extramodules2.defense_brain.reflected_damage"), new StringTextComponent("+" + reflectedDamage + " damage points"));
 		if(opCost > 0)
-		    map.put(new TranslationTextComponent("module.extramodules2.defense_brain.defense_op_cost"), new StringTextComponent(opCost + " OP"));
+		    map.put(new TranslationTextComponent("module.extramodules2.defense_brain.defense_op_cost"), new StringTextComponent(opCost + " OP/Charge"));
 	}
 
 	public int getReflectedDamage() {

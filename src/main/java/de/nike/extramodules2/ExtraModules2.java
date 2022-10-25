@@ -1,5 +1,7 @@
 package de.nike.extramodules2;
 
+import de.nike.extramodules2.effects.EMMobEffects;
+import de.nike.extramodules2.potions.EMPotions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,6 +27,8 @@ public class ExtraModules2 {
 		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
 		EMItems.register(eventBus);
+		EMPotions.register(eventBus);
+		EMMobEffects.register(eventBus);
 		EMNetwork.init();
 
 		eventBus.addListener(this::setup);

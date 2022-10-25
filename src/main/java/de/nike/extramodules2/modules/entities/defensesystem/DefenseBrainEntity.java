@@ -8,9 +8,8 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
-import com.google.common.collect.LinkedHashMultimap;
-import com.ibm.icu.impl.locale.XCldrStub;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import de.nike.extramodules2.damagesources.DamageSourceDefenseSystem;
 import de.nike.extramodules2.modules.ModuleTypes;
 import de.nike.extramodules2.modules.data.DefenseBrainData;
 import de.nike.extramodules2.modules.data.DefenseSystemData;
@@ -21,14 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -48,14 +40,11 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.awt.*;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class DefenseBrainEntity extends ModuleEntity {
 
@@ -132,9 +121,17 @@ public class DefenseBrainEntity extends ModuleEntity {
                 for (LivingEntity livingEntity : clientWorld.getEntitiesOfClass(LivingEntity.class, axisAlignedBB)) {
                     Vector3d livingEntityPosition = livingEntity.position();
                     if(livingEntity.equals(playerEntity)) continue;
-                    if (playerEntity.tickCount % 4 == 0) {
+                    if (playerEntity.tickCount % 1 == 0) {
                         clientWorld.addParticle(ParticleTypes.SOUL, livingEntityPosition.x, livingEntityPosition.y + (livingEntity.getEyeHeight() * Math.random()), livingEntityPosition.z, 0.1 * Math.random(), 0.1 * Math.random(), 0.1 * Math.random());
                     }
+                }
+            }
+            // Random Messages
+            if(playerEntity.tickCount % 10000 == 0) {
+                if(Math.random() < 0.1D) {
+                    int msg = playerEntity.level.random.nextInt(5);
+                    playerEntity.sendMessage(new TranslationTextComponent("module.extramodules2.defense_brain.randomtick" + msg), null);
+                    playerEntity.playSound(SoundEvents.GUARDIAN_AMBIENT, 2f, 2f);
                 }
             }
         } else {
@@ -153,6 +150,45 @@ public class DefenseBrainEntity extends ModuleEntity {
                 }
             }
         }
+    }
+
+    public void attacked(LivingAttackEvent event) {
+        if (!activated.getValue()) return;
+        if (!charged) return;
+        if (event.getSource().getEntity() == null) return;
+        if(event.getSource().getEntity() instanceof AreaEffectCloudEntity) return;
+        if(!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
+        if(!(event.getSource().getEntity() instanceof LivingEntity)) return;
+        ServerPlayerEntity player = (ServerPlayerEntity) event.getEntityLiving();
+        DefenseSystemData defenseSystemData = getDefenseSystemData();
+        LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
+        rageChargeLogicAttack(player, event.getAmount());
+
+        // Knockback/Damage
+        double mul = Math.max(defenseSystemData.getReflectedDamage() / 100, 0.5d);
+        float damage = defenseSystemData.getReflectedDamage();
+        if (defenseSystemData.isOdinsRage()) damage *= 1.25;
+        Vector3d vector3f = attacker.position().subtract(player.position()).normalize().multiply(mul, mul, mul);
+        attacker.setDeltaMovement(vector3f);
+        DamageSource damageSource = new DamageSourceDefenseSystem(player);
+       // attacker.hurt(damageSource, damage);
+        player.level.playSound(null, attacker.blockPosition(), SoundEvents.ELDER_GUARDIAN_HURT, SoundCategory.HOSTILE, 0.7F, 0.8F);
+        if (getDefenseSystemData().isOdinsRage()) {
+            EntityType.LIGHTNING_BOLT.spawn((ServerWorld) player.level, null, null, attacker.blockPosition(), SpawnReason.TRIGGERED, false, false);
+        }
+        charged = false;
+    }
+
+    public void rageChargeLogicAttack(ServerPlayerEntity player, float amount) {
+        if (!(gurdianEyeMode == EyeMode.RAGE)) {
+            if (amount > 0.2f) {
+                rageModeChargeServer = Math.min(1.0f, rageModeChargeServer + (amount / 50));
+                EMNetwork.sendEyeRageCharge(player, rageModeChargeServer);
+                if (rageModeChargeServer >= 1.0f) {
+                    serverActivateRageMode(player);
+                }
+            }
+        } else rageModeTicks = 100;
     }
 
     public void eyeVisualsRageMode(ClientWorld clientWorld) {
@@ -178,6 +214,27 @@ public class DefenseBrainEntity extends ModuleEntity {
         return gurdianEyeMode == EyeMode.RAGE;
     }
 
+    public void serverActivateRageMode(ServerPlayerEntity player) {
+        gurdianEyeMode = EyeMode.RAGE;
+        rageModeChargeServer = 0;
+        rageModeTicks = 100;
+
+        player.level.playSound(null, player.blockPosition(), SoundEvents.GUARDIAN_DEATH, SoundCategory.PLAYERS, 1f, 0.7f);
+        player.level.playSound(null, player.blockPosition(), SoundEvents.ELDER_GUARDIAN_CURSE, SoundCategory.PLAYERS, 1f, 0.5f);
+        EMNetwork.sendEyeChangeMode(player, EyeMode.RAGE.getValue());
+
+        AxisAlignedBB axisAlignedBB = new AxisAlignedBB(player.position().add(5, 3, 5), player.position().subtract(5, 3, 5));
+        for (LivingEntity livingEntity : player.level.getEntitiesOfClass(LivingEntity.class, axisAlignedBB)) {
+            if (livingEntity.equals(player)) continue;
+            Vector3d livingPosition = livingEntity.position();
+            Vector3d throwDirection = livingPosition.subtract(player.position()).normalize().multiply(2.5f, 2.5f, 2.5f);
+            livingEntity.setDeltaMovement(throwDirection);
+            livingEntity.hurt(DamageSource.CACTUS, 10);
+        }
+
+    }
+
+
     public void tickRageModeCharge(StackModuleContext stackModuleContext, PlayerEntity playerEntity) {
         if (EffectiveSide.get().isServer()) {
             if (stackModuleContext.getOpStorage() != null) {
@@ -189,30 +246,8 @@ public class DefenseBrainEntity extends ModuleEntity {
                     } else {
                         rageModeTicks = Math.max(0, rageModeTicks - 20);
                     }
-
                     // Damage
-                    if (playerEntity.tickCount % 20 == 0) {
-                        boolean b = false;
-                        DefenseSystemData systemData = getDefenseSystemData();
-                        AxisAlignedBB axisAlignedBB = new AxisAlignedBB(playerEntity.position().add(8, 8, 8), playerEntity.position().subtract(8, 3, 8));
-                        for (LivingEntity livingEntity : playerEntity.level.getEntitiesOfClass(LivingEntity.class, axisAlignedBB)) {
-                            if(livingEntity.equals(playerEntity)) continue;
-                            if(livingEntity instanceof EnderDragonEntity) continue;
-                            if(livingEntity.isInvulnerable()) continue;
-                            if(livingEntity.isDeadOrDying()) continue;
-                            if(storage.getEnergyStored() < systemData.getOpCost()) continue;
-                            if(!playerEntity.canSee(livingEntity)) continue;
-                            storage.modifyEnergyStored(-systemData.getOpCost());
-                            livingEntity.hurt(DamageSource.playerAttack(playerEntity), Math.max(systemData.getReflectedDamage(), 10));
-                            if(getDefenseSystemData().isOdinsRage()) {
-                                EntityType.LIGHTNING_BOLT.spawn((ServerWorld) livingEntity.level, null, null, livingEntity.blockPosition(), SpawnReason.TRIGGERED, true, true);
-                            }
-
-                            b = true;
-                        }
-                        if(b) rageModeTicks = 100;
-                    }
-
+                    rageModeDamage(playerEntity, storage);
                 }
             }
             if (rageModeChargeServer > 0.0f)
@@ -221,18 +256,6 @@ public class DefenseBrainEntity extends ModuleEntity {
                 serverDeactivateRageMode((ServerPlayerEntity) playerEntity);
             }
         } else {
-
-            // Random Messages
-            if(playerEntity.tickCount % 10000 == 0) {
-                if(Math.random() < 0.1D) {
-                    int msg = playerEntity.level.random.nextInt(5);
-                    playerEntity.sendMessage(new TranslationTextComponent("module.extramodules2.defense_brain.randomtick" + msg), null);
-                    playerEntity.playSound(SoundEvents.GUARDIAN_AMBIENT, 2f, 2f);
-                }
-            }
-
-
-
             if (gurdianEyeMode != EyeMode.RAGE && rageModeChargeClient > 0) {
                 rageModeChargeClient = Math.max(0, rageModeChargeClient - RAGE_CHARGE_LOSE);
             }
@@ -244,6 +267,30 @@ public class DefenseBrainEntity extends ModuleEntity {
                     playerEntity.playSound(SoundEvents.GUARDIAN_AMBIENT, 1f, (float) (0.75f + Math.random() - Math.random()));
                 }
             }
+        }
+    }
+
+    public void rageModeDamage(PlayerEntity playerEntity, IOPStorageModifiable storage){
+        if (playerEntity.tickCount % 20 == 0) {
+            boolean b = false;
+            DefenseSystemData systemData = getDefenseSystemData();
+            AxisAlignedBB axisAlignedBB = new AxisAlignedBB(playerEntity.position().add(8, 8, 8), playerEntity.position().subtract(8, 3, 8));
+            for (LivingEntity livingEntity : playerEntity.level.getEntitiesOfClass(LivingEntity.class, axisAlignedBB)) {
+                if(livingEntity.equals(playerEntity)) continue;
+                if(livingEntity.isInvulnerable()) continue;
+                if(livingEntity.isDeadOrDying()) continue;
+                if(livingEntity.getEntity() instanceof AreaEffectCloudEntity) continue;
+                if(storage.getEnergyStored() < systemData.getOpCost()) continue;
+                if(!playerEntity.canSee(livingEntity)) continue;
+                storage.modifyEnergyStored(-systemData.getOpCost());
+                livingEntity.hurt(new DamageSourceDefenseSystem(playerEntity), Math.max(systemData.getReflectedDamage(), 10));
+                if(getDefenseSystemData().isOdinsRage()) {
+                    EntityType.LIGHTNING_BOLT.spawn((ServerWorld) livingEntity.level, null, null, livingEntity.blockPosition(), SpawnReason.TRIGGERED, true, true);
+                }
+
+                b = true;
+            }
+            if(b) rageModeTicks = 100;
         }
     }
 
@@ -288,66 +335,6 @@ public class DefenseBrainEntity extends ModuleEntity {
         float targetX = (float) Math.max(Math.min(x - eyeWidth / 2, rectX + rectWidth - eyeWidth), rectX);
         float targetY = (float) Math.max(Math.min(y - eyeHeight / 2, rectY + rectHeight - eyeHeight), rectY);
         currentTarget = new Vector2Float(targetX, targetY);
-    }
-
-    public void serverActivateRageMode(ServerPlayerEntity player) {
-        gurdianEyeMode = EyeMode.RAGE;
-        rageModeChargeServer = 0;
-        rageModeTicks = 100;
-
-        player.level.playSound(null, player.blockPosition(), SoundEvents.GUARDIAN_DEATH, SoundCategory.PLAYERS, 1f, 0.7f);
-        player.level.playSound(null, player.blockPosition(), SoundEvents.ELDER_GUARDIAN_CURSE, SoundCategory.PLAYERS, 1f, 0.5f);
-        EMNetwork.sendEyeChangeMode(player, EyeMode.RAGE.getValue());
-
-        AxisAlignedBB axisAlignedBB = new AxisAlignedBB(player.position().add(5, 3, 5), player.position().subtract(5, 3, 5));
-        for (LivingEntity livingEntity : player.level.getEntitiesOfClass(LivingEntity.class, axisAlignedBB)) {
-            if (livingEntity.equals(player)) continue;
-            Vector3d livingPosition = livingEntity.position();
-            Vector3d throwDirection = livingPosition.subtract(player.position()).normalize().multiply(2.5f, 2.5f, 2.5f);
-            livingEntity.setDeltaMovement(throwDirection);
-            livingEntity.hurt(DamageSource.CACTUS, 10);
-        }
-
-    }
-
-    public void attacked(LivingAttackEvent event) {
-        if (!activated.getValue()) return;
-        if (!charged) return;
-        if (event.getSource().getEntity() == null) return;
-        if (event.getEntityLiving() instanceof ServerPlayerEntity) {
-            ServerPlayerEntity player = (ServerPlayerEntity) event.getEntityLiving();
-            if (event.getSource().getEntity() instanceof LivingEntity) {
-                DefenseSystemData defenseSystemData = getDefenseSystemData();
-                LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
-
-                if (!(gurdianEyeMode == EyeMode.RAGE)) {
-                    if (event.getAmount() > 0.2f) {
-                        rageModeChargeServer = Math.min(1.0f, rageModeChargeServer + (event.getAmount() / 50));
-                        EMNetwork.sendEyeRageCharge(player, rageModeChargeServer);
-                        if (rageModeChargeServer >= 1.0f) {
-                            serverActivateRageMode(player);
-                        }
-                    }
-                } else rageModeTicks = 100;
-
-                if (!player.canAttackType(attacker.getType())) return;
-                if (!player.canAttack(attacker)) return;
-
-                double mul = Math.max(defenseSystemData.getReflectedDamage() / 100, 0.5d);
-
-                float damage = defenseSystemData.getReflectedDamage();
-                if (defenseSystemData.isOdinsRage()) damage *= 1.25;
-
-                Vector3d vector3f = attacker.position().subtract(player.position()).normalize().multiply(mul, mul, mul);
-                attacker.setDeltaMovement(vector3f);
-                attacker.hurt(DamageSource.indirectMagic(player, attacker), damage);
-                player.level.playSound(null, attacker.blockPosition(), SoundEvents.ELDER_GUARDIAN_HURT, SoundCategory.HOSTILE, 0.7F, 0.8F);
-                if (getDefenseSystemData().isOdinsRage()) {
-                    EntityType.LIGHTNING_BOLT.spawn((ServerWorld) player.level, null, null, attacker.blockPosition(), SpawnReason.TRIGGERED, false, false);
-                }
-                charged = false;
-            }
-        }
     }
 
     public void creeperExplode(CreeperEntity creeper, ServerPlayerEntity player, ExplosionEvent.Start event) {

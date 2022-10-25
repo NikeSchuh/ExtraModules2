@@ -9,9 +9,9 @@ import java.util.Map;
 
 public class HitCooldownData implements ModuleData<HitCooldownData> {
 
-    private final float hitCooldown;
+    private final int hitCooldown;
 
-    public HitCooldownData(float hitCooldown) {
+    public HitCooldownData(int hitCooldown) {
         this.hitCooldown = hitCooldown;
     }
 
@@ -20,7 +20,7 @@ public class HitCooldownData implements ModuleData<HitCooldownData> {
         return new HitCooldownData(hitCooldown + other.hitCooldown);
     }
 
-    public float getHitCooldownSeconds() {
+    public int getHitCooldownTicks() {
         return hitCooldown;
     }
 

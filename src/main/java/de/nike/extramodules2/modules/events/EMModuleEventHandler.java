@@ -13,9 +13,11 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -59,7 +61,6 @@ public class EMModuleEventHandler {
 		if(event.isCanceled()) return;
 		if(event.getAmount() < 0) return;
 		if(!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
-		System.out.println("Event triggered");
 
 		ServerPlayerEntity entity = (ServerPlayerEntity) event.getEntityLiving();
 		ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
@@ -74,7 +75,6 @@ public class EMModuleEventHandler {
 		if (hitCooldownEntitiy == null) {
 			return;
 		}
-		System.out.println("Passed to hitcooldownentitiy");
 		hitCooldownEntitiy.damaged(entity, event);
 	}
 
@@ -111,6 +111,7 @@ public class EMModuleEventHandler {
 		if(event.getTo().isEmpty()) return;
 		if(!(event.getTo().getItem() instanceof ModularChestpiece)) return;
 		if(!(event.getFrom().isEmpty())) return;
+		if(!(event.getSlot().getType() == EquipmentSlotType.Group.ARMOR)) return;
 		ServerPlayerEntity entity = (ServerPlayerEntity) event.getEntityLiving();
 		ItemStack chestStack = event.getTo();
 		LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
@@ -126,6 +127,7 @@ public class EMModuleEventHandler {
 		if(!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
 		if(!(event.getFrom().getItem() instanceof ModularChestpiece)) return;
 		if(!(event.getTo().isEmpty())) return;
+		if(!(event.getSlot().getType() == EquipmentSlotType.Group.ARMOR)) return;
 		ServerPlayerEntity entity = (ServerPlayerEntity) event.getEntityLiving();
 		ItemStack chestStack = event.getFrom();
 		LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);

@@ -16,6 +16,8 @@
   "item.extramodules2.wyvern_extra_health_module": "Wyvern Extra Health Module",
   "item.extramodules2.draconic_extra_health_module": "Draconic Extra Health Module",
   "item.extramodules2.chaotic_extra_health_module": "Chaotic Extra Health Module",
+  "item.extramodules2.chaotic_hit_cooldown_module": "Chaotic Hit Cooldown Module",
+  "item.extramodules2.draconic_hit_cooldown_module": "Draconic Hit Cooldown Module",
   "item.extramodules2.advanced_module_core": "Advanced Module Core",
   "item.extramodules2.superior_module_core": "Superior Module Core",
   "item.extramodules2.module_controller": "Module Controller",
@@ -29,6 +31,7 @@
   "module_type.draconicevolution.op_generator.name": "Generator",
   "module_type.draconicevolution.armor.name": "Armor",
   "module_type.draconicevolution.extra_health.name": "Extra Health",
+  "module_type.draconicevolution.hit_cooldown.name": "Hit Cooldown",
   "module.extramodules2.defense_brain.bootup": "§2Defense System boot completed.",
   "module.extramodules2.defense_brain.shutdown": "§cDefense System shut down.",
   "module.extramodules2.defense_brain.randomtick0": "§cHe.. He... l..lo...",
@@ -43,6 +46,7 @@
   "module.extramodules2.oxygen_storage.oxygen": "Oxygen",
   "module.extramodules2.armor.armor": "Armor",
   "module.extramodules2.armor.armor_toughness": "Armor Toughness",
+  "module.extramodules2.hit_cooldown.cooldown": "Hit Cooldown",
   "module.extramodules2.extra_health.extra_health": "Health",
   "item_prop.draconicevolution.defense_brain_module.activated": "Defense System Toggle",
   "item_prop.draconicevolution.oxygen_mod.consume_oxygen": "Use Oxygen",
@@ -51,5 +55,34 @@
   "item_prop.draconicevolution.generator.sounds": "Generator Sounds",
   "messages.extramodules2.generator.consumed": "§7Generator: §cLarge Chaos Fragment §7for §c~1.260G OP",
   "death.attack.extramodules2.defense_system": "%1$s was killed by Defense System",
-  "death.attack.extramodules2.defense_system.player": "%1$s was killed by %2$s's Defense System"
+  "death.attack.extramodules2.defense_system.player": "%1$s was killed by %2$s's Defense System",
+
+  "effect.extramodules2.anti_matter": "Anti Matter Poisoning",
+
+  "item.minecraft.potion.effect.health_boost": "Potion of Hearts",
+  "item.minecraft.potion.effect.strong_health_boost": "Potion of Hearts",
+  "item.minecraft.potion.effect.wither": "Potion of Decay",
+  "item.minecraft.potion.effect.strong_wither": "Potion of Decay",
+  "item.minecraft.potion.effect.anti_matter": "Potion of Antimatter",
+
+  "item.minecraft.splash_potion.effect.health_boost": "Splash Potion of Hearts",
+  "item.minecraft.splash_potion.effect.strong_health_boost": "Splash Potion of Hearts",
+  "item.minecraft.splash_potion.effect.wither": "Splash Potion of Decay",
+  "item.minecraft.splash_potion.effect.strong_wither": "§cSplash Potion of Decay",
+  "item.minecraft.splash_potion.effect.anti_matter": "Splash Potion of Antimatter",
+
+  "item.minecraft.lingering_potion.effect.health_boost": "Lingering Potion of Hearts",
+  "item.minecraft.lingering_potion.effect.strong_health_boost": "Lingering Potion of Hearts",
+  "item.minecraft.lingering_potion.effect.wither": "Lingering Potion of Decay",
+  "item.minecraft.lingering_potion.effect.strong_wither": "Lingering Potion of Decay",
+  "item.minecraft.lingering_potion.effect.anti_matter": "Lingering Potion of Antimatter",
+
+  "item.minecraft.tipped_arrow.effect.health_boost": "Arrow of Hearts",
+  "item.minecraft.tipped_arrow.effect.strong_health_boost": "Arrow of Hearts",
+  "item.minecraft.tipped_arrow.effect.wither": "Arrow of Decay",
+  "item.minecraft.tipped_arrow.effect.strong_wither": "Arrow of Decay",
+  "item.minecraft.tipped_arrow.effect.anti_matter": "Pocketable Disassembler",
+
+  "death.attack.extramodules2.anti_matter": "%1$s was disassembled on a molecular level",
+  "death.attack.extramodules2.anti_matter.player": "%1$s has stopped existing due to %2$s's pocketable disassembler"
 }

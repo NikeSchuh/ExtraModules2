@@ -38,25 +38,8 @@ public class ExtraHealthEntity extends ModuleEntity {
 
     @Override
     public void renderSlotOverlay(IRenderTypeBuffer getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
-        IVertexBuilder builder = getter.getBuffer(BCSprites.GUI_TYPE);
-        ExtraHealthData data = (ExtraHealthData) module.getData();
-        ResourceLocation resourceLocation = new ResourceLocation(ExtraModules2.MODID + "/textures/item/anti_potion.png");
-        RenderMaterial renderMaterial = new RenderMaterial(resourceLocation, resourceLocation);
-        TextureAtlasSprite sprite = BCSprites.get(ExtraModules2.MODID, "textures/item/chaotic_armor").sprite();
-        double progress = data.getExtraHealth() / 40;
-        progress = (int) (progress * 21F);
-        progress = (20 - progress) - 1;
-        for (int i = 0; i < 10; i++){
-            float size = (width - 3) / 10F;
-            GuiHelperOld.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, sprite, 0);
-            if (progress / 2F <= i){
-                if (progress / 2F < i){
-                    GuiHelperOld.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCSprites.get("bars/food_full").sprite(), 0);
-                } else {
-                    GuiHelperOld.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCSprites.get("bars/food_half").sprite(), 0);
-                }
-            }
-        }
+        //IVertexBuilder builder = getter.getBuffer(BCSprites.GUI_TYPE);
+       // ExtraHealthData data = (ExtraHealthData) module.getData();
         super.renderSlotOverlay(getter, mc, x, y, width, height, mouseX, mouseY, mouseOver, partialTicks);
     }
 

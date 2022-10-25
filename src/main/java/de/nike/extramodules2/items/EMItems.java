@@ -8,6 +8,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PotionItem;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.potion.Potion;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -43,6 +44,7 @@ public class EMItems {
 	public static final RegistryObject<Item> SUPERIOR_MODULE_CORE = ITEMS.register("superior_module_core", () -> new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)));
 	public static final RegistryObject<Item> MODULE_CONTROLLER = ITEMS.register("module_controller", () -> new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)));
 	public static final RegistryObject<Item> ANTI_POTION = ITEMS.register("anti_potion", () -> new AntiPotionItem(new Item.Properties().tab(EXTRAMODULES_ITEMS).stacksTo(1)));
+
 
 	public static void register(IEventBus eventBus) {
 		ITEMS.register(eventBus);

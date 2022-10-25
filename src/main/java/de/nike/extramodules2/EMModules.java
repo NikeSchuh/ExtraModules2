@@ -103,9 +103,9 @@ public class EMModules {
 		};
 	}
 
-	private static Function<Module<HitCooldownData>, HitCooldownData> hitCooldownData(float seconds) {
+	private static Function<Module<HitCooldownData>, HitCooldownData> hitCooldownData(int ticks) {
 		return  e -> {
-			return new HitCooldownData(seconds);
+			return new HitCooldownData(ticks);
 		};
 	}
 
@@ -125,8 +125,8 @@ public class EMModules {
 		register(new ModuleImpl<>(ModuleTypes.EXTRA_HEALTH, TechLevel.WYVERN, extraHealthData(5)), "wyvern_extra_health");
 		register(new ModuleImpl<>(ModuleTypes.EXTRA_HEALTH, TechLevel.DRACONIC, extraHealthData(20)), "draconic_extra_health");
 		register(new ModuleImpl<>(ModuleTypes.EXTRA_HEALTH, TechLevel.CHAOTIC, extraHealthData(40)), "chaotic_extra_health");
-		register(new ModuleImpl<>(ModuleTypes.HIT_COOLDOWN, TechLevel.DRACONIC, hitCooldownData(0.25f)), "draconic_hit_cooldown");
-		register(new ModuleImpl<>(ModuleTypes.HIT_COOLDOWN, TechLevel.CHAOTIC, hitCooldownData(0.5f)), "chaotic_hit_cooldown");
+		register(new ModuleImpl<>(ModuleTypes.HIT_COOLDOWN, TechLevel.DRACONIC, hitCooldownData(5)), "draconic_hit_cooldown");
+		register(new ModuleImpl<>(ModuleTypes.HIT_COOLDOWN, TechLevel.CHAOTIC, hitCooldownData(10)), "chaotic_hit_cooldown");
 	}
 
 	private static void register(ModuleImpl<?> module, String name) {
