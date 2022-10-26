@@ -4,6 +4,7 @@ import codechicken.lib.packet.ICustomPacketHandler;
 import codechicken.lib.packet.PacketCustom;
 import de.nike.extramodules2.modules.entities.HitCooldownEntitiy;
 import de.nike.extramodules2.modules.entities.defensesystem.DefenseBrainEntity;
+import de.nike.extramodules2.modules.entities.defensesystem.effects.ShootEffect;
 import de.nike.extramodules2.network.EMNetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.play.IClientPlayNetHandler;
@@ -21,6 +22,9 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
 				case EMNetwork.S_HIT_COOLDOWN:
 					HitCooldownEntitiy.clientTicksUpdate(packet.readVarInt());
 					break;
+			case EMNetwork.S_EYE_SHOOT_EFFECT:
+				ShootEffect.playEffect(packet.readVec3d(), packet.readVec3d());
+				break;
 		}
 	}
 }

@@ -7,7 +7,7 @@ import de.nike.extramodules2.modules.data.*;
 import de.nike.extramodules2.modules.entities.*;
 import de.nike.extramodules2.modules.entities.defensesystem.DefenseBrainEntity;
 
-public class ModuleTypes {
+public class EMModuleTypes {
 
 	public static final ModuleType<OxygenStorageData> OXYGEN_STORAGE = new ModuleTypeImpl<>("oxygen_storage", 1, 1, OxygenEntity::new, new ModuleCategory[] {ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR_CHEST}).setMaxInstallable(1);
 	public static final ModuleType<DefenseBrainData> DEFENSE_BRAIN = new ModuleTypeImpl<>("defense_brain", 2, 2, DefenseBrainEntity::new, new ModuleCategory[] {ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR_CHEST}).setMaxInstallable(1);

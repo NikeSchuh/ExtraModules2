@@ -10,7 +10,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.nike.extramodules2.damagesources.DamageSourceDefenseSystem;
-import de.nike.extramodules2.modules.ModuleTypes;
+import de.nike.extramodules2.modules.EMModuleTypes;
 import de.nike.extramodules2.modules.data.DefenseBrainData;
 import de.nike.extramodules2.modules.data.DefenseSystemData;
 import de.nike.extramodules2.network.EMNetwork;
@@ -117,21 +117,13 @@ public class DefenseBrainEntity extends ModuleEntity {
             ClientWorld clientWorld = clientPlayerEntity.clientLevel;
             if (isInRageMode()) {
                 eyeVisualsRageMode(clientWorld);
-                AxisAlignedBB axisAlignedBB = new AxisAlignedBB(clientPlayerEntity.position().add(5, 5, 5), clientPlayerEntity.position().subtract(10, 5, 10));
-                for (LivingEntity livingEntity : clientWorld.getEntitiesOfClass(LivingEntity.class, axisAlignedBB)) {
-                    Vector3d livingEntityPosition = livingEntity.position();
-                    if(livingEntity.equals(playerEntity)) continue;
-                    if (playerEntity.tickCount % 1 == 0) {
-                        clientWorld.addParticle(ParticleTypes.SOUL, livingEntityPosition.x, livingEntityPosition.y + (livingEntity.getEyeHeight() * Math.random()), livingEntityPosition.z, 0.1 * Math.random(), 0.1 * Math.random(), 0.1 * Math.random());
-                    }
-                }
             }
             // Random Messages
             if(playerEntity.tickCount % 10000 == 0) {
                 if(Math.random() < 0.1D) {
                     int msg = playerEntity.level.random.nextInt(5);
                     playerEntity.sendMessage(new TranslationTextComponent("module.extramodules2.defense_brain.randomtick" + msg), null);
-                    playerEntity.playSound(SoundEvents.GUARDIAN_AMBIENT, 2f, 2f);
+                    playerEntity.playSound(SoundEvents.GUARDIAN_AMBIENT, 0.8f, 2f);
                 }
             }
         } else {
@@ -159,6 +151,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         if(event.getSource().getEntity() instanceof AreaEffectCloudEntity) return;
         if(!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
         if(!(event.getSource().getEntity() instanceof LivingEntity)) return;
+        if(event.getSource().isMagic()) return;
         ServerPlayerEntity player = (ServerPlayerEntity) event.getEntityLiving();
         DefenseSystemData defenseSystemData = getDefenseSystemData();
         LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
@@ -171,7 +164,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         Vector3d vector3f = attacker.position().subtract(player.position()).normalize().multiply(mul, mul, mul);
         attacker.setDeltaMovement(vector3f);
         DamageSource damageSource = new DamageSourceDefenseSystem(player);
-       // attacker.hurt(damageSource, damage);
+        attacker.hurt(damageSource, damage);
         player.level.playSound(null, attacker.blockPosition(), SoundEvents.ELDER_GUARDIAN_HURT, SoundCategory.HOSTILE, 0.7F, 0.8F);
         if (getDefenseSystemData().isOdinsRage()) {
             EntityType.LIGHTNING_BOLT.spawn((ServerWorld) player.level, null, null, attacker.blockPosition(), SpawnReason.TRIGGERED, false, false);
@@ -271,12 +264,12 @@ public class DefenseBrainEntity extends ModuleEntity {
     }
 
     public void rageModeDamage(PlayerEntity playerEntity, IOPStorageModifiable storage){
-        if (playerEntity.tickCount % 20 == 0) {
             boolean b = false;
             DefenseSystemData systemData = getDefenseSystemData();
             AxisAlignedBB axisAlignedBB = new AxisAlignedBB(playerEntity.position().add(8, 8, 8), playerEntity.position().subtract(8, 3, 8));
             for (LivingEntity livingEntity : playerEntity.level.getEntitiesOfClass(LivingEntity.class, axisAlignedBB)) {
                 if(livingEntity.equals(playerEntity)) continue;
+                if(livingEntity.invulnerableTime > 0) continue;
                 if(livingEntity.isInvulnerable()) continue;
                 if(livingEntity.isDeadOrDying()) continue;
                 if(livingEntity.getEntity() instanceof AreaEffectCloudEntity) continue;
@@ -284,14 +277,14 @@ public class DefenseBrainEntity extends ModuleEntity {
                 if(!playerEntity.canSee(livingEntity)) continue;
                 storage.modifyEnergyStored(-systemData.getOpCost());
                 livingEntity.hurt(new DamageSourceDefenseSystem(playerEntity), Math.max(systemData.getReflectedDamage(), 10));
+                EMNetwork.sendEyeShootEffect(playerEntity.position().add(0, 1, 0), livingEntity.getEyePosition(livingEntity.getEyeHeight()-0.1f), livingEntity.level.dimension(), playerEntity.blockPosition(), 20D);
                 if(getDefenseSystemData().isOdinsRage()) {
                     EntityType.LIGHTNING_BOLT.spawn((ServerWorld) livingEntity.level, null, null, livingEntity.blockPosition(), SpawnReason.TRIGGERED, true, true);
                 }
-
                 b = true;
+                break;
             }
             if(b) rageModeTicks = 100;
-        }
     }
 
     @Override
@@ -339,11 +332,12 @@ public class DefenseBrainEntity extends ModuleEntity {
 
     public void creeperExplode(CreeperEntity creeper, ServerPlayerEntity player, ExplosionEvent.Start event) {
         if (!charged) return;
-        event.setCanceled(true);
         DefenseSystemData defenseSystemData = getDefenseSystemData();
         double mul = Math.max(defenseSystemData.getReflectedDamage() / 100, 0.85d);
         float damage = defenseSystemData.getReflectedDamage();
         if (defenseSystemData.isOdinsRage()) damage *= 1.25;
+        if(damage < creeper.getHealth()) return;
+        event.setCanceled(true);
         creeper.hurt(DamageSource.indirectMagic(player, creeper), damage);
         player.level.playSound(null, creeper.blockPosition(), SoundEvents.ELDER_GUARDIAN_HURT, SoundCategory.HOSTILE, 0.7F, 0.8F);
         if (getDefenseSystemData().isOdinsRage()) {
@@ -353,7 +347,7 @@ public class DefenseBrainEntity extends ModuleEntity {
     }
 
     public DefenseSystemData getDefenseSystemData() {
-        return host.getModuleData(ModuleTypes.DEFENSE_SYSTEM, new DefenseSystemData(0, 0, false));
+        return host.getModuleData(EMModuleTypes.DEFENSE_SYSTEM, new DefenseSystemData(0, 0, false));
     }
 
     @Override

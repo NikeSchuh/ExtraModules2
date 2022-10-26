@@ -5,10 +5,9 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
-import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
-import de.nike.extramodules2.modules.ModuleTypes;
+import de.nike.extramodules2.modules.EMModuleTypes;
 import de.nike.extramodules2.modules.data.ArmorData;
 import de.nike.extramodules2.utils.TranslationUtils;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -16,10 +15,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 
 import java.util.List;
 import java.util.UUID;
@@ -76,12 +72,12 @@ public class ArmorEntity extends ModuleEntity {
     }
 
     public static void equip(ServerPlayerEntity playerEntity, ModuleHost host) {
-        ArmorData armorData = host.getModuleData(ModuleTypes.ARMOR, new ArmorData(0, 0));
+        ArmorData armorData = host.getModuleData(EMModuleTypes.ARMOR, new ArmorData(0, 0));
         addAttributes(playerEntity, armorData);
     }
 
     public static void unequip(ServerPlayerEntity playerEntity, ModuleHost host) {
-        ArmorData armorData = host.getModuleData(ModuleTypes.ARMOR, new ArmorData(0, 0));
+        ArmorData armorData = host.getModuleData(EMModuleTypes.ARMOR, new ArmorData(0, 0));
         subAttributes(playerEntity, armorData);
     }
 

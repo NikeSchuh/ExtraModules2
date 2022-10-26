@@ -1,15 +1,15 @@
 package de.nike.extramodules2.modules.entities;
 
-import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
-import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.api.modules.Module;
+import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
+import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
-import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import de.nike.extramodules2.ExtraModules2;
+import de.nike.extramodules2.modules.EMModuleTypes;
 import de.nike.extramodules2.modules.data.HitCooldownData;
+import de.nike.extramodules2.modules.entities.defensesystem.DefenseBrainEntity;
 import de.nike.extramodules2.network.EMNetwork;
 import de.nike.extramodules2.utils.NikesMath;
 import de.nike.extramodules2.utils.TranslationUtils;
@@ -18,13 +18,11 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.awt.*;
@@ -88,9 +86,13 @@ public class HitCooldownEntitiy extends ModuleEntity {
             event.setCanceled(true);
             return;
         }
-        HitCooldownData hitCooldownData = (HitCooldownData) module.getData();
-        invulnerableTicks = Math.round(hitCooldownData.getHitCooldownTicks());
-        EMNetwork.sendHitCooldownUpdate(serverPlayerEntity, invulnerableTicks);
+        ShieldControlEntity shield = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
+        if(shield == null) return;
+        if(shield.isShieldEnabled() && shield.getShieldPoints() > 0) {
+            HitCooldownData hitCooldownData = (HitCooldownData) module.getData();
+            invulnerableTicks = Math.round(hitCooldownData.getHitCooldownTicks());
+            EMNetwork.sendHitCooldownUpdate(serverPlayerEntity, invulnerableTicks);
+        }
     }
 
     @Override

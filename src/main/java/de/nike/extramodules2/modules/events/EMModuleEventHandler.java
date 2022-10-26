@@ -4,33 +4,27 @@ import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
 import de.nike.extramodules2.ExtraModules2;
-import de.nike.extramodules2.modules.ModuleTypes;
+import de.nike.extramodules2.modules.EMModuleTypes;
 import de.nike.extramodules2.modules.entities.ArmorEntity;
 import de.nike.extramodules2.modules.entities.ExtraHealthEntity;
 import de.nike.extramodules2.modules.entities.HitCooldownEntitiy;
 import de.nike.extramodules2.modules.entities.defensesystem.DefenseBrainEntity;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
 @Mod.EventBusSubscriber(modid = ExtraModules2.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -49,14 +43,14 @@ public class EMModuleEventHandler {
 			return;
 		}
 		ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
-		DefenseBrainEntity defenseBrain = host.getEntitiesByType(ModuleTypes.DEFENSE_BRAIN).map(e -> (DefenseBrainEntity) e).findAny().orElse(null);
+		DefenseBrainEntity defenseBrain = host.getEntitiesByType(EMModuleTypes.DEFENSE_BRAIN).map(e -> (DefenseBrainEntity) e).findAny().orElse(null);
 		if (defenseBrain == null) {
 			return;
 		}
 		defenseBrain.attacked(event);
 	}
 
-	@SubscribeEvent(priority = EventPriority.HIGH)
+	@SubscribeEvent(priority = EventPriority.NORMAL)
 	public static void onLivingDamage(LivingAttackEvent event) {
 		if(event.isCanceled()) return;
 		if(event.getAmount() < 0) return;
@@ -71,7 +65,7 @@ public class EMModuleEventHandler {
 		}
 
 		ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
-		HitCooldownEntitiy hitCooldownEntitiy = host.getEntitiesByType(ModuleTypes.HIT_COOLDOWN).map(e -> (HitCooldownEntitiy) e).findAny().orElse(null);
+		HitCooldownEntitiy hitCooldownEntitiy = host.getEntitiesByType(EMModuleTypes.HIT_COOLDOWN).map(e -> (HitCooldownEntitiy) e).findAny().orElse(null);
 		if (hitCooldownEntitiy == null) {
 			return;
 		}
@@ -95,7 +89,7 @@ public class EMModuleEventHandler {
 				}
 
 				ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
-				DefenseBrainEntity defenseBrain = host.getEntitiesByType(ModuleTypes.DEFENSE_BRAIN).map(e -> (DefenseBrainEntity) e).findAny().orElse(null);
+				DefenseBrainEntity defenseBrain = host.getEntitiesByType(EMModuleTypes.DEFENSE_BRAIN).map(e -> (DefenseBrainEntity) e).findAny().orElse(null);
 				if (defenseBrain == null) {
 					return;
 				}

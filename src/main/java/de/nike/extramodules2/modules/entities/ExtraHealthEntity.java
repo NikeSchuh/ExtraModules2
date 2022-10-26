@@ -1,32 +1,20 @@
 package de.nike.extramodules2.modules.entities;
 
-import com.brandon3055.brandonscore.BCContent;
-import com.brandon3055.brandonscore.client.BCSprites;
-import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
-import com.brandon3055.brandonscore.utils.BCProfiler;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.Module;
-import com.brandon3055.draconicevolution.api.modules.data.AutoFeedData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import de.nike.extramodules2.ExtraModules2;
-import de.nike.extramodules2.modules.ModuleTypes;
-import de.nike.extramodules2.modules.data.ArmorData;
+import de.nike.extramodules2.modules.EMModuleTypes;
 import de.nike.extramodules2.modules.data.ExtraHealthData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 
 import java.util.UUID;
 
@@ -78,12 +66,12 @@ public class ExtraHealthEntity extends ModuleEntity {
     }
 
     public static void equip(ServerPlayerEntity playerEntity, ModuleHost host) {
-        ExtraHealthData extraHealthData = host.getModuleData(ModuleTypes.EXTRA_HEALTH, new ExtraHealthData(0));
+        ExtraHealthData extraHealthData = host.getModuleData(EMModuleTypes.EXTRA_HEALTH, new ExtraHealthData(0));
         addAttributes(playerEntity, extraHealthData);
     }
 
     public static void unequip(ServerPlayerEntity playerEntity, ModuleHost host) {
-        ExtraHealthData extraHealthData = host.getModuleData(ModuleTypes.EXTRA_HEALTH, new ExtraHealthData(0));
+        ExtraHealthData extraHealthData = host.getModuleData(EMModuleTypes.EXTRA_HEALTH, new ExtraHealthData(0));
         subAttributes(playerEntity, extraHealthData);
     }
 

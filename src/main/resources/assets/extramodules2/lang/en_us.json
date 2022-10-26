@@ -31,7 +31,7 @@
   "module_type.draconicevolution.op_generator.name": "Generator",
   "module_type.draconicevolution.armor.name": "Armor",
   "module_type.draconicevolution.extra_health.name": "Extra Health",
-  "module_type.draconicevolution.hit_cooldown.name": "Hit Cooldown",
+  "module_type.draconicevolution.hit_cooldown.name": "Shield Hit Cooldown",
   "module.extramodules2.defense_brain.bootup": "§2Defense System boot completed.",
   "module.extramodules2.defense_brain.shutdown": "§cDefense System shut down.",
   "module.extramodules2.defense_brain.randomtick0": "§cHe.. He... l..lo...",
