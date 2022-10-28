@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#A#",
+    "ABA",
+    "#A#"
+  ],
+  "key": {
+    "#": {
+      "type": "forge:nbt",
+      "item": "minecraft:potion",
+      "count": 1,
+      "nbt": "{Potion:\"extramodules2:strong_health_boost\"}"
+    },
+    "B": {
+      "item": "extramodules2:advanced_module_core"
+    },
+    "A": {
+      "item": "draconicevolution:wyvern_core"
+    }
+  },
+  "result": {
+    "item": "extramodules2:wyvern_extra_health_module"
+  }
+}

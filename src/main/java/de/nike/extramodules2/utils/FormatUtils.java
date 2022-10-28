@@ -10,4 +10,13 @@ public class FormatUtils {
                 "KMGTPEZY".charAt(exp-1));
     }
 
+    public static String formatE(double v) {
+        long value = (long) v;
+        if (value < 1000) return "" + value;
+        int exp = (int) (Math.log(value) / Math.log(1000));
+        return String.format("%.1f%c",
+                value / Math.pow(1000, exp),
+                "KMGTPEZY".charAt(exp-1));
+    }
+
 }

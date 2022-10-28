@@ -13,16 +13,13 @@
       "item": "extramodules2:advanced_module_core"
     },
     "A": {
-      "item": "minecraft:cactus"
+      "item": "extramodules2:elder_guardian_brain"
     },
     "P": {
-      "type": "forge:nbt",
-      "item": "minecraft:potion",
-      "count": 1,
-      "nbt": "{Potion:\"minecraft:strong_harming\"}"
+      "item": "extramodules2:elder_guardian_parts"
     }
   },
   "result": {
-    "item": "extramodules2:wyvern_defense_reflection_module"
+    "item": "extramodules2:wyvern_defense_brain_module"
   }
 }

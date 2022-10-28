@@ -29,7 +29,7 @@ displayName="Extra Modules" #mandatory
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="examplemod.png" #optional
 # A text field displayed in the mod UI
-credits="Thanks to Brandon3055 for the awesome mod! And FoxMcloud5655 for a bit borrowed gradle code" #optional
+credits="Thanks to Brandon3055 for the awesome mod! And FoxMcloud5655 for a bit borrowed gradle code and help!" #optional
 # A text field displayed in the mod UI
 authors="Nike_Schuh" #optional
 # The description text for the mod (multi line!) (#mandatory)
@@ -42,21 +42,39 @@ and many more! I hope you enjoy this mod! ~Nike#1130
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.extramodules2]] #optional
-    # the modid of the dependency
     modId="forge" #mandatory
-    # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
-    # The version range of the dependency
     versionRange="[36,)" #mandatory
-    # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
-    # Side this dependency is applied on - BOTH, CLIENT or SERVER
     side="BOTH"
 # Here's another dependency
 [[dependencies.extramodules2]]
     modId="minecraft"
     mandatory=true
-# This version range declares a minimum of the current minecraft version up to but not including the next major version
     versionRange="[1.16.5,1.17)"
     ordering="NONE"
     side="BOTH"
+[[dependencies.extramodules2]]
+	modId="curios"
+	mandatory=true
+	versionRange="[${curios_version},)"
+	ordering="AFTER"
+	side="BOTH"
+[[dependencies.extramodules2]]
+	modId="codechickenlib"
+	mandatory=true
+	versionRange="${ccl_version}"
+	ordering="AFTER"
+	side="BOTH"
+[[dependencies.extramodules2]]
+	modId="brandonscore"
+	mandatory=true
+	versionRange="[${bcore_version},)"
+	ordering="AFTER"
+	side="BOTH"
+[[dependencies.extramodules2]]
+	modId="draconicevolution"
+	mandatory=true
+	versionRange="[${de_version},)"
+	ordering="AFTER"
+	side="BOTH"

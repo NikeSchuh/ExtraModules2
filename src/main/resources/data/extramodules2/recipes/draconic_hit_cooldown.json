@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "#B#",
+    "#A#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:dragon_egg"
+    },
+    "B": {
+      "item": "extramodules2:superior_module_core"
+    },
+    "A": {
+      "item": "draconicevolution:awakened_core"
+    },
+    "P": {
+      "item": "minecraft:clock"
+    }
+  },
+  "result": {
+    "item": "extramodules2:draconic_hit_cooldown_module"
+  }
+}

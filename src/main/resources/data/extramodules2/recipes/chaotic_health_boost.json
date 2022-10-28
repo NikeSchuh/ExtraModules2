@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#A#",
+    "ABA",
+    "#A#"
+  ],
+  "key": {
+    "#": {
+      "item": "extramodules2:draconic_extra_health_module"
+    },
+    "B": {
+      "item": "extramodules2:superior_module_core"
+    },
+    "A": {
+      "item": "draconicevolution:chaotic_core"
+    }
+  },
+  "result": {
+    "item": "extramodules2:chaotic_extra_health_module"
+  }
+}

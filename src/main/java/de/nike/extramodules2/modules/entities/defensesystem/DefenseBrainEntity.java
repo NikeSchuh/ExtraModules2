@@ -14,7 +14,9 @@ import de.nike.extramodules2.modules.EMModuleTypes;
 import de.nike.extramodules2.modules.data.DefenseBrainData;
 import de.nike.extramodules2.modules.data.DefenseSystemData;
 import de.nike.extramodules2.network.EMNetwork;
+import de.nike.extramodules2.utils.FormatUtils;
 import de.nike.extramodules2.utils.NikesMath;
+import de.nike.extramodules2.utils.TranslationUtils;
 import de.nike.extramodules2.utils.vectors.Vector2Float;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -31,7 +33,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -44,17 +48,17 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.awt.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class DefenseBrainEntity extends ModuleEntity {
-
-    public static final int RAGEMODE_TICKCOST = 250000;
 
     public static final int EYE_COLOR = new Color(174, 167, 164).getRGB();
     public static final int RAGE_COLOR = new Color(255, 0, 0, 25).getRGB();
     public static final int RAGE_COLOR_EYE = new Color(255, 0, 0, 50).getRGB();
 
-    public static final int MODE_CHANGE_DELAY = 20;
 
     // Client Stuff
     @OnlyIn(Dist.CLIENT)
@@ -66,6 +70,7 @@ public class DefenseBrainEntity extends ModuleEntity {
     private static int lastRectY = 0;
     private static int targetChangeDelay = 0;
     private static float rageModeChargeClient = 0.0f;
+
     @OnlyIn(Dist.CLIENT)
     private static float lastProgress = 0.0f;
     // Rage Mode
@@ -80,12 +85,15 @@ public class DefenseBrainEntity extends ModuleEntity {
     private final int rectOffsetY = 14;
     // Eye Size
     private final int eyeWidth = 4;
+
+
     // Server stuff;
     private final int eyeHeight = 4;
     private BooleanProperty activated;
     private boolean charged = false;
     private float rageModeChargeServer = 0;
     private int rageModeTicks = 0;
+    private double damageDelt = 0;
 
     public DefenseBrainEntity(Module<DefenseBrainData> module) {
         super(module);
@@ -161,6 +169,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         double mul = Math.max(defenseSystemData.getReflectedDamage() / 100, 0.5d);
         float damage = defenseSystemData.getReflectedDamage();
         if (defenseSystemData.isOdinsRage()) damage *= 1.25;
+        damageDelt+=damage;
         Vector3d vector3f = attacker.position().subtract(player.position()).normalize().multiply(mul, mul, mul);
         attacker.setDeltaMovement(vector3f);
         DamageSource damageSource = new DamageSourceDefenseSystem(player);
@@ -203,17 +212,22 @@ public class DefenseBrainEntity extends ModuleEntity {
 
     }
 
+    public void setRageModeChargeServer(float rageModeChargeServer) {
+        this.rageModeChargeServer = rageModeChargeServer;
+    }
+
     public boolean isInRageMode() {
         return gurdianEyeMode == EyeMode.RAGE;
     }
 
     public void serverActivateRageMode(ServerPlayerEntity player) {
+        DefenseBrainData data = (DefenseBrainData) module.getData();
         gurdianEyeMode = EyeMode.RAGE;
         rageModeChargeServer = 0;
-        rageModeTicks = 100;
+        rageModeTicks = data.getInitialRageTicks();
 
-        player.level.playSound(null, player.blockPosition(), SoundEvents.GUARDIAN_DEATH, SoundCategory.PLAYERS, 1f, 0.7f);
-        player.level.playSound(null, player.blockPosition(), SoundEvents.ELDER_GUARDIAN_CURSE, SoundCategory.PLAYERS, 1f, 0.5f);
+        player.level.playSound(null, player.blockPosition(), SoundEvents.GUARDIAN_DEATH, SoundCategory.PLAYERS, 3f, 0.5f);
+        player.level.playSound(null, player.blockPosition(), SoundEvents.ELDER_GUARDIAN_CURSE, SoundCategory.PLAYERS, 1f, (float) (Math.random() + Math.random()));
         EMNetwork.sendEyeChangeMode(player, EyeMode.RAGE.getValue());
 
         AxisAlignedBB axisAlignedBB = new AxisAlignedBB(player.position().add(5, 3, 5), player.position().subtract(5, 3, 5));
@@ -233,14 +247,15 @@ public class DefenseBrainEntity extends ModuleEntity {
             if (stackModuleContext.getOpStorage() != null) {
                 IOPStorageModifiable storage = stackModuleContext.getOpStorage();
                 if (isInRageMode()) {
+                    DefenseBrainData data = (DefenseBrainData) module.getData();
                     rageModeTicks--;
-                    if (storage.getEnergyStored() > RAGEMODE_TICKCOST) {
-                        storage.modifyEnergyStored(-RAGEMODE_TICKCOST);
+                    if (storage.getEnergyStored() > data.getRageModeTickCost()) {
+                        storage.modifyEnergyStored(-data.getRageModeTickCost());
                     } else {
                         rageModeTicks = Math.max(0, rageModeTicks - 20);
                     }
                     // Damage
-                    rageModeDamage(playerEntity, storage);
+                    rageModeDamage(playerEntity,data, storage);
                 }
             }
             if (rageModeChargeServer > 0.0f)
@@ -263,28 +278,41 @@ public class DefenseBrainEntity extends ModuleEntity {
         }
     }
 
-    public void rageModeDamage(PlayerEntity playerEntity, IOPStorageModifiable storage){
+   private static DecimalFormat time = new DecimalFormat("#.###");
+
+    public void rageModeDamage(PlayerEntity playerEntity,DefenseBrainData data, IOPStorageModifiable storage){
+        if(playerEntity.tickCount % data.getShootCooldown() == 0) {
+            double range = data.getRageModeRange();
             boolean b = false;
             DefenseSystemData systemData = getDefenseSystemData();
-            AxisAlignedBB axisAlignedBB = new AxisAlignedBB(playerEntity.position().add(8, 8, 8), playerEntity.position().subtract(8, 3, 8));
-            for (LivingEntity livingEntity : playerEntity.level.getEntitiesOfClass(LivingEntity.class, axisAlignedBB)) {
-                if(livingEntity.equals(playerEntity)) continue;
-                if(livingEntity.invulnerableTime > 0) continue;
-                if(livingEntity.isInvulnerable()) continue;
-                if(livingEntity.isDeadOrDying()) continue;
-                if(livingEntity.getEntity() instanceof AreaEffectCloudEntity) continue;
-                if(storage.getEnergyStored() < systemData.getOpCost()) continue;
-                if(!playerEntity.canSee(livingEntity)) continue;
+            long nanos = System.nanoTime();
+            AxisAlignedBB axisAlignedBB = new AxisAlignedBB(playerEntity.position().add(range, range / 2, range), playerEntity.position().subtract(range, range / 2, range));
+            List<LivingEntity> livingEntities = playerEntity.level.getEntitiesOfClass(LivingEntity.class, axisAlignedBB);
+            Vector3i playerPos = playerEntity.blockPosition();
+            livingEntities.sort(Comparator.comparing(l -> l.blockPosition().distSqr(playerPos)));
+            for (LivingEntity livingEntity : livingEntities) {
+                if (livingEntity.equals(playerEntity)) continue;
+                if (livingEntity.invulnerableTime > 0) continue;
+                if (livingEntity.isInvulnerable()) continue;
+                if (livingEntity.isDeadOrDying()) continue;
+                if (livingEntity.getEntity() instanceof AreaEffectCloudEntity) continue;
+                if (storage.getEnergyStored() < systemData.getOpCost()) continue;
+                if (!playerEntity.canSee(livingEntity)) continue;
+                if(!playerEntity.canAttack(livingEntity)) continue;
                 storage.modifyEnergyStored(-systemData.getOpCost());
-                livingEntity.hurt(new DamageSourceDefenseSystem(playerEntity), Math.max(systemData.getReflectedDamage(), 10));
-                EMNetwork.sendEyeShootEffect(playerEntity.position().add(0, 1, 0), livingEntity.getEyePosition(livingEntity.getEyeHeight()-0.1f), livingEntity.level.dimension(), playerEntity.blockPosition(), 20D);
-                if(getDefenseSystemData().isOdinsRage()) {
+                livingEntity.hurt(new DamageSourceDefenseSystem(playerEntity), systemData.getReflectedDamage());
+                damageDelt += systemData.getReflectedDamage();
+                EMNetwork.sendEyeShootEffect(playerEntity.position().add(0, 1, 0), livingEntity.getEyePosition(livingEntity.getEyeHeight() - 0.1f), livingEntity.level.dimension(), playerEntity.blockPosition(), 20D);
+                if (getDefenseSystemData().isOdinsRage()) {
                     EntityType.LIGHTNING_BOLT.spawn((ServerWorld) livingEntity.level, null, null, livingEntity.blockPosition(), SpawnReason.TRIGGERED, true, true);
                 }
                 b = true;
+                System.out.println("Calculation Time: " + time.format((System.nanoTime() - nanos) / 1000000D) + "ms");
                 break;
             }
-            if(b) rageModeTicks = 100;
+            if (b) rageModeTicks = data.getInitialRageTicks();
+
+        }
     }
 
     @Override
@@ -339,6 +367,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         if(damage < creeper.getHealth()) return;
         event.setCanceled(true);
         creeper.hurt(DamageSource.indirectMagic(player, creeper), damage);
+        damageDelt += damage;
         player.level.playSound(null, creeper.blockPosition(), SoundEvents.ELDER_GUARDIAN_HURT, SoundCategory.HOSTILE, 0.7F, 0.8F);
         if (getDefenseSystemData().isOdinsRage()) {
             EntityType.LIGHTNING_BOLT.spawn((ServerWorld) player.level, null, null, creeper.blockPosition(), SpawnReason.TRIGGERED, false, false);
@@ -350,8 +379,18 @@ public class DefenseBrainEntity extends ModuleEntity {
         return host.getModuleData(EMModuleTypes.DEFENSE_SYSTEM, new DefenseSystemData(0, 0, false));
     }
 
+    private static final DecimalFormat format = new DecimalFormat("#.##");
+
     @Override
     public void addToolTip(List<ITextComponent> list) {
+        DefenseBrainData data = (DefenseBrainData) module.getData();
+        list.add(TranslationUtils.string(TextFormatting.GRAY + TranslationUtils.getTranslation("module.extramodules2.defense_brain.ragecost") + ": " + TextFormatting.GREEN + "" + FormatUtils.formatE(data.getRageModeTickCost()) + " OP/t"));
+        list.add(TranslationUtils.string(TextFormatting.GRAY + TranslationUtils.getTranslation("module.extramodules2.defense_brain.ragerange") + ": " + TextFormatting.GREEN + "" + ((int) data.getRageModeRange()) + "x" + ((int) data.getRageModeRange())));
+        list.add(TranslationUtils.string(TextFormatting.GRAY + TranslationUtils.getTranslation("module.extramodules2.defense_brain.rageticks") + ": " + TextFormatting.GREEN + "" + format.format(data.getInitialRageTicks() / 20D) + "s"));
+        list.add(TranslationUtils.string(TextFormatting.GRAY + TranslationUtils.getTranslation("module.extramodules2.defense_brain.shootdelay") + ": " + TextFormatting.GREEN + "" + format.format((data.getShootCooldown()) / 20D) + "s"));
+        if(damageDelt > 0) {
+            list.add(TranslationUtils.string(TextFormatting.GRAY + TranslationUtils.getTranslation("module.extramodules2.defense_brain.damagedelt") + ": " + TextFormatting.GREEN + "" + FormatUtils.formatE(damageDelt) + ""));
+        }
         if(!isInRageMode()) {
             list.add(new StringTextComponent(TextFormatting.GRAY + "Rage: " + TextFormatting.GREEN + Math.round(rageModeChargeClient * 100) + "%"));
         } else list.add(new StringTextComponent(TextFormatting.GRAY + "Rage: "+ TextFormatting.GREEN + "100%"));
@@ -394,6 +433,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         stack.getOrCreateTag().putBoolean("charged", charged);
         stack.getOrCreateTag().putInt("ragemodeticks", rageModeTicks);
         stack.getOrCreateTag().putFloat("rage", rageModeChargeServer);
+        stack.getOrCreateTag().putDouble("damagedelt", damageDelt);
     }
 
     @Override
@@ -403,6 +443,7 @@ public class DefenseBrainEntity extends ModuleEntity {
             charged = stack.getOrCreateTag().getBoolean("charged");
             rageModeTicks = stack.getOrCreateTag().getInt("ragemodeticks");
             rageModeChargeServer = stack.getOrCreateTag().getFloat("rage");
+            damageDelt = stack.getOrCreateTag().getDouble("damagedelt");
         }
     }
 
@@ -412,6 +453,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         compound.putBoolean("charged", charged);
         compound.putInt("ragemodeticks", rageModeTicks);
         compound.putFloat("rage", rageModeChargeServer);
+        compound.putDouble("damagedelt", damageDelt);
     }
 
     @Override
@@ -420,5 +462,6 @@ public class DefenseBrainEntity extends ModuleEntity {
         charged = compound.getBoolean("charged");
         rageModeTicks = compound.getInt("ragemodeticks");
         rageModeChargeServer = compound.getFloat("rage");
+        damageDelt = compound.getDouble("damagedelt");
     }
 }

@@ -44,7 +44,8 @@ public class EMItems {
 	public static final RegistryObject<Item> SUPERIOR_MODULE_CORE = ITEMS.register("superior_module_core", () -> new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)));
 	public static final RegistryObject<Item> MODULE_CONTROLLER = ITEMS.register("module_controller", () -> new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)));
 	public static final RegistryObject<Item> ANTI_POTION = ITEMS.register("anti_potion", () -> new AntiPotionItem(new Item.Properties().tab(EXTRAMODULES_ITEMS).stacksTo(1)));
-
+	public static final RegistryObject<Item> ELDER_GUARDIAN_PARTS = ITEMS.register("elder_guardian_parts", () -> new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)));
+	public static final RegistryObject<Item> ELDER_GUARDIAN_BRAIN = ITEMS.register("elder_guardian_brain", () -> new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)));
 
 	public static void register(IEventBus eventBus) {
 		ITEMS.register(eventBus);

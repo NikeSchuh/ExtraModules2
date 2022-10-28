@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#G#"
+  ],
+  "key": {
+    "#": {
+      "item": "extramodules2:draconic_defense_brain_module"
+    },
+    "B": {
+      "item": "extramodules2:superior_module_core"
+    },
+    "A": {
+      "item": "extramodules2:chaotic_hit_cooldown_module"
+    },
+    "P": {
+      "item": "draconicevolution:chaotic_aoe_module"
+    },
+    "G": {
+      "item": "draconicevolution:chaotic_speed_module"
+    }
+  },
+  "result": {
+    "item": "extramodules2:chaotic_defense_brain_module"
+  }
+}

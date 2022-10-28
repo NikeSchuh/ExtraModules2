@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#G#"
+  ],
+  "key": {
+    "#": {
+      "item": "extramodules2:wyvern_defense_brain_module"
+    },
+    "B": {
+      "item": "extramodules2:superior_module_core"
+    },
+    "A": {
+      "item": "draconicevolution:awakened_core"
+    },
+    "P": {
+      "item": "draconicevolution:draconic_aoe_module"
+    },
+    "G": {
+      "item": "draconicevolution:draconic_speed_module"
+    }
+  },
+  "result": {
+    "item": "extramodules2:draconic_defense_brain_module"
+  }
+}

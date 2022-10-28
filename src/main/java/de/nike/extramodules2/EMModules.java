@@ -72,9 +72,9 @@ public class EMModules {
 		};
 	}
 
-	private static Function<Module<DefenseBrainData>, DefenseBrainData> defenseBrain() {
+	private static Function<Module<DefenseBrainData>, DefenseBrainData> defenseBrain(int shootCooldown, int initialRageTicks, int rageModeTickCost, double rageModeRange) {
 		return e -> {
-			return new DefenseBrainData();
+			return new DefenseBrainData(shootCooldown, initialRageTicks, rageModeTickCost, rageModeRange);
 		};
 	}
 
@@ -111,7 +111,9 @@ public class EMModules {
 
 	public static void registerModules() {
 		register(new ModuleImpl<>(EMModuleTypes.OXYGEN_STORAGE, TechLevel.DRACONIC, oxygenStorageData(4000)), "draconic_oxygen_storage");
-		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_BRAIN, TechLevel.DRACONIC, defenseBrain()), "draconic_defense_brain");
+		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_BRAIN, TechLevel.WYVERN, defenseBrain(15, 100, 25000, 6)), "wyvern_defense_brain");
+		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_BRAIN, TechLevel.DRACONIC, defenseBrain(3, 150, 50000, 8)), "draconic_defense_brain");
+		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_BRAIN, TechLevel.CHAOTIC, defenseBrain(1, 200, 250000, 12)), "chaotic_defense_brain");
 		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_SYSTEM, TechLevel.WYVERN, defenseSystemData(2, 64000)), "wyvern_defense_reflection");
 		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_SYSTEM, TechLevel.DRACONIC, defenseSystemData(4, 128000)), "draconic_defense_reflection");
 		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_SYSTEM, TechLevel.CHAOTIC, defenseSystemData(10, 256000)), "chaotic_defense_reflection");
