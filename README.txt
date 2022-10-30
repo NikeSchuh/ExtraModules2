@@ -4,6 +4,6 @@ Modules added currently:
 - Defense Damage Reflection
 - Oxygen Storage (Prevents drowning)
 - Potion Curer (Removes bad effects wither, etc...)
-Textures made by me and Cheater007 (Minecraft Name)
-Discord Nike##1130
+Textures made by Cheater007 an me(Nike_Schuh) (Minecraft Name)
+Discord Nike#1130
 Enjoy the modules :D
