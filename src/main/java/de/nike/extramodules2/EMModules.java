@@ -14,6 +14,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleImpl;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 
+import de.nike.extramodules2.config.BalancingConfig;
 import de.nike.extramodules2.modules.EMModuleTypes;
 import de.nike.extramodules2.modules.data.*;
 import net.minecraft.item.Item;
@@ -110,17 +111,17 @@ public class EMModules {
 	}
 
 	public static void registerModules() {
-		register(new ModuleImpl<>(EMModuleTypes.OXYGEN_STORAGE, TechLevel.DRACONIC, oxygenStorageData(4000)), "draconic_oxygen_storage");
-		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_BRAIN, TechLevel.WYVERN, defenseBrain(15, 100, 25000, 6)), "wyvern_defense_brain");
-		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_BRAIN, TechLevel.DRACONIC, defenseBrain(3, 150, 50000, 8)), "draconic_defense_brain");
-		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_BRAIN, TechLevel.CHAOTIC, defenseBrain(1, 200, 250000, 12)), "chaotic_defense_brain");
+		register(new ModuleImpl<>(EMModuleTypes.OXYGEN_STORAGE, TechLevel.DRACONIC, oxygenStorageData(BalancingConfig.DRACONIC_OXYGEN_STORAGE.get())), "draconic_oxygen_storage");
+		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_BRAIN, TechLevel.WYVERN, defenseBrain(15, 100, BalancingConfig.WYVERN_RAGE_TICKCOST.get(), 6)), "wyvern_defense_brain");
+		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_BRAIN, TechLevel.DRACONIC, defenseBrain(3, 150, BalancingConfig.DRACONIC_RAGE_TICKCOST.get(), 8)), "draconic_defense_brain");
+		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_BRAIN, TechLevel.CHAOTIC, defenseBrain(1, 200, BalancingConfig.CHAOTIC_RAGE_TICKCOST.get(), 12)), "chaotic_defense_brain");
 		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_SYSTEM, TechLevel.WYVERN, defenseSystemData(2, 64000)), "wyvern_defense_reflection");
 		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_SYSTEM, TechLevel.DRACONIC, defenseSystemData(4, 128000)), "draconic_defense_reflection");
 		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_SYSTEM, TechLevel.CHAOTIC, defenseSystemData(10, 256000)), "chaotic_defense_reflection");
 		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_SYSTEM, TechLevel.DRACONIC, defenseSystemData(0, 10000000, true)).setMaxInstall(1), "draconic_odins_rage");
 		register(new ModuleImpl<>(EMModuleTypes.POTION_CURER, TechLevel.DRACONIC, potionCurer()), "draconic_potion_curer");
-		register(new ModuleImpl<>(EMModuleTypes.GENERATOR, TechLevel.DRACONIC, generatorData(2000)), "draconic_generator");
-		register(new ModuleImpl<>(EMModuleTypes.GENERATOR, TechLevel.CHAOTIC, generatorData(12600)), "chaotic_generator");
+		register(new ModuleImpl<>(EMModuleTypes.GENERATOR, TechLevel.DRACONIC, generatorData(BalancingConfig.DRACONIC_GENERATOR_PRODUCTION.get())), "draconic_generator");
+		register(new ModuleImpl<>(EMModuleTypes.GENERATOR, TechLevel.CHAOTIC, generatorData(BalancingConfig.CHAOTIC_GENERATOR_PRODUCTION.get())), "chaotic_generator");
 		register(new ModuleImpl<>(EMModuleTypes.ARMOR, TechLevel.WYVERN, armorData(1, 0)), "wyvern_armor");
 		register(new ModuleImpl<>(EMModuleTypes.ARMOR, TechLevel.DRACONIC, armorData(2, 1)), "draconic_armor");
 		register(new ModuleImpl<>(EMModuleTypes.ARMOR, TechLevel.CHAOTIC, armorData(4, 2)), "chaotic_armor");
@@ -135,7 +136,7 @@ public class EMModules {
 		ModuleItem<?> item = new ModuleItem((new Item.Properties()).tab(moduleGroup), (Module) module);
 		item.setRegistryName(name + "_module");
 		module.setRegistryName(name);
-		module.setModuleItem((Item) item);
+		module.setModuleItem(item);
 		moduleItemMap.put(module, item);
 	}
 

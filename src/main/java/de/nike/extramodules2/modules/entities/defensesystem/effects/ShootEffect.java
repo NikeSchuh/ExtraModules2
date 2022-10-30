@@ -18,7 +18,6 @@ public class ShootEffect {
     public static void playEffect(Vector3d pos1, Vector3d pos2) {
         ClientPlayerEntity playerEntity = Minecraft.getInstance().player;
         ClientWorld clientWorld = playerEntity.clientLevel;
-        clientWorld.playLocalSound(new BlockPos(pos1.x, pos1.y, pos1.z), SoundEvents.GUARDIAN_HURT, SoundCategory.PLAYERS, 10f, (float) (2f - Math.random()), true);
         drawLine(pos1.add(0, 2, 0), pos2, 0.5D, clientWorld);
     }
 

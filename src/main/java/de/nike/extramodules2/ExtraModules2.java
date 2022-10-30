@@ -1,15 +1,13 @@
 package de.nike.extramodules2;
 
-import de.nike.extramodules2.commands.RageModeCommand;
+import de.nike.extramodules2.client.ClientProxy;
 import de.nike.extramodules2.effects.EMMobEffects;
 import de.nike.extramodules2.potions.EMPotions;
 import de.nike.extramodules2.utils.NikesPotions;
 import net.minecraft.item.Items;
-import net.minecraft.potion.PotionBrewing;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.server.command.ConfigCommand;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.event.lifecycle.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,67 +17,40 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import top.theillusivec4.curios.Curios;
 
-@Mod("extramodules2")
+@Mod(ExtraModules2.MODID)
 public class ExtraModules2 {
-	public static final Logger LOGGER = LogManager.getLogger();
+
+	public static final Logger LOGGER = LogManager.getLogger("ExtraModules");
 	public static final String MODID = "extramodules2";
+	public static final String MODNAME = "Extra Modules 2";
+
+	public static CommonProxy proxy;
 
 	public ExtraModules2() {
-		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-		EMItems.register(eventBus);
-		EMPotions.register(eventBus);
-		EMMobEffects.register(eventBus);
-		EMNetwork.init();
-
-		eventBus.addListener(this::setup);
-		eventBus.addListener(this::enqueueIMC);
-		eventBus.addListener(this::processIMC);
-		eventBus.addListener(this::doClientStuff);
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-
-	private void setup(final FMLCommonSetupEvent event) {
-		LOGGER.info("Loading ExtraModules2!");
-		// Potion Effects
-		NikesPotions.addMix(Potions.STRONG_POISON, Items.WITHER_SKELETON_SKULL, EMPotions.WITHER.get());
-		NikesPotions.addMix(EMPotions.WITHER.get(), Items.GLOWSTONE_DUST, EMPotions.WITHER_STRONG.get());
-		NikesPotions.addMix(Potions.MUNDANE, Items.HONEYCOMB, EMPotions.HEALTH_BOOST.get());
-		NikesPotions.addMix(EMPotions.HEALTH_BOOST.get(), Items.GLOWSTONE_DUST, EMPotions.HEALTH_BOOST_STRONG.get());
-	}
-
-
-	private void doClientStuff(final FMLClientSetupEvent event) {
-
-	}
-
-	private void enqueueIMC(final InterModEnqueueEvent event) {
-
-	}
-
-	private void processIMC(final InterModProcessEvent event) {
-
+		proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+		proxy.construct();
+		FMLJavaModLoadingContext.get().getModEventBus().register(this);
 	}
 
 	@SubscribeEvent
-	public void onServerStarting(FMLServerStartingEvent event) {
-
+	public void onCommonSetup(FMLCommonSetupEvent event) {
+		proxy.commonSetup(event);
 	}
 
-	/*
-	 * /@OnlyIn(Dist.CLIENT)
-	 * 
-	 * @SubscribeEvent public void onTextureStiching(final TextureStitchEvent event)
-	 * { // Sprites.GURADIAN_EYE =
-	 * event.getMap().getSprite(Sprites.guradianEyeSprite); } Note: Did not work I
-	 * have no clue how to load a custom Texture as TextureAtlasSprite. /
-	 */
+	@SubscribeEvent
+	public void onClientSetup(FMLClientSetupEvent event) {
+		proxy.clientSetup(event);
+	}
+
+	@SubscribeEvent
+	public void onServerSetup(FMLDedicatedServerSetupEvent event) {
+		proxy.serverSetup(event);
+	}
+
+
 
 }

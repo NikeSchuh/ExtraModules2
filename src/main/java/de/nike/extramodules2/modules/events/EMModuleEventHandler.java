@@ -2,6 +2,7 @@ package de.nike.extramodules2.modules.events;
 
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
 import de.nike.extramodules2.ExtraModules2;
 import de.nike.extramodules2.modules.EMModuleTypes;
@@ -25,6 +26,7 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
 @Mod.EventBusSubscriber(modid = ExtraModules2.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -83,7 +85,6 @@ public class EMModuleEventHandler {
 			for (PlayerEntity player : entity.level.getNearbyPlayers(EntityPredicate.DEFAULT, entity, new AxisAlignedBB(entity.position().add(5, 5, 5), entity.position().subtract(5, 5, 5)))) {
 				ItemStack chestStack = ModularChestpiece.getChestpiece(player);
 				LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-
 				if (chestStack.isEmpty() || !optionalHost.isPresent()) {
 					return;
 				}
@@ -103,7 +104,7 @@ public class EMModuleEventHandler {
 		if(event.isCanceled()) return;
 		if(!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
 		if(event.getTo().isEmpty()) return;
-		if(!(event.getTo().getItem() instanceof ModularChestpiece)) return;
+		if(!(event.getTo().getItem() instanceof IModularItem)) return;
 		if(!(event.getFrom().isEmpty())) return;
 		if(!(event.getSlot().getType() == EquipmentSlotType.Group.ARMOR)) return;
 		ServerPlayerEntity entity = (ServerPlayerEntity) event.getEntityLiving();
@@ -119,7 +120,7 @@ public class EMModuleEventHandler {
 	public static void onUnEquip(LivingEquipmentChangeEvent event) {
 		if(event.isCanceled()) return;
 		if(!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
-		if(!(event.getFrom().getItem() instanceof ModularChestpiece)) return;
+		if(!(event.getFrom().getItem() instanceof IModularItem)) return;
 		if(!(event.getTo().isEmpty())) return;
 		if(!(event.getSlot().getType() == EquipmentSlotType.Group.ARMOR)) return;
 		ServerPlayerEntity entity = (ServerPlayerEntity) event.getEntityLiving();
@@ -137,7 +138,7 @@ public class EMModuleEventHandler {
 		if(event.isCanceled()) return;
 		if(!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
 		if(event.getTo().isEmpty()) return;
-		if(!(event.getTo().getItem() instanceof ModularChestpiece)) return;
+		if(!(event.getTo().getItem() instanceof IModularItem)) return;
 		if(!(event.getFrom().isEmpty())) return;
 		ServerPlayerEntity entity = (ServerPlayerEntity) event.getEntityLiving();
 		ItemStack chestStack = event.getTo();
@@ -152,7 +153,7 @@ public class EMModuleEventHandler {
 	public static void curioUnequip(CurioChangeEvent event) {
 		if(event.isCanceled()) return;
 		if(!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
-		if(!(event.getFrom().getItem() instanceof ModularChestpiece)) return;
+		if(!(event.getFrom().getItem() instanceof IModularItem)) return;
 		if(!(event.getTo().isEmpty())) return;
 		ServerPlayerEntity entity = (ServerPlayerEntity) event.getEntityLiving();
 		ItemStack chestStack = event.getFrom();

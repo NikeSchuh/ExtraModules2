@@ -57,7 +57,7 @@ public class PotionCureEntity extends ModuleEntity {
 					}
 				}
 				if (effectsRemoved > 0) {
-					playerEntity.sendMessage(new StringTextComponent("Removed " + effectsRemoved + " bad effect(s) for " + opSpend), ChatType.GAME_INFO, null);
+					playerEntity.displayClientMessage(new StringTextComponent("Removed " + effectsRemoved + " bad effect(s) for " + opSpend), true);
 				}
 			}
 		}

@@ -61,7 +61,6 @@ public class DefenseBrainEntity extends ModuleEntity {
 
 
     // Client Stuff
-    @OnlyIn(Dist.CLIENT)
 
     private static Vector2Float currentPosition;
     private static Vector2Float currentTarget;
@@ -71,7 +70,6 @@ public class DefenseBrainEntity extends ModuleEntity {
     private static int targetChangeDelay = 0;
     private static float rageModeChargeClient = 0.0f;
 
-    @OnlyIn(Dist.CLIENT)
     private static float lastProgress = 0.0f;
     // Rage Mode
     private final int EYE_POSITION_CHANGE_DELAY = 5;
@@ -303,11 +301,11 @@ public class DefenseBrainEntity extends ModuleEntity {
                 livingEntity.hurt(new DamageSourceDefenseSystem(playerEntity), systemData.getReflectedDamage());
                 damageDelt += systemData.getReflectedDamage();
                 EMNetwork.sendEyeShootEffect(playerEntity.position().add(0, 1, 0), livingEntity.getEyePosition(livingEntity.getEyeHeight() - 0.1f), livingEntity.level.dimension(), playerEntity.blockPosition(), 20D);
+                playerEntity.level.playSound(null, playerEntity.blockPosition(), SoundEvents.GUARDIAN_HURT, SoundCategory.PLAYERS, 10f, (float) (2f - Math.random()));
                 if (getDefenseSystemData().isOdinsRage()) {
                     EntityType.LIGHTNING_BOLT.spawn((ServerWorld) livingEntity.level, null, null, livingEntity.blockPosition(), SpawnReason.TRIGGERED, true, true);
                 }
                 b = true;
-                System.out.println("Calculation Time: " + time.format((System.nanoTime() - nanos) / 1000000D) + "ms");
                 break;
             }
             if (b) rageModeTicks = data.getInitialRageTicks();
@@ -378,6 +376,15 @@ public class DefenseBrainEntity extends ModuleEntity {
     public DefenseSystemData getDefenseSystemData() {
         return host.getModuleData(EMModuleTypes.DEFENSE_SYSTEM, new DefenseSystemData(0, 0, false));
     }
+
+    public BooleanProperty getActivated() {
+        return activated;
+    }
+
+    public float getRageModeChargeClient() {
+        return rageModeChargeClient;
+    }
+
 
     private static final DecimalFormat format = new DecimalFormat("#.##");
 
