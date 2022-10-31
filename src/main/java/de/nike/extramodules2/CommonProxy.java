@@ -5,15 +5,24 @@ import de.nike.extramodules2.effects.EMMobEffects;
 import de.nike.extramodules2.items.EMItems;
 import de.nike.extramodules2.network.EMNetwork;
 import de.nike.extramodules2.potions.EMPotions;
+import de.nike.extramodules2.potions.recipes.PotionRecipeImpl;
 import de.nike.extramodules2.utils.NikesPotions;
 import net.minecraft.item.Items;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.Potions;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.brewing.BrewingRecipe;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistry;
 
 public class CommonProxy {
 
@@ -26,6 +35,7 @@ public class CommonProxy {
         EMPotions.register(eventBus);
         EMMobEffects.register(eventBus);
 
+
     }
 
     public void clientSetup(FMLClientSetupEvent event) {
@@ -34,10 +44,7 @@ public class CommonProxy {
 
     public void commonSetup(FMLCommonSetupEvent event) {
         ExtraModules2.LOGGER.info("Registering Potion mixes...");
-        NikesPotions.addMix(Potions.STRONG_POISON, Items.WITHER_SKELETON_SKULL, EMPotions.WITHER.get());
-        NikesPotions.addMix(EMPotions.WITHER.get(), Items.GLOWSTONE_DUST, EMPotions.WITHER_STRONG.get());
-        NikesPotions.addMix(Potions.MUNDANE, Items.HONEYCOMB, EMPotions.HEALTH_BOOST.get());
-        NikesPotions.addMix(EMPotions.HEALTH_BOOST.get(), Items.GLOWSTONE_DUST, EMPotions.HEALTH_BOOST_STRONG.get());
+        EMPotions.registerRecipes();
     }
 
     public void serverSetup(FMLDedicatedServerSetupEvent event) {

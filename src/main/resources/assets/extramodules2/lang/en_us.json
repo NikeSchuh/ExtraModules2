@@ -73,25 +73,31 @@
   "item.minecraft.potion.effect.wither": "Potion of Decay",
   "item.minecraft.potion.effect.strong_wither": "Potion of Decay",
   "item.minecraft.potion.effect.anti_matter": "Potion of Antimatter",
+  "item.minecraft.potion.effect.bad_omen": "Potion of Bad Omen",
 
   "item.minecraft.splash_potion.effect.health_boost": "Splash Potion of Hearts",
   "item.minecraft.splash_potion.effect.strong_health_boost": "Splash Potion of Hearts",
   "item.minecraft.splash_potion.effect.wither": "Splash Potion of Decay",
   "item.minecraft.splash_potion.effect.strong_wither": "§cSplash Potion of Decay",
   "item.minecraft.splash_potion.effect.anti_matter": "Splash Potion of Antimatter",
+  "item.minecraft.splash_potion.effect.bad_omen": "Splash Potion of Bad Omen",
 
   "item.minecraft.lingering_potion.effect.health_boost": "Lingering Potion of Hearts",
   "item.minecraft.lingering_potion.effect.strong_health_boost": "Lingering Potion of Hearts",
   "item.minecraft.lingering_potion.effect.wither": "Lingering Potion of Decay",
   "item.minecraft.lingering_potion.effect.strong_wither": "Lingering Potion of Decay",
   "item.minecraft.lingering_potion.effect.anti_matter": "Lingering Potion of Antimatter",
+  "item.minecraft.lingering_potion.effect.bad_omen": "Lingering Potion of Bad Omen",
 
   "item.minecraft.tipped_arrow.effect.health_boost": "Arrow of Hearts",
   "item.minecraft.tipped_arrow.effect.strong_health_boost": "Arrow of Hearts",
   "item.minecraft.tipped_arrow.effect.wither": "Arrow of Decay",
   "item.minecraft.tipped_arrow.effect.strong_wither": "Arrow of Decay",
   "item.minecraft.tipped_arrow.effect.anti_matter": "Pocketable Disassembler",
+  "item.minecraft.tipped_arrow.effect.bad_omen": "Arrow of Bad Omen",
 
   "death.attack.extramodules2.anti_matter": "%1$s was disassembled on a molecular level",
-  "death.attack.extramodules2.anti_matter.player": "%1$s has stopped existing due to %2$s's pocketable disassembler"
+  "death.attack.extramodules2.anti_matter.player": "%1$s has stopped existing due to %2$s's pocketable disassembler",
+  "death.attack.extramodules2.defense_system": "%1$s was killed by Defense System",
+  "death.attack.extramodules2.defense_system.player": "%1$s was killed by %2$s's Defense System"
 }

@@ -28,7 +28,16 @@
       "nbt": "{Potion:\"minecraft:weakness\"}"
     },
     {
-      "item": "minecraft:wither_skeleton_skull"
+      "type": "forge:nbt",
+      "item": "minecraft:potion",
+      "count": 1,
+      "nbt": "{Potion:\"extramodules2:strong_wither\"}"
+    },
+    {
+      "type": "forge:nbt",
+      "item": "minecraft:potion",
+      "count": 1,
+      "nbt": "{Potion:\"extramodules2:bad_omen\"}"
     },
     {
       "item": "minecraft:warped_fungus"

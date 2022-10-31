@@ -14,9 +14,9 @@ public class EMCommands {
 
     @SubscribeEvent
     public static void onCommandsRegister(RegisterCommandsEvent event) {
-            //rageModeCommand = new RageModeCommand(event.getDispatcher());
-            // new EnergyFillCommand(event.getDispatcher());
-            //ConfigCommand.register(event.getDispatcher());
+            rageModeCommand = new RageModeCommand(event.getDispatcher());
+             new EnergyFillCommand(event.getDispatcher());
+             ConfigCommand.register(event.getDispatcher());
     }
 
 

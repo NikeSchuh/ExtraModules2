@@ -10,4 +10,9 @@ public class NikesMath {
     public static double lerp(double start, double end, double smoothSpeed) {
         return (end - start) * smoothSpeed + start;
     }
+
+    public static int minutesToTicks(float minutes) {
+        int seconds = Math.round(minutes * 60);
+        return seconds * 20;
+    }
 }

@@ -1,28 +1,48 @@
 package de.nike.extramodules2;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.data.DamageData;
+import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.lib.BaseModule;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleImpl;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import de.nike.extramodules2.config.BalancingConfig;
 import de.nike.extramodules2.modules.EMModuleTypes;
 import de.nike.extramodules2.modules.data.*;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.PotionSpriteUploader;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.Item;
+import net.minecraft.item.PotionItem;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Potion;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
+import net.minecraftforge.client.model.generators.ItemModelProvider;
+import net.minecraftforge.client.model.generators.ModelBuilder;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
+
+import javax.annotation.Nullable;
 
 @Mod.EventBusSubscriber(modid = ExtraModules2.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 @ObjectHolder(ExtraModules2.MODID)
@@ -110,6 +130,7 @@ public class EMModules {
 		};
 	}
 
+
 	public static void registerModules() {
 		register(new ModuleImpl<>(EMModuleTypes.OXYGEN_STORAGE, TechLevel.DRACONIC, oxygenStorageData(BalancingConfig.DRACONIC_OXYGEN_STORAGE.get())), "draconic_oxygen_storage");
 		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_BRAIN, TechLevel.WYVERN, defenseBrain(15, 100, BalancingConfig.WYVERN_RAGE_TICKCOST.get(), 6)), "wyvern_defense_brain");
@@ -133,14 +154,15 @@ public class EMModules {
 	}
 
 	private static void register(ModuleImpl<?> module, String name) {
-		ModuleItem<?> item = new ModuleItem((new Item.Properties()).tab(moduleGroup), (Module) module);
+		ModuleItem<?> item = new ModuleItem((new Item.Properties()).tab(moduleGroup), module);
 		item.setRegistryName(name + "_module");
 		module.setRegistryName(name);
 		module.setModuleItem(item);
 		moduleItemMap.put(module, item);
 	}
 
-	@SubscribeEvent
+
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void registerItems(RegistryEvent.Register<Item> event) {
 		moduleItemMap.clear();
 		registerModules();
@@ -149,7 +171,8 @@ public class EMModules {
 		ModuleCfg.saveStateConfig();
 	}
 
-	@SubscribeEvent
+
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void registerModules(RegistryEvent.Register<Module<?>> event) {
 		moduleItemMap.keySet().forEach(e -> event.getRegistry().register(e));
 	}

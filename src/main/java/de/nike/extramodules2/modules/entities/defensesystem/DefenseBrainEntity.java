@@ -30,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.RangedInteger;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -239,6 +240,8 @@ public class DefenseBrainEntity extends ModuleEntity {
 
     }
 
+    private static float currentPitch = 0.5f;
+    private static boolean rising = true;
 
     public void tickRageModeCharge(StackModuleContext stackModuleContext, PlayerEntity playerEntity) {
         if (EffectiveSide.get().isServer()) {
@@ -266,11 +269,16 @@ public class DefenseBrainEntity extends ModuleEntity {
                 rageModeChargeClient = Math.max(0, rageModeChargeClient - RAGE_CHARGE_LOSE);
             }
             if (gurdianEyeMode == EyeMode.RAGE) {
-                if (playerEntity.tickCount % 5 == 0) {
-                    playerEntity.playSound(SoundEvents.ELDER_GUARDIAN_AMBIENT, 1f, (float) (0.75f + Math.random() - Math.random()));
-                }
-                if (playerEntity.tickCount % 10 == 0) {
-                    playerEntity.playSound(SoundEvents.GUARDIAN_AMBIENT, 1f, (float) (0.75f + Math.random() - Math.random()));
+                if(playerEntity.tickCount % 3 == 0) {
+                    playerEntity.playSound(SoundEvents.GUARDIAN_AMBIENT, 0.5f, currentPitch);
+                    playerEntity.playSound(SoundEvents.ELDER_GUARDIAN_AMBIENT, 0.5f, currentPitch);
+                    if (rising) {
+                        currentPitch += 0.2f;
+                    } else currentPitch -= 0.2f;
+
+                    if (currentPitch > 2) {
+                        rising = false;
+                    } else if (currentPitch < 0.5) rising = true;
                 }
             }
         }
