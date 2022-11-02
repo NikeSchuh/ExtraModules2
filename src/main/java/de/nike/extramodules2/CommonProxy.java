@@ -2,6 +2,7 @@ package de.nike.extramodules2;
 
 import de.nike.extramodules2.config.EMConfig;
 import de.nike.extramodules2.effects.EMMobEffects;
+import de.nike.extramodules2.integration.curios.EMCuriosIntegration;
 import de.nike.extramodules2.items.EMItems;
 import de.nike.extramodules2.network.EMNetwork;
 import de.nike.extramodules2.potions.EMPotions;

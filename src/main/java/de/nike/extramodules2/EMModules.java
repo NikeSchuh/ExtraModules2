@@ -7,42 +7,23 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.data.DamageData;
-import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.lib.BaseModule;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleImpl;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.nike.extramodules2.config.BalancingConfig;
 import de.nike.extramodules2.modules.EMModuleTypes;
 import de.nike.extramodules2.modules.data.*;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.PotionSpriteUploader;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.Item;
-import net.minecraft.item.PotionItem;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Potion;
-import net.minecraft.util.Direction;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.model.generators.ItemModelBuilder;
-import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.client.model.generators.ModelBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
-
-import javax.annotation.Nullable;
 
 @Mod.EventBusSubscriber(modid = ExtraModules2.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 @ObjectHolder(ExtraModules2.MODID)
@@ -130,6 +111,11 @@ public class EMModules {
 		};
 	}
 
+	private static Function<Module<EffectData>, EffectData> effectData(Effect effect, int amplifier, int tickCost, int applyDelay) {
+		return  e -> {
+			return new EffectData(effect, amplifier, tickCost, applyDelay);
+		};
+	}
 
 	public static void registerModules() {
 		register(new ModuleImpl<>(EMModuleTypes.OXYGEN_STORAGE, TechLevel.DRACONIC, oxygenStorageData(BalancingConfig.DRACONIC_OXYGEN_STORAGE.get())), "draconic_oxygen_storage");
@@ -151,6 +137,13 @@ public class EMModules {
 		register(new ModuleImpl<>(EMModuleTypes.EXTRA_HEALTH, TechLevel.CHAOTIC, extraHealthData(40)), "chaotic_extra_health");
 		register(new ModuleImpl<>(EMModuleTypes.HIT_COOLDOWN, TechLevel.DRACONIC, hitCooldownData(5)), "draconic_hit_cooldown");
 		register(new ModuleImpl<>(EMModuleTypes.HIT_COOLDOWN, TechLevel.CHAOTIC, hitCooldownData(10)), "chaotic_hit_cooldown");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.WYVERN, effectData(Effects.REGENERATION,  0, 5000, 100)), "wyvern_regeneration");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.DRACONIC, effectData(Effects.REGENERATION,  1, 8000, 100)), "draconic_regeneration");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.CHAOTIC, effectData(Effects.REGENERATION,  3, 10000, 100)), "chaotic_regeneration");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.DRACONIC, effectData(Effects.DAMAGE_RESISTANCE,  0, 10000, 50)), "draconic_resistance");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.CHAOTIC, effectData(Effects.DAMAGE_RESISTANCE,  1, 25000, 50)), "chaotic_resistance");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.CHAOTIC, effectData(Effects.ABSORPTION,  4, 30000, 500)), "chaotic_absorption");
+
 	}
 
 	private static void register(ModuleImpl<?> module, String name) {
