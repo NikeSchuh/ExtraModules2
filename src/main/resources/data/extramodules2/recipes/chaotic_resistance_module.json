@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "RKR",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "draconicevolution:medium_chaos_frag"
+    },
+    "K": {
+      "item": "extramodules2:superior_module_core"
+    },
+    "R": {
+      "item": "extramodules2:draconic_resistance_module"
+    }
+  },
+  "result": {
+    "item": "extramodules2:chaotic_resistance_module",
+    "count": 1
+  }
+}

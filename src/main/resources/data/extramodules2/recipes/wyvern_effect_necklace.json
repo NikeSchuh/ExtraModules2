@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#R#",
+    "DKD",
+    "#R#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium"
+    },
+    "K": {
+      "item": "draconicevolution:wyvern_core"
+    },
+    "R": {
+      "item": "draconicevolution:wyvern_energy_core"
+    },
+    "D": {
+      "item": "minecraft:brewing_stand"
+    }
+  },
+  "result": {
+    "item": "extramodules2:wyvern_effect_necklace",
+    "count": 1
+  }
+}

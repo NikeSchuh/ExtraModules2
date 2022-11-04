@@ -128,6 +128,7 @@ public class DefenseBrainEntity extends ModuleEntity {
             // Random Messages
             if(playerEntity.tickCount % 10000 == 0) {
                 if(Math.random() < 0.1D) {
+                    playerEntity.sendMessage(new TranslationTextComponent("module.extramodules2.defense_brain.error"), null);
                     int msg = playerEntity.level.random.nextInt(5);
                     playerEntity.sendMessage(new TranslationTextComponent("module.extramodules2.defense_brain.randomtick" + msg), null);
                     playerEntity.playSound(SoundEvents.GUARDIAN_AMBIENT, 0.8f, 2f);

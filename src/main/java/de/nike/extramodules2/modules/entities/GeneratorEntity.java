@@ -15,6 +15,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import de.nike.extramodules2.items.EMItems;
 import de.nike.extramodules2.modules.data.GeneratorData;
 import de.nike.extramodules2.utils.FormatUtils;
+import de.nike.extramodules2.utils.TranslationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -87,15 +88,18 @@ public class GeneratorEntity extends ModuleEntity {
                             if (playerEntity.tickCount % 20 == 0) {
                                 for (ItemStack stack : playerEntity.inventory.items) {
                                     if (stack.isEmpty()) continue;
-                                    if(stack.getItem().getBurnTime(stack, null) > 0) {
-                                        int bTime = stack.getItem().getBurnTime(stack, null);
+                                    if(stack.getItem().getBurnTime(stack, IRecipeType.SMELTING) > 0) {
+                                        int bTime = stack.getItem().getBurnTime(stack, IRecipeType.SMELTING);
                                         burnTime = bTime;
                                         calculateBurnTimeTicks(burnTime);
                                         maxBurnTime = burnTime;
                                         if(generatorSounds.getValue()) {
                                             playerEntity.level.playSound(null, playerEntity.blockPosition(), SoundEvents.ITEM_PICKUP, SoundCategory.BLOCKS, 1f, 1.0f);
                                         }
-                                        playerEntity.sendMessage(new StringTextComponent(TextFormatting.GRAY +  "Consumed " + stack.getItem().getName(stack) + " for "  + TextFormatting.GREEN + (FormatUtils.formatE(bTime * OP_PER_BURNTIME)) + " OP"), ChatType.GAME_INFO, null);
+                                        playerEntity.displayClientMessage(TranslationUtils.string(
+                                                TranslationUtils.getTranslation("module.extramodules2.generator.consumed")
+                                                        .replace("$item", stack.getItem().getRegistryName().getPath())
+                                                        .replace("$energy", FormatUtils.formatE(burnTime * generatorData.getOpGeneration()))), true);
                                         stack.shrink(1);
                                         break;
                                     }

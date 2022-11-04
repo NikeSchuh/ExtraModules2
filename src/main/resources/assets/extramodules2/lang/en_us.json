@@ -1,5 +1,6 @@
 {
   "itemGroup.extramodules.modules": "Extra Modules",
+
   "item.extramodules2.generator_fuel": "Generator Fuel",
   "item.extramodules2.ultimate_generator_fuel": "§bUltimate Generator Fuel",
   "item.extramodules2.draconic_oxygen_storage_module": "Draconic Oxygen Storage Module",
@@ -37,6 +38,7 @@
   "item.extramodules2.wyvern_effect_necklace": "§eWyvern Effect Necklace",
   "item.extramodules2.draconic_effect_necklace": "§bDraconic Effect Necklace",
   "item.extramodules2.chaotic_effect_necklace": "§dChaotic Effect Necklace",
+
   "module_type.draconicevolution.oxygen_storage.name": "Oxygen Storage",
   "module_type.draconicevolution.defense_system.name": "Defense System",
   "module_type.draconicevolution.defense_brain.name": "Defense Brain",
@@ -46,8 +48,10 @@
   "module_type.draconicevolution.extra_health.name": "Extra Health",
   "module_type.draconicevolution.hit_cooldown.name": "Shield Hit Cooldown",
   "module_type.draconicevolution.effect.name": "Effect",
+
   "module.extramodules2.defense_brain.bootup": "§2Defense System boot completed.",
   "module.extramodules2.defense_brain.shutdown": "§cDefense System shut down.",
+  "module.extramodules2.defense_brain.error": "§cDefense System Error: defense system spit out an unusual signature. Translating...",
   "module.extramodules2.defense_brain.randomtick0": "§cHe.. He... l..lo...",
   "module.extramodules2.defense_brain.randomtick1": "§cAtt..ack... Enemy... Enemy",
   "module.extramodules2.defense_brain.randomtick2": "§cFri..end..?",
@@ -61,18 +65,22 @@
   "module.extramodules2.defense_brain.damagedelt": "Damage Delt",
   "module.extramodules2.defense_brain.defense_op_cost": "Defense Cost",
   "module.extramodules2.generator.generation": "Generation",
+  "module.extramodules2.generator.consumed": "§7Consumed §a$item §7for §a$energy",
+  "module.extramodules2.effect.tickcost": "Tick Cost",
+  "module.extramodules2.effect.levelcap": "Level Cap",
   "module.extramodules2.oxygen_storage.oxygen_storage": "Oxygen Storage",
   "module.extramodules2.oxygen_storage.oxygen": "Oxygen",
   "module.extramodules2.armor.armor": "Armor",
   "module.extramodules2.armor.armor_toughness": "Armor Toughness",
   "module.extramodules2.hit_cooldown.cooldown": "Hit Cooldown",
   "module.extramodules2.extra_health.extra_health": "Health",
+
   "item_prop.draconicevolution.defense_brain_module.activated": "Defense System Toggle",
   "item_prop.draconicevolution.oxygen_mod.consume_oxygen": "Use Oxygen",
   "item_prop.draconicevolution.potion_mod.remove_potions": "Remove Bad Effects",
   "item_prop.draconicevolution.generator.active": "Generator",
   "item_prop.draconicevolution.generator.sounds": "Generator Sounds",
-  "messages.extramodules2.generator.consumed": "§7Generator: §cLarge Chaos Fragment §7for §c~1.260G OP",
+
   "death.attack.extramodules2.defense_system": "%1$s was killed by Defense System",
   "death.attack.extramodules2.defense_system.player": "%1$s was killed by %2$s's Defense System",
 
