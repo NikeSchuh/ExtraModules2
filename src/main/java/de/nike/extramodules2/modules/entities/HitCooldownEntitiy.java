@@ -66,7 +66,7 @@ public class HitCooldownEntitiy extends ModuleEntity {
             MatrixStack mStack = new MatrixStack();
             HitCooldownData data = (HitCooldownData) module.getData();
             double progress = ((double) invulnerableTicksClient) / data.getHitCooldownTicks();
-            lastProgress = NikesMath.lerp(lastProgress, progress, 0.1f);
+            lastProgress = NikesMath.lerp(lastProgress, progress, 0.045f);
             GuiHelper.drawRect(getter, mStack, x, (y + height) - (height * lastProgress), width, height * lastProgress, FILL_COLOR);
 
         }
@@ -76,9 +76,6 @@ public class HitCooldownEntitiy extends ModuleEntity {
     public void addToolTip(List<ITextComponent> list) {
         HitCooldownData data = (HitCooldownData) module.getData();
         list.add(TranslationUtils.string(TextFormatting.GRAY +  TranslationUtils.getTranslation("module.extramodules2.hit_cooldown.cooldown") + ": " + TextFormatting.GREEN + format.format(data.getHitCooldownTicks()  / 20D) + "s"));
-        if(invulnerableTicks > 0) {
-            list.add(TranslationUtils.string(TextFormatting.GRAY + "" + ((float) invulnerableTicks / 20) + "s"));
-        }
     }
 
     public void damaged(ServerPlayerEntity serverPlayerEntity, LivingAttackEvent event) {

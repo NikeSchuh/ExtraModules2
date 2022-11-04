@@ -60,6 +60,8 @@ public class DefenseBrainEntity extends ModuleEntity {
     public static final int RAGE_COLOR = new Color(255, 0, 0, 25).getRGB();
     public static final int RAGE_COLOR_EYE = new Color(255, 0, 0, 50).getRGB();
 
+    public float EYE_SPEED = 0.01f;
+
 
     // Client Stuff
 
@@ -349,7 +351,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         }
 
         if ((rageModeChargeClient > 0 || lastProgress > 0) && !isInRageMode()) {
-            lastProgress = NikesMath.lerp(lastProgress, rageModeChargeClient, 0.01f);
+            lastProgress = NikesMath.lerp(lastProgress, rageModeChargeClient, EYE_SPEED);
             GuiHelper.drawRect(getter, matrixStack, x, (y + height) - (height * lastProgress), width, height * lastProgress, RAGE_COLOR);
         }
 

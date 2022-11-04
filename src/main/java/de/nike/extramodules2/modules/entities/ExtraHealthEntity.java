@@ -19,15 +19,15 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import java.util.UUID;
 
 public class ExtraHealthEntity extends ModuleEntity {
+
+    public static final UUID ATTR_HEALTH = UUID.fromString("2790fa48-5c5f-11ed-9b6a-0242ac120002");
+
     public ExtraHealthEntity(Module<ExtraHealthData> module) {
         super(module);
     }
 
-
     @Override
     public void renderSlotOverlay(IRenderTypeBuffer getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
-        //IVertexBuilder builder = getter.getBuffer(BCSprites.GUI_TYPE);
-       // ExtraHealthData data = (ExtraHealthData) module.getData();
         super.renderSlotOverlay(getter, mc, x, y, width, height, mouseX, mouseY, mouseOver, partialTicks);
     }
 
