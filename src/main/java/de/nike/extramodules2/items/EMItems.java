@@ -23,10 +23,10 @@ public class EMItems {
 
 	public static DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ExtraModules2.MODID);
 
-	public static final ItemGroup EXTRAMODULES_ITEMS = new ItemGroup("extraModulesTab") {
+	public static final ItemGroup EXTRAMODULES_ITEMS = new ItemGroup("extramodules.items") {
 		@Override
 		public ItemStack makeIcon() {
-			return new ItemStack(GENERATOR_FUEL.get());
+			return new ItemStack(ANTI_POTION.get());
 		}
 
 	};
@@ -52,7 +52,7 @@ public class EMItems {
 
 	public static final RegistryObject<Item> WYVERN_EFFECT_NECKLACE = ITEMS.register("wyvern_effect_necklace", () -> new EffectNecklace(new TechPropBuilder(TechLevel.WYVERN), 2, 2));
 	public static final RegistryObject<Item> DRACONIC_EFFECT_NECKLACE = ITEMS.register("draconic_effect_necklace", () -> new EffectNecklace(new TechPropBuilder(TechLevel.DRACONIC), 3, 3));
-	public static final RegistryObject<Item> CHAOTIC_EFFECT_NECKLACE = ITEMS.register("chaotic_effect_necklace", () -> new EffectNecklace(new TechPropBuilder(TechLevel.CHAOTIC), 5, 5));
+	public static final RegistryObject<Item> CHAOTIC_EFFECT_NECKLACE = ITEMS.register("chaotic_effect_necklace", () -> new EffectNecklace(new TechPropBuilder(TechLevel.CHAOTIC), 4, 4));
 
 
 	public static void register(IEventBus eventBus) {

@@ -10,7 +10,8 @@ public class EffectCaps {
     private static HashMap<Effect, Integer> CAPS = new HashMap<>();
 
     static {
-        CAPS.put(Effects.DAMAGE_RESISTANCE, 3);
+        CAPS.put(Effects.DAMAGE_RESISTANCE, 2);
+        CAPS.put(Effects.REGENERATION, 5);
     }
 
     public static boolean hasCap(Effect effect) {

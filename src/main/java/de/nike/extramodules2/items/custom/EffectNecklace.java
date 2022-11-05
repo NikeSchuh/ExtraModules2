@@ -27,6 +27,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.ToolType;
@@ -43,7 +44,7 @@ import java.util.Set;
 
 public class EffectNecklace extends ModularEnergyItem implements ICurioItem{
 
-    private int gridWidth, gridHeight;
+    private final int gridWidth, gridHeight;
     private boolean active = false;
 
     public EffectNecklace(TechPropBuilder builder, int gridWidth, int gridHeight) {
@@ -54,8 +55,7 @@ public class EffectNecklace extends ModularEnergyItem implements ICurioItem{
 
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
-        ModuleHostImpl host = new ModuleHostImpl(tier, gridWidth, gridHeight, "necklace", false);
-        host.addCategories(EMModuleCategories.EFFECT, ModuleCategory.ENERGY);
+        ModuleHostImpl host = new ModuleHostImpl(tier, gridWidth, gridHeight, "necklace", false, EMModuleCategories.EFFECT, ModuleCategory.ENERGY);
         return host;
     }
 
@@ -76,25 +76,13 @@ public class EffectNecklace extends ModularEnergyItem implements ICurioItem{
                     active = true;
                 } else active = false;
                 if(active) {
-                    HashMap<Effect, Integer> effectMap = new HashMap();
-                    HashMap<Effect, Integer> delayMap = new HashMap<>();
-                    for(int i = 0; i < effectData.getEffects().length; i++) {
-                        Effect effect = effectData.getEffects()[i];
-                        int amp =  effectData.getAmplifiers()[i];
-                        effectMap.put(effect, effectMap.getOrDefault(effect, 0) + amp);
-                        delayMap.put(effect, effectData.getDelays()[i]);
-                    }
-                    int i = 0;
-                    for(Effect effect : effectMap.keySet()) {
-                        int app = delayMap.get(effect);
-                        if(livingEntity.tickCount % app == 0) {
-                            int amp = effectMap.get(effect);
-                            if (EffectCaps.hasCap(effect)) {
-                                amp = Math.min(amp, EffectCaps.getCap(effect));
-                            }
-                            livingEntity.addEffect(new EffectInstance(effect, app + 1, amp));
+                    for(Effect effect : effectData.getAmpMap().keySet()) {
+                        int amp = effectData.getAmpMap().get(effect) - 1;
+                        if(EffectCaps.hasCap(effect)) amp = Math.min(amp, EffectCaps.getCap(effect));
+                        int delay = Delays.getDelay(effect);
+                        if(livingEntity.tickCount % delay == 0) {
+                            livingEntity.addEffect(new EffectInstance(effect, delay + 1, amp));
                         }
-                        i++;
                     }
                 }
             }
@@ -114,5 +102,20 @@ public class EffectNecklace extends ModularEnergyItem implements ICurioItem{
     @Override
     public boolean canEquip(LivingEntity livingEntity, String slotID) {
         return super.canEquip(livingEntity, slotID);
+    }
+
+    public static class Delays {
+
+        private static HashMap<Effect, Integer> delays = new HashMap<>();
+
+        static {
+            delays.put(Effects.ABSORPTION, 250);
+        }
+
+        public static int getDelay(Effect effect) {
+            return delays.getOrDefault(effect, 60);
+        }
+
+
     }
 }

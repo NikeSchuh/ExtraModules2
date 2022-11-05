@@ -17,68 +17,52 @@ import java.util.Map;
 
 public class EffectData implements ModuleData<EffectData> {
 
-    private final Effect[] effects;
-    private final int[] amplifiers;
-    private final int[] delays;
+    private final HashMap<Effect, Integer> ampMap;
     private final int tickCost;
 
-    public EffectData(Effect mobEffect, int amplifier, int tickCost, int applyDelay) {
-        this.delays = new int[] {applyDelay};
-        this.effects = new Effect[] {mobEffect};
-        this.amplifiers = new int[] {amplifier};
+    public EffectData(Effect mobEffect, int amplifier, int tickCost) {
+        this.ampMap =new HashMap<>();
+        ampMap.put(mobEffect, amplifier + 1);
         this.tickCost = tickCost;
     }
 
-    public EffectData(Effect[] effects, int[] amplifiers, int tickCost, int[] delays) {
-        this.effects = effects;
-        this.amplifiers = amplifiers;
+    public EffectData(HashMap<Effect, Integer> ampMap, int tickCost) {
+        this.ampMap = ampMap;
         this.tickCost = tickCost;
-        this.delays = delays;
     }
 
-
-    public int[] getAmplifiers() {
-        return amplifiers;
-    }
 
     public int getTickCost() {
         return tickCost;
     }
 
-    public int[] getDelays() {
-        return delays;
+    public HashMap<Effect, Integer> getAmpMap() {
+        return ampMap;
     }
-
-    public Effect[] getEffects() {
-        return effects;
-    }
-
-
 
     @Override
     public EffectData combine(EffectData other) {
-        return new EffectData(ArrayUtils.addAll(getEffects(), other.getEffects()), ArrayUtils.addAll(getAmplifiers(), other.getAmplifiers()), tickCost + other.tickCost, ArrayUtils.addAll(getDelays(), other.getDelays()));
+        HashMap<Effect, Integer> combinedMap = new HashMap();
+        combinedMap.putAll(ampMap);
+        for(Effect effect : other.getAmpMap().keySet()) {
+            combinedMap.put(effect, combinedMap.getOrDefault(effect, 0) + other.ampMap.get(effect));
+        }
+        return new EffectData(combinedMap, tickCost + other.tickCost);
     }
 
     @Override
     public void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack) {
         map.put(new TranslationTextComponent("module.extramodules2.effect.tickcost"), TranslationUtils.string(FormatUtils.formatE(tickCost) + " OP/t"));
-        HashMap<Effect, Integer> effectMap = new HashMap();
-        for(int i = 0; i < effects.length; i++) {
-            Effect effect = effects[i];
-            int amp = amplifiers[i] + 1;
-            effectMap.put(effect, effectMap.getOrDefault(effect, 0) + amp);
-        }
-        for(Effect effect : effectMap.keySet()) {
-            if(EffectCaps.hasCap(effect)) {
-                map.put(TranslationUtils.string(FormatUtils.capitalizeString(effect.getRegistryName().getPath())), TranslationUtils.string(FormatUtils.toRoman(Math.min(effectMap.get(effect), EffectCaps.getCap(effect)))));
-            } else
-            map.put(TranslationUtils.string(FormatUtils.capitalizeString(effect.getRegistryName().getPath())), TranslationUtils.string(FormatUtils.toRoman(effectMap.get(effect))));
+        for(Effect effect : ampMap.keySet()) {
+            int amp = ampMap.get(effect) - 1;
+            if(EffectCaps.hasCap(effect)) amp = Math.min(amp, EffectCaps.getCap(effect));
+            map.put(TranslationUtils.string(FormatUtils.capitalizeString(effect.getRegistryName().getPath().replace("_", " "))), TranslationUtils.string(FormatUtils.toRoman(amp + 1)));
         }
         if(stack) {
-            if(EffectCaps.hasCap(effects[0])) {
-                map.put(new TranslationTextComponent("module.extramodules2.effect.levelcap"), TranslationUtils.string(EffectCaps.getCap(effects[0]) + ""));
-            }
+            ampMap.keySet().stream().findFirst().ifPresent(localEffect -> {
+                if(EffectCaps.hasCap(localEffect))
+                map.put(new TranslationTextComponent("module.extramodules2.effect.levelcap"), TranslationUtils.string(FormatUtils.toRoman(EffectCaps.getCap(localEffect) + 1)));
+            });
         }
-    }
+        }
 }

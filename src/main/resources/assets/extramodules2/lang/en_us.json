@@ -1,5 +1,6 @@
 {
   "itemGroup.extramodules.modules": "Extra Modules",
+  "itemGroup.extramodules.items": "Extra Modules Items",
 
   "item.extramodules2.generator_fuel": "Generator Fuel",
   "item.extramodules2.ultimate_generator_fuel": "§bUltimate Generator Fuel",

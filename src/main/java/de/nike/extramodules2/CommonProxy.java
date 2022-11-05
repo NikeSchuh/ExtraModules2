@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -39,6 +40,7 @@ public class CommonProxy {
 
     }
 
+
     public void clientSetup(FMLClientSetupEvent event) {
 
     }
@@ -46,6 +48,7 @@ public class CommonProxy {
     public void commonSetup(FMLCommonSetupEvent event) {
         ExtraModules2.LOGGER.info("Registering Potion mixes...");
         EMPotions.registerRecipes();
+        EMCuriosIntegration.init();
     }
 
     public void serverSetup(FMLDedicatedServerSetupEvent event) {
