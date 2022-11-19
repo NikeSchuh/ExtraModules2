@@ -7,17 +7,25 @@ import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.api.config.BooleanProperty;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty;
+import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
+import de.nike.extramodules2.EMModules;
 import de.nike.extramodules2.ExtraModules2;
 import de.nike.extramodules2.effects.EffectCaps;
 import de.nike.extramodules2.items.EMItems;
 import de.nike.extramodules2.items.ModularEnergyItem;
+import de.nike.extramodules2.items.NBTHelper;
 import de.nike.extramodules2.modules.EMModuleCategories;
 import de.nike.extramodules2.modules.EMModuleTypes;
 import de.nike.extramodules2.modules.data.EffectData;
+import de.nike.extramodules2.modules.entities.PotionCureEntity;
 import de.nike.extramodules2.utils.FormatUtils;
 import de.nike.extramodules2.utils.TranslationUtils;
 import net.minecraft.block.BlockState;
@@ -38,14 +46,16 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import top.theillusivec4.curios.common.inventory.CurioSlot;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class EffectNecklace extends ModularEnergyItem implements ICurioItem{
 
-    private final int gridWidth, gridHeight;
-    private boolean active = false;
+    private int gridWidth, gridHeight;
+
+    private final static String ACTIVE = "active";
+
+    private ModuleHostImpl host;
 
     public EffectNecklace(TechPropBuilder builder, int gridWidth, int gridHeight) {
         super(builder);
@@ -55,8 +65,10 @@ public class EffectNecklace extends ModularEnergyItem implements ICurioItem{
 
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
-        ModuleHostImpl host = new ModuleHostImpl(tier, gridWidth, gridHeight, "necklace", false, EMModuleCategories.EFFECT, ModuleCategory.ENERGY);
-        return host;
+        ModuleHostImpl hostImpl = new ModuleHostImpl(tier, gridWidth, gridHeight, "necklace", false, EMModuleCategories.EFFECT, ModuleCategory.ENERGY);
+
+        this.host = hostImpl;
+        return hostImpl;
     }
 
 
@@ -73,9 +85,9 @@ public class EffectNecklace extends ModularEnergyItem implements ICurioItem{
                 int opCost = effectData.getTickCost();
                 if(storage.getOPStored() > opCost) {
                     storage.modifyEnergyStored(-opCost);
-                    active = true;
-                } else active = false;
-                if(active) {
+                    NBTHelper.setBoolean(stack, ACTIVE, true);
+                } else NBTHelper.setBoolean(stack, ACTIVE, false);
+                if(NBTHelper.getBoolean(stack, ACTIVE, false)) {
                     for(Effect effect : effectData.getAmpMap().keySet()) {
                         int amp = effectData.getAmpMap().get(effect) - 1;
                         if(EffectCaps.hasCap(effect)) amp = Math.min(amp, EffectCaps.getCap(effect));

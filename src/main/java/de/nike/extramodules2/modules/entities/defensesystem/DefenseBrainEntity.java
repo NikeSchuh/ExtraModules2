@@ -57,7 +57,9 @@ import java.util.List;
 public class DefenseBrainEntity extends ModuleEntity {
 
     public static final int EYE_COLOR = new Color(174, 167, 164).getRGB();
+
     public static final int RAGE_COLOR = new Color(255, 0, 0, 25).getRGB();
+
     public static final int RAGE_COLOR_EYE = new Color(255, 0, 0, 50).getRGB();
 
     public float EYE_SPEED = 0.01f;
@@ -157,7 +159,9 @@ public class DefenseBrainEntity extends ModuleEntity {
     public void attacked(LivingAttackEvent event) {
         if (!activated.getValue()) return;
         if (!charged) return;
+        if(event.getSource() instanceof DamageSourceDefenseSystem) return;
         if (event.getSource().getEntity() == null) return;
+        if(event.getSource().getEntity().equals(event.getEntityLiving())) return;
         if(event.getSource().getEntity() instanceof AreaEffectCloudEntity) return;
         if(!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
         if(!(event.getSource().getEntity() instanceof LivingEntity)) return;
@@ -167,7 +171,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
         rageChargeLogicAttack(player, event.getAmount());
 
-        // Knockback/Damage
+        // Knockback / Damage
         double mul = Math.max(defenseSystemData.getReflectedDamage() / 100, 0.5d);
         float damage = defenseSystemData.getReflectedDamage();
         if (defenseSystemData.isOdinsRage()) damage *= 1.25;

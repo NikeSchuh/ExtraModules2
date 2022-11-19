@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "RBR",
+    "#A#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    "B": {
+      "item": "extramodules2:superior_module_core"
+    },
+    "A": {
+      "item": "draconicevolution:awakened_core"
+    },
+    "P": {
+      "type": "forge:nbt",
+      "item": "minecraft:potion",
+      "count": 1,
+      "nbt": "{Potion:\"minecraft:fire_resistance\"}"
+    },
+    "R": {
+      "item": "minecraft:magma_cream"
+    }
+  },
+  "result": {
+    "item": "extramodules2:draconic_fire_resistance_module"
+  }
+}

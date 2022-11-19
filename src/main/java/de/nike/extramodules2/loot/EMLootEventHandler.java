@@ -15,10 +15,10 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = ExtraModules2.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = ExtraModules2.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EMLootEventHandler {
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
+   /*/ @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onEntityDrop(LivingDropsEvent event) {
         if(event.getEntity().level.isClientSide) return;
         if(event.getEntityLiving() instanceof ElderGuardianEntity) {
@@ -33,6 +33,6 @@ public class EMLootEventHandler {
 
             }
         }
-    }
+    }/*/
 
 }

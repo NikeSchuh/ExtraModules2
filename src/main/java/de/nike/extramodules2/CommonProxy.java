@@ -1,5 +1,6 @@
 package de.nike.extramodules2;
 
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import de.nike.extramodules2.config.EMConfig;
 import de.nike.extramodules2.effects.EMMobEffects;
 import de.nike.extramodules2.integration.curios.EMCuriosIntegration;
@@ -36,8 +37,6 @@ public class CommonProxy {
         EMItems.register(eventBus);
         EMPotions.register(eventBus);
         EMMobEffects.register(eventBus);
-
-
     }
 
 

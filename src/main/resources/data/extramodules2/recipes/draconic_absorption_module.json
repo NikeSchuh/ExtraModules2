@@ -7,20 +7,20 @@
   ],
   "key": {
     "#": {
-      "item": "draconicevolution:chaotic_core"
+      "item": "draconicevolution:awakened_core"
     },
     "K": {
       "item": "extramodules2:superior_module_core"
     },
     "R": {
-      "item": "minecraft:enchanted_golden_apple"
+      "item": "minecraft:golden_apple"
     },
     "D": {
-      "item": "extramodules2:draconic_absorption_module"
+      "item": "minecraft:nautilus_shell"
     }
   },
   "result": {
-    "item": "extramodules2:chaotic_absorption_module",
+    "item": "extramodules2:draconic_absorption_module",
     "count": 1
   }
 }

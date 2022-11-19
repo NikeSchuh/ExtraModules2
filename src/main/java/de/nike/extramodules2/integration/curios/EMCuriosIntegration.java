@@ -15,7 +15,7 @@ import top.theillusivec4.curios.api.SlotTypePreset;
 
 import java.util.function.Function;
 
-public class EMCuriosIntegration extends CuriosIntegration {
+public class EMCuriosIntegration {
 
     public static final Tags.IOptionalNamedTag<Item> NECKLACE_TAG = ItemTags.createOptional(new ResourceLocation("curios", "necklace"));
 

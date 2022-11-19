@@ -28,6 +28,9 @@
   "item.extramodules2.draconic_resistance_module": "Chaotic Resistance Module",
   "item.extramodules2.chaotic_resistance_module": "Chaotic Resistance Module",
   "item.extramodules2.chaotic_absorption_module": "Chaotic Absorption Module",
+  "item.extramodules2.draconic_luck_module": "Draconic Luck Module",
+  "item.extramodules2.draconic_absorption_module": "Draconic Absorption Module",
+  "item.extramodules2.draconic_fire_resistance_module": "Draconic Fire Resistance Module",
   "item.extramodules2.advanced_module_core": "Advanced Module Core",
   "item.extramodules2.superior_module_core": "Superior Module Core",
   "item.extramodules2.module_controller": "Module Controller",
@@ -82,8 +85,8 @@
   "item_prop.draconicevolution.generator.active": "Generator",
   "item_prop.draconicevolution.generator.sounds": "Generator Sounds",
 
-  "death.attack.extramodules2.defense_system": "%1$s was killed by Defense System",
-  "death.attack.extramodules2.defense_system.player": "%1$s was killed by %2$s's Defense System",
+  "death.attack.defense_system": "%1$s was killed by Defense System",
+  "death.attack.defense_system.player": "%1$s was killed by %2$s's Defense System",
 
   "effect.extramodules2.anti_matter": "Anti Matter Poisoning",
 
