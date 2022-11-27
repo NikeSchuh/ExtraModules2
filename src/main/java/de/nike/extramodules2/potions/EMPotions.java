@@ -40,6 +40,13 @@ public class EMPotions {
             POTIONS.register("bad_omen",
                     () -> new Potion(new EffectInstance(Effects.BAD_OMEN, NikesMath.minutesToTicks(10f), 0)));
 
+    public static final RegistryObject<Potion> HASTE =
+            POTIONS.register("haste",
+                    () -> new Potion(new EffectInstance(Effects.DIG_SPEED, NikesMath.minutesToTicks(2f), 0)));
+
+    public static final RegistryObject<Potion> STRONG_HASTE =
+            POTIONS.register("strong_haste",
+                    () -> new Potion(new EffectInstance(Effects.DIG_SPEED, NikesMath.minutesToTicks(2f), 1)));
 
 
     public static void register(IEventBus eventBus) {
@@ -51,6 +58,8 @@ public class EMPotions {
         BrewingRecipeRegistry.addRecipe(new PotionRecipeImpl(Potions.MUNDANE, Items.HONEYCOMB, EMPotions.HEALTH_BOOST.get()));
         BrewingRecipeRegistry.addRecipe(new PotionRecipeImpl(EMPotions.HEALTH_BOOST.get(), Items.GLOWSTONE_DUST, EMPotions.HEALTH_BOOST_STRONG.get()));
         BrewingRecipeRegistry.addRecipe(new PotionRecipeImpl(Potions.THICK, Items.TOTEM_OF_UNDYING, EMPotions.BAD_OMEN.get()));
+        BrewingRecipeRegistry.addRecipe(new PotionRecipeImpl(Potions.STRONG_SWIFTNESS, Items.SUGAR, EMPotions.HASTE.get()));
+        BrewingRecipeRegistry.addRecipe(new PotionRecipeImpl(EMPotions.HASTE.get(), Items.GLOWSTONE_DUST, EMPotions.STRONG_HASTE.get()));
     }
 
 }

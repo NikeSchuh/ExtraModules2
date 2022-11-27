@@ -18,4 +18,6 @@ public class EMModuleTypes {
 	public static final ModuleType<ExtraHealthData> EXTRA_HEALTH = new ModuleTypeImpl<>("extra_health", 2, 1, ExtraHealthEntity::new, new ModuleCategory[] {ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR, ModuleCategory.ARMOR_CHEST}).setMaxInstallable(2);
 	public static final ModuleType<HitCooldownData> HIT_COOLDOWN = new ModuleTypeImpl<>("hit_cooldown", 1, 3, HitCooldownEntitiy::new, new ModuleCategory[] {ModuleCategory.CHESTPIECE}).setMaxInstallable(1);
 	public static final ModuleType<EffectData> EFFECT = new ModuleTypeImpl<>("effect", 1, 2, new ModuleCategory[] {EMModuleCategories.EFFECT}).setMaxInstallable(-1);
+	public static final ModuleType<PistolData> PISTOL = new ModuleTypeImpl<>("pistol", 1, 1, new ModuleCategory[] {EMModuleCategories.PISTOL}).setMaxInstallable(-1);
+
 }

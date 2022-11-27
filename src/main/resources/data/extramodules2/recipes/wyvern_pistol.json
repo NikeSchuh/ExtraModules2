@@ -1,0 +1,28 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "result": {
+    "item": "extramodules2:wyvern_pistol"
+  },
+  "catalyst": {
+    "item": "draconicevolution:wyvern_bow"
+  },
+  "total_energy": 1000000,
+  "tier": "WYVERN",
+  "ingredients": [
+    {
+      "item": "draconicevolution:wyvern_core"
+    },
+    {
+      "tag": "forge:ingots/draconium"
+    },
+    {
+      "tag": "forge:ingots/draconium"
+    },
+    {
+      "item": "draconicevolution:basic_relay_crystal"
+    },
+    {
+      "item": "draconicevolution:basic_relay_crystal"
+    }
+  ]
+}

@@ -5,15 +5,18 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
+import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import de.nike.extramodules2.modules.EMModuleTypes;
 import de.nike.extramodules2.modules.data.ArmorData;
+import de.nike.extramodules2.utils.EMItemHelper;
 import de.nike.extramodules2.utils.TranslationUtils;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
@@ -31,7 +34,7 @@ public class ArmorEntity extends ModuleEntity {
         if(!(context instanceof StackModuleContext)) return;
         StackModuleContext moduleContext = (StackModuleContext) context;
         if(!(moduleContext.getEntity() instanceof ServerPlayerEntity)) return;
-        if(!moduleContext.isEquipped()) return;
+        if(!EMItemHelper.isModularChestPieceEquipped(moduleContext.getEntity())) return;
         ServerPlayerEntity playerEntity = (ServerPlayerEntity) moduleContext.getEntity();
         ArmorData data = (ArmorData) module.getData();
         addAttributes(playerEntity, data);
@@ -42,7 +45,7 @@ public class ArmorEntity extends ModuleEntity {
         if(!(context instanceof StackModuleContext)) return;
         StackModuleContext moduleContext = (StackModuleContext) context;
         if(!(moduleContext.getEntity() instanceof ServerPlayerEntity)) return;
-        if(!moduleContext.isEquipped()) return;
+        if(!EMItemHelper.isModularChestPieceEquipped(moduleContext.getEntity())) return;
         ServerPlayerEntity playerEntity = (ServerPlayerEntity) moduleContext.getEntity();
         ArmorData data = (ArmorData) module.getData();
         subAttributes(playerEntity, data);

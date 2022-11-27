@@ -62,14 +62,11 @@ public class HitCooldownEntitiy extends ModuleEntity {
 
     @Override
     public void renderSlotOverlay(IRenderTypeBuffer getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
-        if(lastProgress > 0.01) {
             MatrixStack mStack = new MatrixStack();
             HitCooldownData data = (HitCooldownData) module.getData();
             double progress = ((double) invulnerableTicksClient) / data.getHitCooldownTicks();
             lastProgress = NikesMath.lerp(lastProgress, progress, 0.045f);
             GuiHelper.drawRect(getter, mStack, x, (y + height) - (height * lastProgress), width, height * lastProgress, FILL_COLOR);
-
-        }
     }
 
     @Override

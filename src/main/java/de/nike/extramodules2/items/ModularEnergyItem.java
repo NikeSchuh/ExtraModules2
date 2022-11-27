@@ -41,7 +41,7 @@ public class ModularEnergyItem extends Item implements IModularItem, IDEEquipmen
 
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
-        ModuleHostImpl host = new ModuleHostImpl(tier, 1, 1, "curios", true);
+        ModuleHostImpl host = new ModuleHostImpl(tier, 1, 1, "curios", false);
         return host;
     }
 

@@ -86,9 +86,9 @@ public class EMModules {
 		};
 	}
 
-	private static Function<Module<GeneratorData>, GeneratorData> generatorData(int opGeneration) {
+	private static Function<Module<GeneratorData>, GeneratorData> generatorData(int opGeneration, float efficiency) {
 		return e -> {
-			return new GeneratorData(opGeneration);
+			return new GeneratorData(opGeneration, efficiency);
 		};
 	}
 
@@ -117,6 +117,12 @@ public class EMModules {
 		};
 	}
 
+	private static Function<Module<PistolData>, PistolData> pistolData(float critChance)
+	{
+		return e ->{
+			return new PistolData(critChance);
+		};
+	}
 	public static void registerModules() {
 		register(new ModuleImpl<>(EMModuleTypes.OXYGEN_STORAGE, TechLevel.DRACONIC, oxygenStorageData(BalancingConfig.DRACONIC_OXYGEN_STORAGE.get())), "draconic_oxygen_storage");
 		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_BRAIN, TechLevel.WYVERN, defenseBrain(15, 100, BalancingConfig.WYVERN_RAGE_TICKCOST.get(), 6)), "wyvern_defense_brain");
@@ -127,25 +133,34 @@ public class EMModules {
 		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_SYSTEM, TechLevel.CHAOTIC, defenseSystemData(10, 256000)), "chaotic_defense_reflection");
 		register(new ModuleImpl<>(EMModuleTypes.DEFENSE_SYSTEM, TechLevel.DRACONIC, defenseSystemData(0, 10000000, true)).setMaxInstall(1), "draconic_odins_rage");
 		register(new ModuleImpl<>(EMModuleTypes.POTION_CURER, TechLevel.DRACONIC, potionCurer()), "draconic_potion_curer");
-		register(new ModuleImpl<>(EMModuleTypes.GENERATOR, TechLevel.DRACONIC, generatorData(BalancingConfig.DRACONIC_GENERATOR_PRODUCTION.get())), "draconic_generator");
-		register(new ModuleImpl<>(EMModuleTypes.GENERATOR, TechLevel.CHAOTIC, generatorData(BalancingConfig.CHAOTIC_GENERATOR_PRODUCTION.get())), "chaotic_generator");
+		register(new ModuleImpl<>(EMModuleTypes.GENERATOR, TechLevel.DRACONIC, generatorData(BalancingConfig.DRACONIC_GENERATOR_PRODUCTION.get(), 4.0f)), "draconic_generator");
+		register(new ModuleImpl<>(EMModuleTypes.GENERATOR, TechLevel.CHAOTIC, generatorData(BalancingConfig.CHAOTIC_GENERATOR_PRODUCTION.get(), 12.0f)), "chaotic_generator");
 		register(new ModuleImpl<>(EMModuleTypes.ARMOR, TechLevel.WYVERN, armorData(1, 0)), "wyvern_armor");
 		register(new ModuleImpl<>(EMModuleTypes.ARMOR, TechLevel.DRACONIC, armorData(2, 1)), "draconic_armor");
 		register(new ModuleImpl<>(EMModuleTypes.ARMOR, TechLevel.CHAOTIC, armorData(4, 2)), "chaotic_armor");
 		register(new ModuleImpl<>(EMModuleTypes.EXTRA_HEALTH, TechLevel.WYVERN, extraHealthData(5)), "wyvern_extra_health");
 		register(new ModuleImpl<>(EMModuleTypes.EXTRA_HEALTH, TechLevel.DRACONIC, extraHealthData(20)), "draconic_extra_health");
 		register(new ModuleImpl<>(EMModuleTypes.EXTRA_HEALTH, TechLevel.CHAOTIC, extraHealthData(40)), "chaotic_extra_health");
-		register(new ModuleImpl<>(EMModuleTypes.HIT_COOLDOWN, TechLevel.DRACONIC, hitCooldownData(4)), "draconic_hit_cooldown");
-		register(new ModuleImpl<>(EMModuleTypes.HIT_COOLDOWN, TechLevel.CHAOTIC, hitCooldownData(10)), "chaotic_hit_cooldown");
-		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.WYVERN, effectData(Effects.REGENERATION,  0, 1000)), "wyvern_regeneration");
-		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.DRACONIC, effectData(Effects.REGENERATION,  1, 5000)), "draconic_regeneration");
-		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.CHAOTIC, effectData(Effects.REGENERATION,  3, 10000)), "chaotic_regeneration");
-		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.DRACONIC, effectData(Effects.DAMAGE_RESISTANCE,  0, 10000), 2, 1), "draconic_resistance");
-		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.CHAOTIC, effectData(Effects.DAMAGE_RESISTANCE,  1, 25000), 2, 1), "chaotic_resistance");
-		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.DRACONIC, effectData(Effects.ABSORPTION,  1, 5000), 2, 2), "draconic_absorption");
-		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.CHAOTIC, effectData(Effects.ABSORPTION,  4, 30000), 2, 2), "chaotic_absorption");
-		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.DRACONIC, effectData(Effects.FIRE_RESISTANCE,  0, 2000), 1, 1), "draconic_fire_resistance");
+		register(new ModuleImpl<>(EMModuleTypes.HIT_COOLDOWN, TechLevel.DRACONIC, hitCooldownData(1)), "draconic_hit_cooldown");
+		register(new ModuleImpl<>(EMModuleTypes.HIT_COOLDOWN, TechLevel.CHAOTIC, hitCooldownData(5)), "chaotic_hit_cooldown");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.WYVERN, effectData(Effects.REGENERATION,  0, 500)), "wyvern_regeneration");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.DRACONIC, effectData(Effects.REGENERATION,  1, 1000)), "draconic_regeneration");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.CHAOTIC, effectData(Effects.REGENERATION,  3, 4000)), "chaotic_regeneration");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.DRACONIC, effectData(Effects.DAMAGE_RESISTANCE,  0, 2500), 2, 1), "draconic_resistance");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.CHAOTIC, effectData(Effects.DAMAGE_RESISTANCE,  1, 10000), 2, 1), "chaotic_resistance");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.DRACONIC, effectData(Effects.ABSORPTION,  1, 3000), 2, 2), "draconic_absorption");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.CHAOTIC, effectData(Effects.ABSORPTION,  4, 8000), 2, 2), "chaotic_absorption");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.DRACONIC, effectData(Effects.FIRE_RESISTANCE,  0, 800), 1, 1), "draconic_fire_resistance");
 		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.DRACONIC, effectData(Effects.LUCK, 0, 2000), 1, 1), "draconic_luck");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.WYVERN, effectData(Effects.DAMAGE_BOOST, 0, 500), 1, 1), "wyvern_strength");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.DRACONIC, effectData(Effects.DAMAGE_BOOST, 2, 1000), 1, 2), "draconic_strength");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.CHAOTIC, effectData(Effects.DAMAGE_BOOST, 3, 2000), 1, 2), "chaotic_strength");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.DRACONIC, effectData(Effects.INVISIBILITY, 0, 2500), 2, 2), "draconic_invisibility");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.WYVERN, effectData(Effects.DIG_SPEED, 0, 800), 1, 1), "wyvern_haste");
+		register(new ModuleImpl<>(EMModuleTypes.EFFECT, TechLevel.DRACONIC, effectData(Effects.DIG_SPEED, 1, 1200), 1, 1), "draconic_haste");
+		register(new ModuleImpl<>(EMModuleTypes.PISTOL, TechLevel.WYVERN, pistolData(0.02f), 2, 1), "wyvern_crit");
+		register(new ModuleImpl<>(EMModuleTypes.PISTOL, TechLevel.DRACONIC, pistolData(0.05f), 2, 1), "draconic_crit");
+		register(new ModuleImpl<>(EMModuleTypes.PISTOL, TechLevel.CHAOTIC, pistolData(0.1f), 2, 1), "chaotic_crit");
 
 	}
 

@@ -16,7 +16,8 @@ public class EMCommands {
     public static void onCommandsRegister(RegisterCommandsEvent event) {
            // rageModeCommand = new RageModeCommand(event.getDispatcher());
            //  new EnergyFillCommand(event.getDispatcher());
-           //  ConfigCommand.register(event.getDispatcher());
+     //   new BurntimeCommand(event.getDispatcher());
+         //   ConfigCommand.register(event.getDispatcher());
     }
 
 

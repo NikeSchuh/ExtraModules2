@@ -12,6 +12,7 @@ public class EffectCaps {
     static {
         CAPS.put(Effects.DAMAGE_RESISTANCE, 2);
         CAPS.put(Effects.REGENERATION, 5);
+        CAPS.put(Effects.INVISIBILITY, 0);
     }
 
     public static boolean hasCap(Effect effect) {

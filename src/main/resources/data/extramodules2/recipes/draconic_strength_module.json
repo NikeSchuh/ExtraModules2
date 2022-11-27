@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#R#",
+    "DKD",
+    "#R#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    "K": {
+      "item": "extramodules2:superior_module_core"
+    },
+    "D": {
+      "item": "extramodules2:wyvern_strength_module"
+    },
+    "R": {
+      "item": "draconicevolution:awakened_core"
+    }
+  },
+  "result": {
+    "item": "extramodules2:draconic_strength_module",
+    "count": 1
+  }
+}

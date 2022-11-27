@@ -4,6 +4,9 @@
 
   "item.extramodules2.generator_fuel": "Generator Fuel",
   "item.extramodules2.ultimate_generator_fuel": "§bUltimate Generator Fuel",
+  "item.extramodules2.wyvern_pistol": "§5Wyvern Pistol",
+  "item.extramodules2.draconic_pistol": "§6Draconic Pistol",
+  "item.extramodules2.chaotic_pistol": "§cChaotic Pistol",
   "item.extramodules2.draconic_oxygen_storage_module": "Draconic Oxygen Storage Module",
   "item.extramodules2.draconic_defense_brain_module": "Draconic Defense Brain Module",
   "item.extramodules2.wyvern_defense_brain_module": "Wyvern Defense Brain Module",
@@ -14,18 +17,27 @@
   "item.extramodules2.chaotic_generator_module": "Chaotic Generator",
   "item.extramodules2.draconic_generator_module": "Draconic Generator",
   "item.extramodules2.draconic_odins_rage_module": "Draconic Odins Rage Module",
+  "item.extramodules2.wyvern_haste_module": "Wyvern Haste Module",
+  "item.extramodules2.draconic_haste_module": "Draconic Haste Module",
   "item.extramodules2.wyvern_armor_module": "Wyvern Armor Module",
   "item.extramodules2.draconic_armor_module": "Draconic Armor Module",
   "item.extramodules2.chaotic_armor_module": "Chaotic Armor Module",
   "item.extramodules2.wyvern_extra_health_module": "Wyvern Extra Health Module",
   "item.extramodules2.draconic_extra_health_module": "Draconic Extra Health Module",
   "item.extramodules2.chaotic_extra_health_module": "Chaotic Extra Health Module",
+  "item.extramodules2.wyvern_crit_module": "Wyvern Critical Strike Module",
+  "item.extramodules2.draconic_crit_module": "Draconic Critical Strike Module",
+  "item.extramodules2.chaotic_crit_module": "Chaotic Critical Strike Module",
   "item.extramodules2.chaotic_hit_cooldown_module": "Chaotic Hit Cooldown Module",
   "item.extramodules2.draconic_hit_cooldown_module": "Draconic Hit Cooldown Module",
   "item.extramodules2.wyvern_regeneration_module": "Wyvern Regeneration Module",
   "item.extramodules2.draconic_regeneration_module": "Draconic Regeneration Module",
   "item.extramodules2.chaotic_regeneration_module": "Chaotic Regeneration Module",
-  "item.extramodules2.draconic_resistance_module": "Chaotic Resistance Module",
+  "item.extramodules2.wyvern_strength_module": "Wyvern Strength Module",
+  "item.extramodules2.draconic_strength_module": "Draconic Strength Module",
+  "item.extramodules2.chaotic_strength_module": "Chaotic Strength Module",
+  "item.extramodules2.draconic_invisibility_module": "Draconic Invisibility Module",
+  "item.extramodules2.draconic_resistance_module": "Draconic Resistance Module",
   "item.extramodules2.chaotic_resistance_module": "Chaotic Resistance Module",
   "item.extramodules2.chaotic_absorption_module": "Chaotic Absorption Module",
   "item.extramodules2.draconic_luck_module": "Draconic Luck Module",
@@ -52,6 +64,7 @@
   "module_type.draconicevolution.extra_health.name": "Extra Health",
   "module_type.draconicevolution.hit_cooldown.name": "Shield Hit Cooldown",
   "module_type.draconicevolution.effect.name": "Effect",
+  "module_type.draconicevolution.pistol.name": "Pistol",
 
   "module.extramodules2.defense_brain.bootup": "§2Defense System boot completed.",
   "module.extramodules2.defense_brain.shutdown": "§cDefense System shut down.",
@@ -78,6 +91,7 @@
   "module.extramodules2.armor.armor_toughness": "Armor Toughness",
   "module.extramodules2.hit_cooldown.cooldown": "Hit Cooldown",
   "module.extramodules2.extra_health.extra_health": "Health",
+  "module.extramodules2.pistol.crit": "Critical Strike Chance",
 
   "item_prop.draconicevolution.defense_brain_module.activated": "Defense System Toggle",
   "item_prop.draconicevolution.oxygen_mod.consume_oxygen": "Use Oxygen",
@@ -96,6 +110,8 @@
   "item.minecraft.potion.effect.strong_wither": "Potion of Decay",
   "item.minecraft.potion.effect.anti_matter": "Potion of Antimatter",
   "item.minecraft.potion.effect.bad_omen": "Potion of Bad Omen",
+  "item.minecraft.potion.effect.haste": "Potion of Haste",
+  "item.minecraft.potion.effect.strong_haste": "Potion of Haste",
 
   "item.minecraft.splash_potion.effect.health_boost": "Splash Potion of Hearts",
   "item.minecraft.splash_potion.effect.strong_health_boost": "Splash Potion of Hearts",
@@ -103,6 +119,8 @@
   "item.minecraft.splash_potion.effect.strong_wither": "§cSplash Potion of Decay",
   "item.minecraft.splash_potion.effect.anti_matter": "Splash Potion of Antimatter",
   "item.minecraft.splash_potion.effect.bad_omen": "Splash Potion of Bad Omen",
+  "item.minecraft.splash_potion.effect.haste": "Splash Potion of Haste",
+  "item.minecraft.splash_potion.effect.strong_haste": "Splash Potion of Haste",
 
   "item.minecraft.lingering_potion.effect.health_boost": "Lingering Potion of Hearts",
   "item.minecraft.lingering_potion.effect.strong_health_boost": "Lingering Potion of Hearts",
@@ -110,6 +128,8 @@
   "item.minecraft.lingering_potion.effect.strong_wither": "Lingering Potion of Decay",
   "item.minecraft.lingering_potion.effect.anti_matter": "Lingering Potion of Antimatter",
   "item.minecraft.lingering_potion.effect.bad_omen": "Lingering Potion of Bad Omen",
+  "item.minecraft.lingering_potion.effect.haste": "Lingering Potion of Haste",
+  "item.minecraft.lingering_potion.effect.strong_haste": "Lingering Potion of Haste",
 
   "item.minecraft.tipped_arrow.effect.health_boost": "Arrow of Hearts",
   "item.minecraft.tipped_arrow.effect.strong_health_boost": "Arrow of Hearts",
@@ -117,9 +137,14 @@
   "item.minecraft.tipped_arrow.effect.strong_wither": "Arrow of Decay",
   "item.minecraft.tipped_arrow.effect.anti_matter": "Pocketable Disassembler",
   "item.minecraft.tipped_arrow.effect.bad_omen": "Arrow of Bad Omen",
+  "item.minecraft.tipped_arrow.effect.haste": "Arrow of Haste",
+  "item.minecraft.tipped_arrow.effect.strong_haste": "Arrow of Haste",
 
   "death.attack.extramodules2.anti_matter": "%1$s was disassembled on a molecular level",
   "death.attack.extramodules2.anti_matter.player": "%1$s has stopped existing due to %2$s's pocketable disassembler",
   "death.attack.extramodules2.defense_system": "%1$s was killed by Defense System",
-  "death.attack.extramodules2.defense_system.player": "%1$s was killed by %2$s's Defense System"
+  "death.attack.extramodules2.defense_system.player": "%1$s was killed by %2$s's Defense System",
+
+  "death.attack.extramodules2.lightning_flash": "%1$s was critically removed by draconic thunder",
+  "death.attack.extramodules2.lightning_flash.player": "%1$s was critically removed by %2$s's draconic thunder"
 }

@@ -20,10 +20,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.BucketItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.DrinkHelper;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.*;
@@ -35,9 +38,12 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 import java.awt.*;
 import java.awt.Color;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GeneratorEntity extends ModuleEntity {
+
+    public static final List<Item> blackList = new ArrayList<>();
 
     private final int FILL_COLOR = new Color(0, 255, 0, 32).getRGB();
     private final int TRANSPARENT = new Color(255, 255, 255, 0).getRGB();
@@ -88,8 +94,8 @@ public class GeneratorEntity extends ModuleEntity {
                             if (playerEntity.tickCount % 20 == 0) {
                                 for (ItemStack stack : playerEntity.inventory.items) {
                                     if (stack.isEmpty()) continue;
-                                    if(stack.getItem().getBurnTime(stack, IRecipeType.SMELTING) > 0) {
-                                        int bTime = stack.getItem().getBurnTime(stack, IRecipeType.SMELTING);
+                                    if(ForgeHooks.getBurnTime(stack, IRecipeType.SMELTING) > 0) {
+                                        int bTime = (int) (ForgeHooks.getBurnTime(stack, IRecipeType.SMELTING) * generatorData.getEfficiency());
                                         burnTime = bTime;
                                         calculateBurnTimeTicks(burnTime);
                                         maxBurnTime = burnTime;
@@ -163,6 +169,7 @@ public class GeneratorEntity extends ModuleEntity {
         GeneratorData generatorData = (GeneratorData) module.getData();
         list.add(new StringTextComponent(TextFormatting.GRAY +  new TranslationTextComponent("module.extramodules2.generator.generation").withStyle(Style.EMPTY).getString() + ": " + TextFormatting.GREEN + generatorData.getOpGeneration() + " OP/t"));
         list.add(new StringTextComponent(TextFormatting.GRAY + "Burnrate: " + TextFormatting.GREEN + toolTipFormat.format((float)generatorData.getOpGeneration() / OP_PER_BURNTIME) + "x/t"));
+        list.add(new StringTextComponent(TextFormatting.GRAY + "Efficiency: " + TextFormatting.GREEN + ((int) (generatorData.getEfficiency() * 100)) + "%"));
         if(!(burnTime > 0 && maxBurnTime > 0)) return;
         list.add(new StringTextComponent(TextFormatting.GRAY + "Energy: " + TextFormatting.GREEN + FormatUtils.formatE(burnTime * generatorData.getOpGeneration()) + " OP " + TextFormatting.BLUE + "(" + toolTipFormat.format((1 - ((double) burnTime / maxBurnTime)) * 100) + "%)"));
     }
@@ -195,5 +202,24 @@ public class GeneratorEntity extends ModuleEntity {
         super.readFromNBT(compound);
         this.burnTime = compound.getInt("burntime");
         this.maxBurnTime = compound.getInt("maxburntime");
+    }
+
+    static {
+        blackList.add(Items.BOW);
+        blackList.add(Items.CROSSBOW);
+        blackList.add(Items.LAVA_BUCKET);
+        blackList.add(Items.STICK);
+        blackList.add(Items.CRAFTING_TABLE);
+        blackList.add(Items.ACACIA_BOAT);
+        blackList.add(Items.BIRCH_BOAT);
+        blackList.add(Items.DARK_OAK_BOAT);
+        blackList.add(Items.JUNGLE_BOAT);
+        blackList.add(Items.SPRUCE_BOAT);
+        blackList.add(Items.OAK_BOAT);
+        blackList.add(Items.FISHING_ROD);
+        blackList.add(Items.BOWL);
+        blackList.add(Items.BLACK_WOOL);
+        blackList.add(Items.WOODEN_AXE);
+        blackList.add(Items.WOODEN_SWORD);
     }
 }

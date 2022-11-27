@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#D#",
+    "DKD",
+    "#D#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium"
+    },
+    "K": {
+      "item": "extramodules2:advanced_module_core"
+    },
+    "D": {
+      "type": "forge:nbt",
+      "item": "minecraft:potion",
+      "count": 1,
+      "nbt": "{Potion:\"extramodules2:haste\"}"
+    }
+  },
+  "result": {
+    "item": "extramodules2:wyvern_haste_module",
+    "count": 1
+  }
+}
