@@ -1,7 +1,6 @@
 package de.nike.extramodules2.items;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import de.nike.extramodules2.ExtraModules2;
 import de.nike.extramodules2.items.custom.AntiPotionItem;
@@ -9,9 +8,7 @@ import de.nike.extramodules2.items.custom.EffectNecklace;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.PotionItem;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.potion.Potion;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -34,13 +31,13 @@ public class EMItems {
 	public static final RegistryObject<Item> GENERATOR_FUEL = ITEMS.register("generator_fuel", () -> new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)) {
 		@Override
 		public int getBurnTime(ItemStack itemStack, @Nullable IRecipeType<?> recipeType) {
-			return 18000;
+			return 256000;
 		}
 	});
 	public static final RegistryObject<Item> ULTIMATE_GENERATOR_FUEL = ITEMS.register("ultimate_generator_fuel", () -> new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)) {
 		@Override
 		public int getBurnTime(ItemStack itemStack, @Nullable IRecipeType<?> recipeType) {
-			return 320000;
+			return 2000000;
 		}
 	});
 	public static final RegistryObject<Item> ADVANCED_MODULE_CORE = ITEMS.register("advanced_module_core", () -> new Item(new Item.Properties().tab(EXTRAMODULES_ITEMS)));
@@ -54,9 +51,9 @@ public class EMItems {
 	public static final RegistryObject<Item> DRACONIC_EFFECT_NECKLACE = ITEMS.register("draconic_effect_necklace", () -> new EffectNecklace(new TechPropBuilder(TechLevel.DRACONIC).maxStackSize(1), 3, 3));
 	public static final RegistryObject<Item> CHAOTIC_EFFECT_NECKLACE = ITEMS.register("chaotic_effect_necklace", () -> new EffectNecklace(new TechPropBuilder(TechLevel.CHAOTIC).maxStackSize(1), 4, 4));
 
-	public static final RegistryObject<Item> WYVERN_PISTOL = ITEMS.register("wyvern_pistol", () -> new ModularPistol(new TechPropBuilder(TechLevel.WYVERN).maxStackSize(1), 4, 4));
-	public static final RegistryObject<Item> DRACONIC_PISTOL = ITEMS.register("draconic_pistol", () -> new ModularPistol(new TechPropBuilder(TechLevel.DRACONIC).maxStackSize(1), 6, 4));
-	public static final RegistryObject<Item> CHAOTIC_PISTOL = ITEMS.register("chaotic_pistol", () -> new ModularPistol(new TechPropBuilder(TechLevel.CHAOTIC).maxStackSize(1), 8, 6));
+	public static final RegistryObject<Item> WYVERN_PISTOL = ITEMS.register("wyvern_pistol", () -> new ModularPistol(new TechPropBuilder(TechLevel.WYVERN).maxStackSize(1), 4, 4, 10));
+	public static final RegistryObject<Item> DRACONIC_PISTOL = ITEMS.register("draconic_pistol", () -> new ModularPistol(new TechPropBuilder(TechLevel.DRACONIC).maxStackSize(1), 8, 4, 15f));
+	public static final RegistryObject<Item> CHAOTIC_PISTOL = ITEMS.register("chaotic_pistol", () -> new ModularPistol(new TechPropBuilder(TechLevel.CHAOTIC).maxStackSize(1), 10, 5, 20f));
 
 	public static void register(IEventBus eventBus) {
 		ITEMS.register(eventBus);

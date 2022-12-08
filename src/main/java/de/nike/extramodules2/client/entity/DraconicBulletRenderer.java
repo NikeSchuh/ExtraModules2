@@ -30,9 +30,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class DraconicBulletRenderer extends EntityRenderer<DraconicBulletEntity> {
 
-    public static final ResourceLocation RES_ARROW = new ResourceLocation("textures/entity/projectiles/arrow.png");
-    public static final ResourceLocation RES_TIPPED_ARROW = new ResourceLocation("textures/entity/projectiles/tipped_arrow.png");
-
     public DraconicBulletRenderer(EntityRendererManager renderManagerIn) {
         super(renderManagerIn);
     }
@@ -64,29 +61,10 @@ public class DraconicBulletRenderer extends EntityRenderer<DraconicBulletEntity>
     }
 
     public ResourceLocation getTextureLocation(DraconicBulletEntity entity) {
-        return RES_ARROW;
+        return null;
     }
 
-
-        /**
-         * Renders an electrical arc based on vanilla lightning between two points.
-         * For best results this effect should be rendered in a vertical orientation.
-         * Meaning the end point should ideally be directly above or directly bellow the start point.
-         * Keep in mind you are free to apply any operations you want to the supplied matrix stack.
-         * Any rotation or translation operations will be relative to the startPos.
-         *
-         * @param mStack The matrix stack that will be applied when rendering the effect.
-         * @param getter an IRenderTypeBuffer.
-         * @param startPos The start position for rendering the arc (The bottom in terms of Y).
-         * @param endPos The end position for rendering the arc (The top in terms of Y).
-         * @param segCount The number of arc segments. (Default 8)
-         * @param randSeed The random seed for the arc.
-         * @param scaleMod Modifier that applies to the diameter of the arc. (Default 1)
-         * @param deflectMod Modifies the segment offsets (Makes it more zigzaggy)(Default 1)
-         * @param autoScale If true automatically adjusts the overall scale based on the length of the arc.
-         * @param segTaper Allows you to apply a positive or negative taper to each arc segment. (Default 0)
-         * @param colour The colour of the arc.
-         */
+    // Credits: brandon3055
         public static void rendeArcP2P(MatrixStack mStack, IRenderTypeBuffer getter, Vector3 startPos, Vector3 endPos, int segCount, long randSeed, float scaleMod, float deflectMod, boolean autoScale, float segTaper, int colour) {
 
             double height = endPos.y - startPos.y;

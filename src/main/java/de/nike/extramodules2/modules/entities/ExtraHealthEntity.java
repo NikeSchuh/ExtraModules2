@@ -38,11 +38,6 @@ public class ExtraHealthEntity extends ModuleEntity {
     }
 
     @Override
-    public void renderSlotOverlay(IRenderTypeBuffer getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
-        super.renderSlotOverlay(getter, mc, x, y, width, height, mouseX, mouseY, mouseOver, partialTicks);
-    }
-
-    @Override
     public void onInstalled(ModuleContext context) {
         if(!(context instanceof StackModuleContext)) return;
         StackModuleContext moduleContext = (StackModuleContext) context;
@@ -76,14 +71,20 @@ public class ExtraHealthEntity extends ModuleEntity {
         playerEntity.getAttributes().addTransientAttributeModifiers(map);
     }
 
+
+
     public static void equip(ServerPlayerEntity playerEntity, ModuleHost host) {
         ExtraHealthData extraHealthData = host.getModuleData(EMModuleTypes.EXTRA_HEALTH, new ExtraHealthData(0));
         addAttributes(playerEntity, extraHealthData);
     }
 
+
+
     public static void unequip(ServerPlayerEntity playerEntity, ModuleHost host) {
         ExtraHealthData extraHealthData = host.getModuleData(EMModuleTypes.EXTRA_HEALTH, new ExtraHealthData(0));
         subAttributes(playerEntity, extraHealthData);
     }
+
+
 
 }

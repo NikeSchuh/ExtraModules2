@@ -1,6 +1,7 @@
 package de.nike.extramodules2.entity.projectiles;
 
 import de.nike.extramodules2.client.sounds.EMSounds;
+import de.nike.extramodules2.damagesources.DraconicLightningDamageSource;
 import de.nike.extramodules2.entity.EMEntities;
 import de.nike.extramodules2.network.EMNetwork;
 import net.minecraft.advancements.criterion.EntityPredicate;
@@ -8,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ArmorStandEntity;
+import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -29,7 +31,11 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
 import org.lwjgl.system.CallbackI;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class DraconicLightningChainEntity extends Entity {
+
+    private DraconicBulletEntity bulletParent;
 
     private static final DataParameter<Integer> LIGHTNING_COLOR = EntityDataManager.defineId(DraconicLightningChainEntity.class, DataSerializers.INT);
     private static final DataParameter<Integer> LIGHTNING_SIZE = EntityDataManager.defineId(DraconicLightningChainEntity.class, DataSerializers.INT);
@@ -44,7 +50,7 @@ public class DraconicLightningChainEntity extends Entity {
 
     private float progression = 1.0f;
     private boolean finished = false;
-
+    private long lightningSeed = ThreadLocalRandom.current().nextInt(0, 10000000);
 
     public DraconicLightningChainEntity(World world) {
         super(EMEntities.DRACONIC_CHAIN, world);
@@ -69,6 +75,10 @@ public class DraconicLightningChainEntity extends Entity {
     public boolean shouldRenderAtSqrDistance(double p_70112_1_) {
         double d0 = 64.0D * getViewScale();
         return p_70112_1_ < d0 * d0;
+    }
+
+    public void setParent(DraconicBulletEntity parent) {
+        this.bulletParent = parent;
     }
 
     public void setLightningColor(int color) {
@@ -123,6 +133,13 @@ public class DraconicLightningChainEntity extends Entity {
                 remove();
             }
         }
+
+        if(level.isClientSide) {
+            if(tickCount % 2 == 0) {
+                lightningSeed++;
+            }
+        }
+
         progression = Math.max(0, progression - 0.2f);
 
         if(!finished) {
@@ -133,15 +150,21 @@ public class DraconicLightningChainEntity extends Entity {
         }
     }
 
+    public long getLightningSeed() {
+        return lightningSeed;
+    }
+
     public void onStrike() {
-        level.playSound(null, position().x, position().y, position().z, EMSounds.distantThunder, SoundCategory.BLOCKS, 10f, 0.5f + (level.random.nextFloat() / 2));
+        level.playSound(null, blockPosition(), EMSounds.distantThunder, SoundCategory.WEATHER, 10f, 0.5f + (level.random.nextFloat() / 2));
         if(!level.isClientSide) {
             BlockPos targetPos = getTarget().blockPosition();
-            AxisAlignedBB axisAlignedBB = new AxisAlignedBB(targetPos.offset(5,3,5), targetPos.offset(-5, -5, -5));
+            AxisAlignedBB axisAlignedBB = new AxisAlignedBB(targetPos.offset(bulletParent.getLightningSize(),bulletParent.getLightningSize(),bulletParent.getLightningSize()), targetPos.offset(-bulletParent.getLightningSize(), -bulletParent.getLightningSize(), -bulletParent.getLightningSize()));
             if(getOwner() instanceof  PlayerEntity) {
                 PlayerEntity playerEntity = (PlayerEntity) getOwner();
                 for (LivingEntity livingEntity : level.getEntitiesOfClass(LivingEntity.class, axisAlignedBB)) {
-                    livingEntity.hurt(new IndirectEntityDamageSource("extramodules2.lightning_flash", this, getOwner()), getDamage());
+                    if(livingEntity.equals(playerEntity)) continue;
+                    livingEntity.setRemainingFireTicks(bulletParent.getFireTicks());
+                    livingEntity.hurt(new DraconicLightningDamageSource(playerEntity, this), getDamage());
                 }
             }
         }

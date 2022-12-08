@@ -41,6 +41,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -124,14 +125,14 @@ public class DefenseBrainEntity extends ModuleEntity {
         PlayerEntity playerEntity = (PlayerEntity) stackModuleContext.getEntity();
         tickRageModeCharge(stackModuleContext, (PlayerEntity) stackModuleContext.getEntity());
         if (EffectiveSide.get().isClient()) {
-            ClientPlayerEntity clientPlayerEntity = ((ClientPlayerEntity) stackModuleContext.getEntity());
-            ClientWorld clientWorld = clientPlayerEntity.clientLevel;
+            PlayerEntity clientPlayerEntity = ((PlayerEntity) stackModuleContext.getEntity());
+            World world = clientPlayerEntity.level;
             if (isInRageMode()) {
-                eyeVisualsRageMode(clientWorld);
+                eyeVisualsRageMode(world);
             }
             // Random Messages
-            if(playerEntity.tickCount % 10000 == 0) {
-                if(Math.random() < 0.1D) {
+            if(playerEntity.tickCount % 25000 == 0) {
+                if(world.random.nextFloat() < 0.1f) {
                     playerEntity.sendMessage(new TranslationTextComponent("module.extramodules2.defense_brain.error"), null);
                     int msg = playerEntity.level.random.nextInt(5);
                     playerEntity.sendMessage(new TranslationTextComponent("module.extramodules2.defense_brain.randomtick" + msg), null);
@@ -199,7 +200,7 @@ public class DefenseBrainEntity extends ModuleEntity {
         } else rageModeTicks = 100;
     }
 
-    public void eyeVisualsRageMode(ClientWorld clientWorld) {
+    public void eyeVisualsRageMode(World clientWorld) {
         if (targetChangeDelay > 0) targetChangeDelay--;
         if (targetChangeDelay <= 0) {
             setEyeTarget(clientWorld.random.nextInt(10000) - 5000, clientWorld.random.nextInt(10000) - 5000, lastRectX, lastRectY);

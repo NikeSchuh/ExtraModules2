@@ -4,13 +4,22 @@
 
   "item.extramodules2.generator_fuel": "Generator Fuel",
   "item.extramodules2.ultimate_generator_fuel": "§bUltimate Generator Fuel",
+
   "item.extramodules2.wyvern_pistol": "§5Wyvern Pistol",
   "item.extramodules2.draconic_pistol": "§6Draconic Pistol",
   "item.extramodules2.chaotic_pistol": "§cChaotic Pistol",
+
+  "item.extramodules2.wyvern_oxygen_storage_module": "Wyvern Oxygen Storage Module",
   "item.extramodules2.draconic_oxygen_storage_module": "Draconic Oxygen Storage Module",
+  "item.extramodules2.chaotic_oxygen_storage_module": "Chaotic Oxygen Storage Module",
+
+  "item.extramodules2.draconic_homing_module": "Draconic Bullet Homing Module",
+  "item.extramodules2.chaotic_homing_module": "Chaotic Bullet Homing Module",
+
   "item.extramodules2.draconic_defense_brain_module": "Draconic Defense Brain Module",
   "item.extramodules2.wyvern_defense_brain_module": "Wyvern Defense Brain Module",
   "item.extramodules2.chaotic_defense_brain_module": "Chaotic Defense Brain Module",
+
   "item.extramodules2.wyvern_defense_reflection_module": "Wyvern Defense Reflection Module",
   "item.extramodules2.draconic_defense_reflection_module": "Draconic Defense Reflection Module",
   "item.extramodules2.chaotic_defense_reflection_module": "Chaotic Defense Reflection Module",
@@ -28,6 +37,15 @@
   "item.extramodules2.wyvern_crit_module": "Wyvern Critical Strike Module",
   "item.extramodules2.draconic_crit_module": "Draconic Critical Strike Module",
   "item.extramodules2.chaotic_crit_module": "Chaotic Critical Strike Module",
+  "item.extramodules2.wyvern_crit_dmg_module": "Wyvern Critical Strike Damage Module",
+  "item.extramodules2.draconic_crit_dmg_module": "Draconic Critical Strike Damage Module",
+  "item.extramodules2.chaotic_crit_dmg_module": "Chaotic Critical Strike Damage Module",
+  "item.extramodules2.wyvern_fire_module": "Wyvern Flame Bullets Module",
+  "item.extramodules2.draconic_fire_module": "Draconic Flame Bullets Module",
+  "item.extramodules2.chaotic_fire_module": "Chaotic Flame Bullets Module",
+  "item.extramodules2.wyvern_lightning_module": "Wyvern Lightning Module",
+  "item.extramodules2.draconic_lightning_module": "Draconic Lightning Module",
+  "item.extramodules2.chaotic_lightning_module": "Chaotic Lightning Module",
   "item.extramodules2.chaotic_hit_cooldown_module": "Chaotic Hit Cooldown Module",
   "item.extramodules2.draconic_hit_cooldown_module": "Draconic Hit Cooldown Module",
   "item.extramodules2.wyvern_regeneration_module": "Wyvern Regeneration Module",
@@ -43,6 +61,7 @@
   "item.extramodules2.draconic_luck_module": "Draconic Luck Module",
   "item.extramodules2.draconic_absorption_module": "Draconic Absorption Module",
   "item.extramodules2.draconic_fire_resistance_module": "Draconic Fire Resistance Module",
+
   "item.extramodules2.advanced_module_core": "Advanced Module Core",
   "item.extramodules2.superior_module_core": "Superior Module Core",
   "item.extramodules2.module_controller": "Module Controller",
@@ -51,6 +70,7 @@
   "item.extramodules2.draconic_potion_curer_module": "Draconic Potion Curer Module",
   "item.extramodules2.elder_guardian_brain": "Elder Guardian Brain",
   "item.extramodules2.elder_guardian_parts": "Elder Guardian Parts",
+
   "item.extramodules2.wyvern_effect_necklace": "§eWyvern Effect Necklace",
   "item.extramodules2.draconic_effect_necklace": "§bDraconic Effect Necklace",
   "item.extramodules2.chaotic_effect_necklace": "§dChaotic Effect Necklace",
@@ -65,6 +85,8 @@
   "module_type.draconicevolution.hit_cooldown.name": "Shield Hit Cooldown",
   "module_type.draconicevolution.effect.name": "Effect",
   "module_type.draconicevolution.pistol.name": "Pistol",
+  "module_type.draconicevolution.pistol_lightning.name": "Pistol AOE",
+  "module_type.draconicevolution.pistol_homing.name": "Pistol Homing",
 
   "module.extramodules2.defense_brain.bootup": "§2Defense System boot completed.",
   "module.extramodules2.defense_brain.shutdown": "§cDefense System shut down.",
@@ -92,12 +114,22 @@
   "module.extramodules2.hit_cooldown.cooldown": "Hit Cooldown",
   "module.extramodules2.extra_health.extra_health": "Health",
   "module.extramodules2.pistol.crit": "Critical Strike Chance",
+  "module.extramodules2.pistol.critdmg": "Critical Strike Damage",
+  "module.extramodules2.pistol.basedmg": "Base Damage",
+  "module.extramodules2.pistol.firetime": "Burn Time",
+  "module.extramodules2.pistol_lightning.chance" : "Strike Chance",
+  "module.extramodules2.pistol_lightning.range" : "Damage Range",
+  "module.extramodules2.pistol_lightning.dmgcon" : "Damage Conversion",
+  "module.extramodules2.pistol_lightning.block" : "Block(s)",
+  "module.extramodules2.pistol_lightning.cooldown" : "Charge Time",
+  "module.extramodules2.pistol_lightning.cost": "Charge Cost",
 
   "item_prop.draconicevolution.defense_brain_module.activated": "Defense System Toggle",
   "item_prop.draconicevolution.oxygen_mod.consume_oxygen": "Use Oxygen",
   "item_prop.draconicevolution.potion_mod.remove_potions": "Remove Bad Effects",
   "item_prop.draconicevolution.generator.active": "Generator",
   "item_prop.draconicevolution.generator.sounds": "Generator Sounds",
+  "item_prop.draconicevolution.pistol_lightning_mod.lightning_activated": "Lightning AOE",
 
   "death.attack.defense_system": "%1$s was killed by Defense System",
   "death.attack.defense_system.player": "%1$s was killed by %2$s's Defense System",

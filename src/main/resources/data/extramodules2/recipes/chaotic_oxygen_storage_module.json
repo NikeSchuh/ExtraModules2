@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "ABA",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "draconicevolution:medium_chaos_frag"
+    },
+    "B": {
+      "item": "draconicevolution:awakened_core"
+    },
+    "A": {
+      "item": "extramodules2:draconic_oxygen_storage_module"
+    }
+  },
+  "result": {
+    "item": "extramodules2:chaotic_oxygen_storage_module"
+  }
+}

@@ -8,8 +8,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.Map;
+import java.util.UUID;
 
-public class ArmorData implements ModuleData<ArmorData> {
+public class ArmorData implements ModuleData<ArmorData>{
 
     private final int armor;
     private final int toughness;
@@ -36,4 +37,5 @@ public class ArmorData implements ModuleData<ArmorData> {
     public int getToughness() {
         return toughness;
     }
+
 }

@@ -12,11 +12,15 @@ import de.nike.extramodules2.modules.EMModuleTypes;
 import de.nike.extramodules2.modules.data.ArmorData;
 import de.nike.extramodules2.utils.EMItemHelper;
 import de.nike.extramodules2.utils.TranslationUtils;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipe;
+import net.minecraft.tileentity.FurnaceTileEntity;
+import net.minecraft.util.datafix.fixes.FurnaceRecipes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 

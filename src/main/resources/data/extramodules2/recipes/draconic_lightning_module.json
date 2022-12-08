@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#S#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    "B": {
+      "item": "extramodules2:superior_module_core"
+    },
+    "A": {
+      "item": "extramodules2:wyvern_lightning_module"
+    },
+    "P": {
+      "item": "draconicevolution:draconic_aoe_module"
+    },
+    "S": {
+      "item": "draconicevolution:awakened_core"
+    }
+  },
+  "result": {
+    "item": "extramodules2:draconic_lightning_module"
+  }
+}

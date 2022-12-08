@@ -36,7 +36,7 @@ public class DraconicLightningChainRenderer extends EntityRenderer<DraconicLight
         Vector3d endPos = targetChainOffset.add(endPosRaw);
 
         int segCount = lightningChain.getLightningSegments();
-        long randSeed = (TimeKeeper.getClientTick() / 2);
+        long randSeed = lightningChain.getLightningSeed();
         float scaleMod = 2f;
         float deflectMod = 1f;
         boolean autoScale = true;

@@ -1,7 +1,10 @@
 package de.nike.extramodules2.loot;
 
+import com.brandon3055.draconicevolution.datagen.LootTableGenerator;
 import de.nike.extramodules2.ExtraModules2;
+import net.minecraft.loot.LootTableManager;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;

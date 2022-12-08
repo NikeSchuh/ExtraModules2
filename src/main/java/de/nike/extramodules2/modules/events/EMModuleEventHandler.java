@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
 import de.nike.extramodules2.ExtraModules2;
 import de.nike.extramodules2.modules.EMModuleTypes;
+import de.nike.extramodules2.modules.data.ArmorData;
 import de.nike.extramodules2.modules.entities.ArmorEntity;
 import de.nike.extramodules2.modules.entities.ExtraHealthEntity;
 import de.nike.extramodules2.modules.entities.HitCooldownEntitiy;
@@ -13,6 +14,9 @@ import de.nike.extramodules2.modules.entities.defensesystem.DefenseBrainEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -22,7 +26,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
+import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -30,8 +36,12 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.lwjgl.system.CallbackI;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = ExtraModules2.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EMModuleEventHandler {
@@ -168,8 +178,11 @@ public class EMModuleEventHandler {
 		});
 	}
 
-	public static void test(ArrowLooseEvent event) {
+	@SubscribeEvent
+	public static void lootingEvent(LootingLevelEvent levelEvent) {
 
 	}
+
+
 
 }

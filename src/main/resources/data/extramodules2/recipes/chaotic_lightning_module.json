@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#S#"
+  ],
+  "key": {
+    "#": {
+      "item": "draconicevolution:large_chaos_frag"
+    },
+    "B": {
+      "item": "draconicevolution:chaotic_core"
+    },
+    "A": {
+      "item": "extramodules2:draconic_lightning_module"
+    },
+    "P": {
+      "item": "draconicevolution:chaotic_aoe_module"
+    },
+    "S": {
+      "item": "draconicevolution:chaotic_energy_module"
+    }
+  },
+  "result": {
+    "item": "extramodules2:chaotic_lightning_module"
+  }
+}

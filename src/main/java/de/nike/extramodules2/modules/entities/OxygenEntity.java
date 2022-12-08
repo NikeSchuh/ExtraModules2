@@ -13,6 +13,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import de.nike.extramodules2.modules.data.OxygenStorageData;
+import de.nike.extramodules2.utils.NikesMath;
 import de.nike.extramodules2.utils.TranslationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -26,6 +27,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -43,6 +45,16 @@ public class OxygenEntity extends ModuleEntity {
 		super(module);
 		addProperty(consumeOxygen = new BooleanProperty("oxygen_mod.consume_oxygen", true).setFormatter(ConfigProperty.BooleanFormatter.YES_NO));
 		this.savePropertiesToItem = true;
+	}
+
+	private static double progress = 0;
+
+	@Override
+	public void onInstalled(ModuleContext context) {
+		super.onInstalled(context);
+		if(EffectiveSide.get().isClient()) {
+			progress = 0;
+		}
 	}
 
 	@Override
@@ -76,16 +88,20 @@ public class OxygenEntity extends ModuleEntity {
 		}
 	}
 
+
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void renderSlotOverlay(IRenderTypeBuffer getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
 		OxygenStorageData data = ((OxygenStorageData) module.getData());
-		if (oxygenStored >= data.getOxygenStored()) return;
+		double diameter = Math.min(width, height) * 0.425;
+		double currentProgress = oxygenStored / Math.max(1D, data.getOxygenStored());
+		progress = NikesMath.lerp(progress, currentProgress, 0.070f);
+
+
+		if(progress >= 0.999D) return;
+
 		MatrixStack mStack = new MatrixStack();
 		GuiHelper.drawRect(getter, mStack, x, y, width, height, 0x20FF0000);
-
-		double diameter = Math.min(width, height) * 0.425;
-		double progress = oxygenStored / Math.max(1D, data.getOxygenStored());
 
 		// GuiHelper.drawRect(getter, mStack, x, y, width, height, 0x20FF0000);
 		IVertexBuilder builder = getter.getBuffer(GuiHelperOld.FAN_TYPE);
@@ -97,14 +113,6 @@ public class OxygenEntity extends ModuleEntity {
 			builder.vertex(vertX, vertY, 0).color(0, 255, 0, 64).endVertex();
 		}
 		ToolRenderBase.endBatch(getter);
-
-		// String pText = oxygenStored + "";
-		// String tText = ((int) (data.getOxygenStored() - oxygenStored) /
-		// (OXYGEN_REFILL_RATE * 2)) + "s";
-		// drawBackgroundString(getter, mStack, mc.font, pText, x + width / 2F, y +
-		// height / 2F - 3, 0, 0x4000FF00, 1, false, true);
-		// drawBackgroundString(getter, mStack, mc.font, tText, x + width / 2F, y +
-		// height / 2F + 7, 0, 0x4000FF00, 1, false, true);
 	}
 
 	@OnlyIn(Dist.CLIENT)

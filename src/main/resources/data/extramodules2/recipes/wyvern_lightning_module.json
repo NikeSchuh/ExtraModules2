@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#S#",
+    "ABA",
+    "#P#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium"
+    },
+    "B": {
+      "item": "extramodules2:advanced_module_core"
+    },
+    "A": {
+      "item": "draconicevolution:wyvern_energy_module"
+    },
+    "P": {
+      "item": "draconicevolution:wyvern_aoe_module"
+    },
+    "S": {
+      "item": "minecraft:chain"
+    }
+  },
+  "result": {
+    "item": "extramodules2:wyvern_lightning_module"
+  }
+}

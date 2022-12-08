@@ -2,14 +2,16 @@ package de.nike.extramodules2.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.Map;
+import java.util.UUID;
 
-public class ExtraHealthData implements ModuleData<ExtraHealthData> {
+public class ExtraHealthData implements ModuleData<ExtraHealthData>{
 
     private final double extraHealth;
 
@@ -30,4 +32,5 @@ public class ExtraHealthData implements ModuleData<ExtraHealthData> {
     public void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack) {
         map.put(new TranslationTextComponent("module.extramodules2.extra_health.extra_health"), new StringTextComponent("" + extraHealth));
     }
+
 }

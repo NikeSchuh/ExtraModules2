@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#S#",
+    "DKD",
+    "#R#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    "K": {
+      "item": "extramodules2:superior_module_core"
+    },
+    "R": {
+      "item": "draconicevolution:awakened_core"
+    },
+    "D": {
+      "item": "extramodules2:wyvern_fire_module"
+    },
+    "S": {
+      "item": "minecraft:fire_charge"
+    }
+  },
+  "result": {
+    "item": "extramodules2:draconic_fire_module",
+    "count": 1
+  }
+}
